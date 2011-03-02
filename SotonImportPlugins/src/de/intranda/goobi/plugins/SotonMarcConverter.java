@@ -61,7 +61,7 @@ public class SotonMarcConverter implements IImportPlugin, IPlugin {
 	private static final String ID = "soton_marc21";
 	private static final String NAME = "SOTON MARC21 Converter";
 	private static final String VERSION = "1.0.20110302";
-	private static final String XSLT = ConfigMain.getParameter("xsltFolder") + "MARC21slim2MODS3.xsl";
+	private static final String XSLT = "resources/MARC21slim2MODS3.xsl";
 
 	private Prefs prefs;
 	private String data = "";
