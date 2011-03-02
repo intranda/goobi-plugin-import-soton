@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 
-<project name="intranda goobi import plugins" basedir="." default="deploy">
+<project name="soton import plugins" basedir="." default="deploy">
 
 	<!-- ================================= 
 	          properties             
