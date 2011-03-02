@@ -20,6 +20,7 @@
 		<echo>generate jar file</echo>
 		<jar destfile="${jarfile}">
 			<fileset dir="bin" />
+			<fileset dir="lib" includes="*.jar"/>
 		</jar>
 	</target>
 	

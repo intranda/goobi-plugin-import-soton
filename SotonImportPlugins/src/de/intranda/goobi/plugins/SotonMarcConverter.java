@@ -8,6 +8,8 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringReader;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -61,7 +63,10 @@ public class SotonMarcConverter implements IImportPlugin, IPlugin {
 	private static final String ID = "soton_marc21";
 	private static final String NAME = "SOTON MARC21 Converter";
 	private static final String VERSION = "1.0.20110302";
-	private static final String XSLT = "resources/MARC21slim2MODS3.xsl";
+	// private URL xslt;
+	// private static final String XSLT_PATH = "jar:file:/" + ConfigMain.getParameter("pluginFolder")
+	// + "import/SotonImportPlugins.jar!/resources/MARC21slim2MODS3.xsl";
+	private static final String XSLT_PATH = ConfigMain.getParameter("xsltFolder") + "MARC21slim2MODS3.xsl";
 
 	private Prefs prefs;
 	private String data = "";
@@ -73,6 +78,13 @@ public class SotonMarcConverter implements IImportPlugin, IPlugin {
 	private String currentAuthor;
 
 	public SotonMarcConverter() {
+		// try {
+		// xslt = new URL(XSLT_PATH);
+		// } catch (MalformedURLException e) {
+		// // TODO Auto-generated catch block
+		// e.printStackTrace();
+		// }
+
 		map.put("?monographic", "Monograph");
 		map.put("?continuing", "Periodical");
 		map.put("?multipart monograph", "MultiVolumeWork");
@@ -96,7 +108,10 @@ public class SotonMarcConverter implements IImportPlugin, IPlugin {
 		try {
 			doc = new SAXBuilder().build(new StringReader(data));
 			if (doc != null && doc.hasRootElement()) {
-				XSLTransformer transformer = new XSLTransformer(XSLT);
+				// InputStream in = new FileInputStream(new URL(xslt.getFile()).getFile());
+				// InputStream in = getClass().getResourceAsStream("/resources/MARC21slim2MODS3.xsl");
+				XSLTransformer transformer = new XSLTransformer(XSLT_PATH);
+				// in.close();
 				Document docMods = transformer.transform(doc);
 				// logger.debug(new XMLOutputter().outputString(docMods));
 
@@ -417,10 +432,10 @@ public class SotonMarcConverter implements IImportPlugin, IPlugin {
 			logger.error(e.getMessage(), e);
 		}
 
-		converter.setFile(new File("resources/samples/marc21/single.mrc"));
+		converter.setFile(new File("samples/marc21/single.mrc"));
 		List<Record> records = converter.generateRecordsFromFile();
 
-		// converter.importFile = new File("resources/samples/marc21/multiple_records.mrk");
+		// converter.importFile = new File("samples/marc21/multiple_records.mrk");
 		// StringBuilder sb = new StringBuilder();
 		// BufferedReader inputStream = null;
 		// try {
