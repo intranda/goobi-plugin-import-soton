@@ -1,4 +1,5 @@
 package de.intranda.goobi.plugins;
+
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -49,6 +50,7 @@ import ugh.exceptions.PreferencesException;
 import ugh.exceptions.TypeNotAllowedForParentException;
 import ugh.exceptions.WriteException;
 import ugh.fileformats.mets.MetsMods;
+import de.intranda.goobi.plugins.utils.ModsUtils;
 import de.sub.goobi.Import.ImportOpac;
 import de.sub.goobi.config.ConfigMain;
 
@@ -130,15 +132,25 @@ public class SotonMarcConverter implements IImportPlugin, IPlugin {
 				dd.setPhysicalDocStruct(dsBoundBook);
 
 				// Collect MODS metadata
-				parseModsSection(dsRoot, dsBoundBook, eleMods);
+				ModsUtils.parseModsSection(prefs, dsRoot, dsBoundBook, eleMods);
 
-				// Add a timestamp as identifer if the record still has none
+				// Set current identifier, or add a timestamp as identifer if the record still has none
 				MetadataType mdTypeId = prefs.getMetadataTypeByName("CatalogIDDigital");
-				if (dsRoot.getAllMetadataByType(mdTypeId).isEmpty()) {
+				if (!dsRoot.getAllMetadataByType(mdTypeId).isEmpty()) {
+					Metadata mdId = dsRoot.getAllMetadataByType(mdTypeId).get(0);
+					currentIdentifier = mdId.getValue();
+				} else {
 					Metadata mdId = new Metadata(mdTypeId);
 					dsRoot.addMetadata(mdId);
 					mdId.setValue(String.valueOf(System.currentTimeMillis()));
 					currentIdentifier = mdId.getValue();
+				}
+
+				// Set current title
+				MetadataType mdTypeTitle = prefs.getMetadataTypeByName("TitleDocMain");
+				if (!dsRoot.getAllMetadataByType(mdTypeTitle).isEmpty()) {
+					Metadata mdTitle = dsRoot.getAllMetadataByType(mdTypeId).get(0);
+					currentTitle = mdTitle.getValue();
 				}
 			}
 		} catch (JDOMException e) {
@@ -483,7 +495,7 @@ public class SotonMarcConverter implements IImportPlugin, IPlugin {
 							currentIdentifier = metadata.getValue();
 						}
 					}
-				}  else if (eleMeta.getName().equals("location")) {
+				} else if (eleMeta.getName().equals("location")) {
 					for (Object obj : eleMeta.getChildren()) {
 						Element ele = (Element) obj;
 						if (ele.getName().equals("physicalLocation")) {
@@ -571,30 +583,30 @@ public class SotonMarcConverter implements IImportPlugin, IPlugin {
 			logger.error(e.getMessage(), e);
 		}
 
-		// converter.setFile(new File("resources/samples/single.mrc"));
-		// List<Record> records = converter.generateRecordsFromFile();
+		converter.setFile(new File("resources/samples/marc21/single.mrc"));
+		List<Record> records = converter.generateRecordsFromFile();
 
-		converter.importFile = new File("resources/samples/multiple_records.mrk");
-		StringBuilder sb = new StringBuilder();
-		BufferedReader inputStream = null;
-		try {
-			inputStream = new BufferedReader(new FileReader(converter.importFile));
-			String l;
-			while ((l = inputStream.readLine()) != null) {
-				sb.append(l + "\n");
-			}
-		} catch (IOException e) {
-			logger.error(e.getMessage(), e);
-		} finally {
-			if (inputStream != null) {
-				try {
-					inputStream.close();
-				} catch (IOException e) {
-					logger.error(e.getMessage(), e);
-				}
-			}
-		}
-		List<Record> records = converter.splitRecords(sb.toString());
+		// converter.importFile = new File("resources/samples/marc21/multiple_records.mrk");
+		// StringBuilder sb = new StringBuilder();
+		// BufferedReader inputStream = null;
+		// try {
+		// inputStream = new BufferedReader(new FileReader(converter.importFile));
+		// String l;
+		// while ((l = inputStream.readLine()) != null) {
+		// sb.append(l + "\n");
+		// }
+		// } catch (IOException e) {
+		// logger.error(e.getMessage(), e);
+		// } finally {
+		// if (inputStream != null) {
+		// try {
+		// inputStream.close();
+		// } catch (IOException e) {
+		// logger.error(e.getMessage(), e);
+		// }
+		// }
+		// }
+		// List<Record> records = converter.splitRecords(sb.toString());
 
 		int counter = 1;
 		for (Record record : records) {
