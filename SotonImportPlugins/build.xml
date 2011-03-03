@@ -20,13 +20,9 @@
 		</javac>
 		<echo>generate jar file</echo>
 		<jar destfile="${jarfile-cambridge}">
-			<fileset dir="bin">
-				<exclude name="**/Soton*" />
-			</fileset>
-			<fileset dir="resources">
-				<include name="**/*.xsl" />
-			</fileset>
-			<fileset dir="lib" includes="*.jar" />
+			<fileset dir="bin" excludes="**/Soton*" />
+			<fileset dir="resources" includes="**/*.xsl" />
+			<fileset dir="lib" includes="marc4j.jar" />
 		</jar>
 	</target>
 
@@ -37,13 +33,9 @@
 		</javac>
 		<echo>generate jar file</echo>
 		<jar destfile="${jarfile-soton}">
-			<fileset dir="bin">
-				<exclude name="**/Cam*" />
-			</fileset>
-			<fileset dir="resources">
-				<include name="**/*.xsl" />
-			</fileset>
-			<fileset dir="lib" includes="*.jar" excludes="xslt.jar" />
+			<fileset dir="bin" excludes="**/Cam*" />
+			<fileset dir="resources" includes="**/*.xsl" />
+			<fileset dir="lib" includes="marc4j.jar, ki-*.jar, a2jruntime.jar" />
 		</jar>
 	</target>
 

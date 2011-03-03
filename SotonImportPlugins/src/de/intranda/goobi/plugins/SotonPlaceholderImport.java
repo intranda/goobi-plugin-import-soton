@@ -29,13 +29,13 @@ import ugh.fileformats.mets.MetsMods;
 import de.sub.goobi.Import.ImportOpac;
 
 @PluginImplementation
-public class SotonPlaceholderConverter implements IImportPlugin, IPlugin {
+public class SotonPlaceholderImport implements IImportPlugin, IPlugin {
 
 	/** Logger for this class. */
-	private static final Logger logger = Logger.getLogger(SotonPlaceholderConverter.class);
+	private static final Logger logger = Logger.getLogger(SotonPlaceholderImport.class);
 
 	private static final String ID = "soton_placeholder";
-	private static final String NAME = "SOTON Placeholder Converter";
+	private static final String NAME = "SOTON Placeholder Import";
 	private static final String VERSION = "1.1.20110303";
 
 	private Prefs prefs;
@@ -46,7 +46,7 @@ public class SotonPlaceholderConverter implements IImportPlugin, IPlugin {
 	private String currentTitle;
 	private String currentAuthor;
 
-	public SotonPlaceholderConverter() {
+	public SotonPlaceholderImport() {
 	}
 
 	@Override
@@ -202,7 +202,7 @@ public class SotonPlaceholderConverter implements IImportPlugin, IPlugin {
 	}
 
 	public static void main(String[] args) {
-		SotonPlaceholderConverter converter = new SotonPlaceholderConverter();
+		SotonPlaceholderImport converter = new SotonPlaceholderImport();
 		converter.prefs = new Prefs();
 		try {
 			converter.prefs.loadPrefs("resources/gdz.xml");

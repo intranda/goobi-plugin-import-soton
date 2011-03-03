@@ -1,12 +1,8 @@
 package de.intranda.goobi.plugins;
 
 import java.io.BufferedReader;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -31,11 +27,6 @@ import org.jdom.JDOMException;
 import org.jdom.input.SAXBuilder;
 import org.jdom.output.XMLOutputter;
 import org.jdom.transform.XSLTransformer;
-import org.marc4j.MarcException;
-import org.marc4j.MarcReader;
-import org.marc4j.MarcStreamReader;
-import org.marc4j.MarcXmlWriter;
-import org.marc4j.converter.impl.AnselToUnicode;
 
 import ugh.dl.DigitalDocument;
 import ugh.dl.DocStruct;
@@ -45,24 +36,24 @@ import ugh.dl.MetadataType;
 import ugh.dl.Prefs;
 import ugh.exceptions.MetadataTypeNotAllowedException;
 import ugh.exceptions.PreferencesException;
-import ugh.exceptions.TypeNotAllowedAsChildException;
 import ugh.exceptions.TypeNotAllowedForParentException;
 import ugh.exceptions.WriteException;
 import ugh.fileformats.mets.MetsMods;
 import de.intranda.goobi.plugins.utils.ModsUtils;
+import de.intranda.goobi.plugins.utils.Z3950Client;
 import de.sub.goobi.Import.ImportOpac;
 import de.sub.goobi.config.ConfigMain;
 
 @PluginImplementation
-public class CamMarcConverter implements IImportPlugin, IPlugin {
+public class SotonCatalogueImport implements IImportPlugin, IPlugin {
 
 	/** Logger for this class. */
-	private static final Logger logger = Logger.getLogger(CamMarcConverter.class);
+	private static final Logger logger = Logger.getLogger(SotonCatalogueImport.class);
 
-	private static final String ID = "cam_marc21";
-	private static final String NAME = "Cambridge MARC21 Converter";
-	private static final String VERSION = "1.1.20110303";
-	private static final String XSLT = ConfigMain.getParameter("xsltFolder") + "MARC21slim2MODS3.xsl";
+	private static final String ID = "soton_marc21";
+	private static final String NAME = "SOTON Catalogue Import";
+	private static final String VERSION = "1.0.20110303";
+	private static final String XSLT_PATH = ConfigMain.getParameter("xsltFolder") + "MARC21slim2MODS3.xsl";
 
 	private Prefs prefs;
 	private String data = "";
@@ -73,7 +64,7 @@ public class CamMarcConverter implements IImportPlugin, IPlugin {
 	private String currentTitle;
 	private String currentAuthor;
 
-	public CamMarcConverter() {
+	public SotonCatalogueImport() {
 		map.put("?monographic", "Monograph");
 		map.put("?continuing", "Periodical");
 		map.put("?multipart monograph", "MultiVolumeWork");
@@ -95,11 +86,20 @@ public class CamMarcConverter implements IImportPlugin, IPlugin {
 		Fileformat ff = null;
 		Document doc;
 		try {
+			String id1 = data;
+			// TODO CGI query
+			String id2 = "";
+			
+			Z3950Client zClient = new Z3950Client("URL", "PORT", "DATABASE", "idpass ," + "NAME" + " , ," + "PASS");
+			String marc = zClient.query("@attrset bib-1 @attr 1=" + id2 + " \"" + "\"", "usmarc");
+
+			data = convertTextToMarcXml(marc);
+
 			doc = new SAXBuilder().build(new StringReader(data));
 			if (doc != null && doc.hasRootElement()) {
-				XSLTransformer transformer = new XSLTransformer(XSLT);
+				XSLTransformer transformer = new XSLTransformer(XSLT_PATH);
 				Document docMods = transformer.transform(doc);
-				logger.debug(new XMLOutputter().outputString(docMods));
+				// logger.debug(new XMLOutputter().outputString(docMods));
 
 				ff = new MetsMods(prefs);
 				DigitalDocument dd = new DigitalDocument();
@@ -151,20 +151,6 @@ public class CamMarcConverter implements IImportPlugin, IPlugin {
 					Metadata mdTitle = dsRoot.getAllMetadataByType(mdTypeId).get(0);
 					currentTitle = mdTitle.getValue();
 				}
-
-				// Add dummy volume to anchors
-				if (dsRoot.getType().getName().equals("Periodical") || dsRoot.getType().getName().equals("MultiVolumeWork")) {
-					DocStruct dsVolume = null;
-					if (dsRoot.getType().getName().equals("Periodical")) {
-						dsVolume = dd.createDocStruct(prefs.getDocStrctTypeByName("PeriodicalVolume"));
-					} else if (dsRoot.getType().getName().equals("MultiVolumeWork")) {
-						dsVolume = dd.createDocStruct(prefs.getDocStrctTypeByName("Volume"));
-					}
-					dsRoot.addChild(dsVolume);
-					Metadata mdId = new Metadata(prefs.getMetadataTypeByName("CatalogIDDigital"));
-					mdId.setValue(currentIdentifier + "_0001");
-					dsVolume.addMetadata(mdId);
-				}
 			}
 		} catch (JDOMException e) {
 			logger.error(e.getMessage(), e);
@@ -175,8 +161,6 @@ public class CamMarcConverter implements IImportPlugin, IPlugin {
 		} catch (TypeNotAllowedForParentException e) {
 			logger.error(e.getMessage(), e);
 		} catch (MetadataTypeNotAllowedException e) {
-			logger.error(e.getMessage(), e);
-		} catch (TypeNotAllowedAsChildException e) {
 			logger.error(e.getMessage(), e);
 		}
 
@@ -191,7 +175,6 @@ public class CamMarcConverter implements IImportPlugin, IPlugin {
 			data = r.getData();
 			Fileformat ff = convertData();
 			if (ff != null) {
-				r.setId(currentIdentifier);
 				try {
 					MetsMods mm = new MetsMods(prefs);
 					mm.setDigitalDocument(ff.getDigitalDocument());
@@ -216,100 +199,26 @@ public class CamMarcConverter implements IImportPlugin, IPlugin {
 
 	@Override
 	public List<Record> generateRecordsFromFile() {
-		List<Record> ret = new ArrayList<Record>();
-		InputStream input = null;
-		try {
-			logger.debug("loaded file: " + importFile.getAbsolutePath());
-			input = new FileInputStream(importFile);
-			MarcReader reader = new MarcStreamReader(input, null);
-			int counter = 1;
-			while (reader.hasNext()) {
-				logger.debug(counter + ")");
-				try {
-					org.marc4j.marc.Record marcRecord = (org.marc4j.marc.Record) reader.next();
-					ByteArrayOutputStream out = new ByteArrayOutputStream();
-					MarcXmlWriter writer = new MarcXmlWriter(out, "UTF8", true);
-					writer.setConverter(new AnselToUnicode());
-					writer.write(marcRecord);
-					writer.close();
-					Record record = new Record();
-					ret.add(record);
-					record.setData(out.toString());
-					out.close();
-				} catch (MarcException e) {
-					logger.error(e.getMessage(), e);
-				}
-				counter++;
-			}
-		} catch (FileNotFoundException e) {
-			logger.error(e.getMessage(), e);
-		} catch (IOException e) {
-			logger.error(e.getMessage(), e);
-		} finally {
-			if (input != null) {
-				try {
-					input.close();
-				} catch (IOException e) {
-					logger.error(e.getMessage(), e);
-				}
-			}
-			logger.info("Extracted " + ret.size() + " records from '" + importFile.getName() + "'.");
-		}
-
-		return ret;
+		return new ArrayList<Record>();
 	}
 
 	@Override
 	public List<Record> splitRecords(String records) {
-		List<Record> ret = new ArrayList<Record>();
-
-		// Split strings
-		List<String> recordStrings = new ArrayList<String>();
-		BufferedReader inputStream = new BufferedReader(new StringReader(records));
-
-		StringBuilder sb = new StringBuilder();
-		String l;
-		try {
-			while ((l = inputStream.readLine()) != null) {
-				if (l.length() > 0) {
-					if (l.startsWith("=LDR")) {
-						if (sb.length() > 0) {
-							recordStrings.add(sb.toString());
-						}
-						sb = new StringBuilder();
-					}
-					sb.append(l + "\n");
-				}
-			}
-			if (sb.length() > 0) {
-				recordStrings.add(sb.toString());
-			}
-		} catch (IOException e) {
-			logger.error(e.getMessage(), e);
-		}
-
-		// Convert strings to MARCXML records and add them to Record objects
-		for (String s : recordStrings) {
-			String data;
-			try {
-				data = convertTextToMarcXml(s);
-				if (data != null) {
-					Record rec = new Record();
-					rec.setData(data);
-					ret.add(rec);
-				}
-			} catch (IOException e) {
-				logger.error(e.getMessage(), e);
-			}
-		}
-
-		return ret;
+		return new ArrayList<Record>();
 	}
 
 	@Override
 	public List<String> splitIds(String ids) {
-		// TODO Auto-generated method stub
-		return null;
+		List<String> ret = new ArrayList<String>();
+
+		String[] idsSplit = ids.trim().split("[ ]");
+		for (String id : idsSplit) {
+			if (StringUtils.isNotBlank(id)) {
+				ret.add(id.trim());
+			}
+		}
+
+		return ret;
 	}
 
 	@Override
@@ -317,6 +226,7 @@ public class CamMarcConverter implements IImportPlugin, IPlugin {
 		if (StringUtils.isNotBlank(currentTitle)) {
 			return new ImportOpac().createAtstsl(currentTitle, currentAuthor).toLowerCase() + "_" + currentIdentifier + ".xml";
 		}
+
 		return currentIdentifier + ".xml";
 	}
 
@@ -338,7 +248,6 @@ public class CamMarcConverter implements IImportPlugin, IPlugin {
 	@Override
 	public void setFile(File importFile) {
 		this.importFile = importFile;
-
 	}
 
 	@Override
@@ -350,8 +259,7 @@ public class CamMarcConverter implements IImportPlugin, IPlugin {
 	@Override
 	public List<ImportType> getImportTypes() {
 		List<ImportType> answer = new ArrayList<ImportType>();
-		answer.add(ImportType.Record);
-		answer.add(ImportType.FILE);
+		answer.add(ImportType.ID);
 
 		return answer;
 	}
@@ -431,7 +339,7 @@ public class CamMarcConverter implements IImportPlugin, IPlugin {
 	}
 
 	public static void main(String[] args) {
-		CamMarcConverter converter = new CamMarcConverter();
+		SotonCatalogueImport converter = new SotonCatalogueImport();
 		converter.prefs = new Prefs();
 		try {
 			converter.prefs.loadPrefs("resources/gdz.xml");
@@ -439,30 +347,14 @@ public class CamMarcConverter implements IImportPlugin, IPlugin {
 			logger.error(e.getMessage(), e);
 		}
 
-		converter.setFile(new File("samples/marc21-cam/books_852.mrc"));
-		List<Record> records = converter.generateRecordsFromFile();
-
-		// converter.importFile = new File("samples/marc21-cam/music.txt");
-		// StringBuilder sb = new StringBuilder();
-		// BufferedReader inputStream = null;
-		// try {
-		// inputStream = new BufferedReader(new FileReader(converter.importFile));
-		// String l;
-		// while ((l = inputStream.readLine()) != null) {
-		// sb.append(l + "\n");
-		// }
-		// } catch (IOException e) {
-		// logger.error(e.getMessage(), e);
-		// } finally {
-		// if (inputStream != null) {
-		// try {
-		// inputStream.close();
-		// } catch (IOException e) {
-		// logger.error(e.getMessage(), e);
-		// }
-		// }
-		// }
-		// List<Record> records = converter.splitRecords(sb.toString());
+		List<Record> records = new ArrayList<Record>();
+		List<String> ids = converter.splitIds("a1 a2  a3");
+		for (String id : ids) {
+			Record r = new Record();
+			r.setData(id);
+			r.setId(id);
+			records.add(r);
+		}
 
 		int counter = 1;
 		for (Record record : records) {
