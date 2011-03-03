@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<modsCollection xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.loc.gov/mods/v3" xsi:schemaLocation="http://www.loc.gov/mods/v3 http://www.loc.gov/standards/mods/v3/mods-3-3.xsd">
+  <mods version="3.3">
+    <titleInfo>
+      <nonSort>The </nonSort>
+      <title>Cambridge illustrated history of France</title>
+    </titleInfo>
+    <titleInfo type="alternative">
+      <title>France</title>
+    </titleInfo>
+    <name type="personal">
+      <namePart>Jones, Colin</namePart>
+      <namePart type="date">1947-</namePart>
+      <role>
+        <roleTerm authority="marcrelator" type="text">creator</roleTerm>
+      </role>
+    </name>
+    <typeOfResource>text</typeOfResource>
+    <originInfo>
+      <place>
+        <placeTerm type="code" authority="marccountry">enk</placeTerm>
+      </place>
+      <place>
+        <placeTerm type="text">Cambridge</placeTerm>
+      </place>
+      <publisher>Cambridge University Press</publisher>
+      <dateIssued>1994</dateIssued>
+      <issuance>monographic</issuance>
+    </originInfo>
+    <language>
+      <languageTerm authority="iso639-2b" type="code">eng</languageTerm>
+    </language>
+    <physicalDescription>
+      <extent>352p ; 27cm.</extent>
+    </physicalDescription>
+    <note type="statement of responsibility">Colin Jones.</note>
+    <note>Spine title: France.</note>
+    <subject authority="lcsh">
+      <geographic>France</geographic>
+      <topic>Civilization</topic>
+    </subject>
+    <relatedItem type="series">
+      <titleInfo>
+        <title>Cambridge illustrated history</title>
+      </titleInfo>
+    </relatedItem>
+    <identifier type="isbn">0521432944</identifier>
+    <identifier type="lccn">LC94-19310</identifier>
+    <recordInfo>
+      <descriptionStandard>aacr2</descriptionStandard>
+      <recordCreationDate encoding="marc">020607</recordCreationDate>
+      <recordChangeDate encoding="iso8601">20080703105657.0</recordChangeDate>
+      <recordIdentifier>1089301</recordIdentifier>
+      <recordOrigin>Converted from MARCXML to MODS version 3.3 using MARC21slim2MODS3-3.xsl
+				(Revision 1.54)</recordOrigin>
+    </recordInfo>
+  </mods>
+</modsCollection>
+

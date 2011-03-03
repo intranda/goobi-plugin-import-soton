@@ -1,0 +1,56 @@
+=LDR  00395cas a2200157 a 4500
+=001  2958612
+=005  20100331132339.0
+=008  890508m19879999xxu||||||\|||||\\\|0eng||
+=019  \\$a5372
+=022  \\$a0835-3638
+=035  \\$98S00104869
+=035  \\$98998156431
+=245  04$aThe ancient history bulletin.
+=260  \\$aChicago,$c1987-
+=362  0\$aVol.1, no.1 (Jan. 1987)-
+=650  \0$aHistory, Ancient$vPeriodicals.
+
+=LDR  00571cas a2200205 a 4500
+=001  2959522
+=005  20050818142244.0
+=008  810101u1926uuuumau||\\\\\\\\\0\\\\|eng\d
+=019  \\$a27...488
+=022  \\$a0038-7134
+=035  \\$98S00049335
+=035  \\$z(UPvMLC)108183(0105)
+=035  \\$a(UkLCURL)e80011425413
+=040  \\$aIeDuTC$dIeDuTC$dCUD$dUtOrBLW$dUtOrBLW
+=245  00$aSpeculum.
+=260  \\$aCambridge (Mass.) :$bMediaeval Academy of America,$c1926-
+=300  \\$av. ;$c26 cm.
+=362  0\$aVol.1(1926)-
+=710  2\$aMediaeval Academy of America.
+=947  \\$alacks$b6xx$z600
+
+=LDR  00563cas a2200193 a 4500
+=001  2985269
+=005  20090729170128.0
+=008  810101m19731995enk||||||\|||||\\\|0eng|d
+=019  \\$a'74.87209
+=022  \\$a0307-2770
+=035  \\$98S00002837
+=035  \\$a(CStRLIN)IAUGADP1007-S
+=035  \\$96000214774
+=245  00$aNew German studies.
+=260  \\$aHull :$bDept. of German, University of Hull,$c1973-1995.
+=300  \\$av. ;$c21cm.
+=362  0\$aVol. 1 (1973) - vol. 18 (1995)
+=650  \0$aGerman philology$vPeriodicals.
+=710  2\$aUniversity of Hull.$bDepartment of German.
+
+=LDR  00285cas a22001217  4500
+=001  2999026
+=005  20060621154951.0
+=008  810101c19129999enk||||||\|||||\\\|0eng||
+=022  \\$a0018-2648
+=035  \\$98S00058410
+=245  00$aHistory.
+=260  \\$aLondon.
+=710  2\$aHistorical Association (Great Britain)
+

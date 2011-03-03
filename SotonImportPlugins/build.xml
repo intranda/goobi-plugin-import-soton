@@ -1,59 +1,118 @@
 <?xml version="1.0"?>
 
-<project name="soton import plugins" basedir="." default="deploy">
+<project name="soton import plugins" basedir="." default="deploy-all">
 
 	<!-- ================================= 
 	          properties             
 	 ================================= -->
-	<property name="jarfile" value="SotonImportPlugins.jar" />
+	<property name="jarfile-cambridge" value="CamImportPlugins.jar" />
+	<property name="jarfile-soton" value="SotonImportPlugins.jar" />
 	<property name="pluginFolderWin" value="C:/Goobi/plugins/import/" />
 	<property name="pluginFolderMac" value="/opt/digiverso/goobi/plugins/import/" />
 
 	<!-- ================================= 
          targets: compile and jar          
 	 ================================= -->
-	<target name="jar">
+	<target name="jar-cambridge">
 		<echo>compile sources</echo>
 		<javac destdir="bin">
 			<src path="src" />
 		</javac>
 		<echo>generate jar file</echo>
-		<jar destfile="${jarfile}">
-			<fileset dir="bin" />
-			<fileset dir="lib" includes="*.jar"/>
+		<jar destfile="${jarfile-cambridge}">
+			<fileset dir="bin">
+				<exclude name="**/Soton*" />
+			</fileset>
+			<fileset dir="resources">
+				<include name="**/*.xsl" />
+			</fileset>
+			<fileset dir="lib" includes="*.jar" />
 		</jar>
 	</target>
-	
+
+	<target name="jar-soton">
+		<echo>compile sources</echo>
+		<javac destdir="bin">
+			<src path="src" />
+		</javac>
+		<echo>generate jar file</echo>
+		<jar destfile="${jarfile-soton}">
+			<fileset dir="bin">
+				<exclude name="**/Cam*" />
+			</fileset>
+			<fileset dir="resources">
+				<include name="**/*.xsl" />
+			</fileset>
+			<fileset dir="lib" includes="*.jar" excludes="xslt.jar" />
+		</jar>
+	</target>
+
 	<!-- ================================= 
           target: copyToPluginFolder, depending on OS    
          ================================= -->
-	<target name="copyToPluginFolder" depends="linux,win32">
+	<target name="copyToPluginFolder-cambridge" depends="linux-cambridge,win32-cambridge">
 		<echo>cleaning up</echo>
-		 <delete file="${jarfile}" />
+		<delete file="${jarfile-cambridge}" />
 		<echo>cleaned up successfully</echo>
 	</target>
-	<target name="linux" if="isUnix">
-		<echo>use Linux path: ${pluginFolderMac}</echo>
-		<copy tofile="${pluginFolderMac}${jarfile}" file="${jarfile}" overwrite="true" />
+	<target name="copyToPluginFolder-soton" depends="linux-soton,win32-soton">
+		<echo>cleaning up</echo>
+		<delete file="${jarfile-soton}" />
+		<echo>cleaned up successfully</echo>
 	</target>
-	<target name="win32" if="isWindows">
+	<target name="linux-cambridge" if="isUnix">
+		<echo>use Linux path: ${pluginFolderMac}</echo>
+		<copy tofile="${pluginFolderMac}${jarfile-cambridge}" file="${jarfile-cambridge}" overwrite="true" />
+	</target>
+	<target name="linux-soton" if="isUnix">
+		<echo>use Linux path: ${pluginFolderMac}</echo>
+		<copy tofile="${pluginFolderMac}${jarfile-soton}" file="${jarfile-soton}" overwrite="true" />
+	</target>
+	<target name="win32-cambridge" if="isWindows">
 		<echo>use Windows path: ${pluginFolderWin}</echo>
-		<copy tofile="${pluginFolderWin}${jarfile}" file="${jarfile}" overwrite="true" />
+		<copy tofile="${pluginFolderWin}${jarfile-cambridge}" file="${jarfile-cambridge}" overwrite="true" />
+	</target>
+	<target name="win32-soton" if="isWindows">
+		<echo>use Windows path: ${pluginFolderWin}</echo>
+		<copy tofile="${pluginFolderWin}${jarfile-soton}" file="${jarfile-soton}" overwrite="true" />
 	</target>
 
 	<!-- ================================= 
 	          target: deploy 
          ================================= -->
-	<target name="deploy" depends="jar">
+	<target name="deploy-cambridge" depends="jar-cambridge">
 		<condition property="isWindows">
 			<os family="windows" />
 		</condition>
 		<condition property="isUnix">
 			<os family="unix" />
 		</condition>
-		<antcall target="copyToPluginFolder" />
+		<antcall target="copyToPluginFolder-cambridge" />
 		<echo>intranda ... alles ist gut!</echo>
 	</target>
-	
+
+	<target name="deploy-soton" depends="jar-soton">
+		<condition property="isWindows">
+			<os family="windows" />
+		</condition>
+		<condition property="isUnix">
+			<os family="unix" />
+		</condition>
+		<antcall target="copyToPluginFolder-soton" />
+		<echo>intranda ... alles ist gut!</echo>
+	</target>
+
+	<target name="deploy-all" depends="jar-cambridge, jar-soton">
+		<condition property="isWindows">
+			<os family="windows" />
+		</condition>
+		<condition property="isUnix">
+			<os family="unix" />
+		</condition>
+		<antcall target="copyToPluginFolder-cambridge" />
+		<antcall target="copyToPluginFolder-soton" />
+		<echo>intranda ... alles ist gut!</echo>
+	</target>
+
 </project>
 

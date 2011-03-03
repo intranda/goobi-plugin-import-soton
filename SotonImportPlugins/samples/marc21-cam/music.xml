@@ -1,0 +1,200 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<marc:collection xmlns:marc="http://www.loc.gov/MARC21/slim"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.loc.gov/MARC21/slim http://www.loc.gov/standards/marcxml/schema/MARC21slim.xsd">
+	<marc:record>
+		<marc:leader>01138ccm a2200289 a 4500</marc:leader>
+		<marc:controlfield tag="001">4411195</marc:controlfield>
+		<marc:controlfield tag="005">20080411141300.0</marc:controlfield>
+		<marc:controlfield tag="008">030212s2002    enkzzz         nn   eng d</marc:controlfield>
+		<marc:datafield tag="020" ind1=" " ind2=" ">
+			<marc:subfield code="a">0711996296</marc:subfield>
+		</marc:datafield>
+		<marc:datafield tag="028" ind1="3" ind2="2">
+			<marc:subfield code="a">CH65681</marc:subfield>
+			<marc:subfield code="b">Chester Music</marc:subfield>
+		</marc:datafield>
+		<marc:datafield tag="035" ind1=" " ind2=" ">
+			<marc:subfield code="a">(UkOxU)UkOxUb15470642</marc:subfield>
+		</marc:datafield>
+		<marc:datafield tag="100" ind1="1" ind2=" ">
+			<marc:subfield code="a">Chopin, Frédéric,</marc:subfield>
+			<marc:subfield code="d">1810-1849.</marc:subfield>
+		</marc:datafield>
+		<marc:datafield tag="240" ind1="1" ind2="0">
+			<marc:subfield code="a">Piano music.</marc:subfield>
+			<marc:subfield code="k">Selections</marc:subfield>
+		</marc:datafield>
+		<marc:datafield tag="245" ind1="1" ind2="4">
+			<marc:subfield code="a">The essential collection Chopin :</marc:subfield>
+			<marc:subfield code="b">gold.</marc:subfield>
+		</marc:datafield>
+		<marc:datafield tag="246" ind1="3" ind2=" ">
+			<marc:subfield code="a">Chopin :</marc:subfield>
+			<marc:subfield code="b">gold : the essential collection</marc:subfield>
+		</marc:datafield>
+		<marc:datafield tag="246" ind1="3" ind2=" ">
+			<marc:subfield code="a">Gold :</marc:subfield>
+			<marc:subfield code="b">Chopin : the essential collection</marc:subfield>
+		</marc:datafield>
+		<marc:datafield tag="260" ind1=" " ind2=" ">
+			<marc:subfield code="a">London :</marc:subfield>
+			<marc:subfield code="b">Chester Music,</marc:subfield>
+			<marc:subfield code="c">c2002.</marc:subfield>
+		</marc:datafield>
+		<marc:datafield tag="300" ind1=" " ind2=" ">
+			<marc:subfield code="a">96 p. of music ;</marc:subfield>
+			<marc:subfield code="c">31 cm.</marc:subfield>
+		</marc:datafield>
+		<marc:datafield tag="500" ind1=" " ind2=" ">
+			<marc:subfield code="a">26 pieces for piano, including 8 simplified arrangements and an arrangement of the second movement from Piano concerto no.1.</marc:subfield>
+		</marc:datafield>
+		<marc:datafield tag="500" ind1=" " ind2=" ">
+			<marc:subfield code="a">Arrangements by Jerry Lanning and Jack Long.</marc:subfield>
+		</marc:datafield>
+		<marc:datafield tag="500" ind1=" " ind2=" ">
+			<marc:subfield code="a">Includes biographical note.</marc:subfield>
+		</marc:datafield>
+		<marc:datafield tag="650" ind1=" " ind2="0">
+			<marc:subfield code="a">Piano music.</marc:subfield>
+		</marc:datafield>
+		<marc:datafield tag="650" ind1=" " ind2="0">
+			<marc:subfield code="a">Piano music</marc:subfield>
+			<marc:subfield code="v">Simplified editions.</marc:subfield>
+		</marc:datafield>
+		<marc:datafield tag="700" ind1="1" ind2=" ">
+			<marc:subfield code="a">Lanning, Jerry.</marc:subfield>
+		</marc:datafield>
+		<marc:datafield tag="700" ind1="1" ind2=" ">
+			<marc:subfield code="a">Long, Jack.</marc:subfield>
+		</marc:datafield>
+		<marc:datafield tag="700" ind1="1" ind2="2">
+			<marc:subfield code="a">Chopin, Frédéric,</marc:subfield>
+			<marc:subfield code="d">1810-1849.</marc:subfield>
+			<marc:subfield code="t">Concertos,</marc:subfield>
+			<marc:subfield code="m">piano, orchestra,</marc:subfield>
+			<marc:subfield code="n">no. 1, op. 11,</marc:subfield>
+			<marc:subfield code="r">E minor.</marc:subfield>
+			<marc:subfield code="p">Romance;</marc:subfield>
+			<marc:subfield code="o">arr.</marc:subfield>
+		</marc:datafield>
+		<marc:datafield tag="948" ind1="1" ind2=" ">
+			<marc:subfield code="a">20070525</marc:subfield>
+			<marc:subfield code="b">sf214</marc:subfield>
+			<marc:subfield code="c">ULMUS-h</marc:subfield>
+			<marc:subfield code="d">c</marc:subfield>
+		</marc:datafield>
+	</marc:record>
+	<marc:record>
+		<marc:leader>00726ccm a2200205 a 4500</marc:leader>
+		<marc:controlfield tag="001">2091114</marc:controlfield>
+		<marc:controlfield tag="005">20090122131312.0</marc:controlfield>
+		<marc:controlfield tag="008">890731s1988    enk||z  |||||||n    zxx| </marc:controlfield>
+		<marc:datafield tag="015" ind1=" " ind2=" ">
+			<marc:subfield code="a">mu8906626</marc:subfield>
+		</marc:datafield>
+		<marc:datafield tag="028" ind1="3" ind2="2">
+			<marc:subfield code="a">F 128</marc:subfield>
+		</marc:datafield>
+		<marc:datafield tag="035" ind1=" " ind2=" ">
+			<marc:subfield code="9">7777133268</marc:subfield>
+		</marc:datafield>
+		<marc:datafield tag="084" ind1=" " ind2=" ">
+			<marc:subfield code="a">SRPK/LFF</marc:subfield>
+			<marc:subfield code="2">bcmc</marc:subfield>
+		</marc:datafield>
+		<marc:datafield tag="100" ind1="1" ind2=" ">
+			<marc:subfield code="a">Elgar, Edward,</marc:subfield>
+			<marc:subfield code="d">1857-1934.</marc:subfield>
+		</marc:datafield>
+		<marc:datafield tag="240" ind1="1" ind2="0">
+			<marc:subfield code="a">Concertos,</marc:subfield>
+			<marc:subfield code="m">violoncello, orchestra,</marc:subfield>
+			<marc:subfield code="n">op. 85,</marc:subfield>
+			<marc:subfield code="r">E minor;</marc:subfield>
+			<marc:subfield code="o">arr.</marc:subfield>
+		</marc:datafield>
+		<marc:datafield tag="245" ind1="0" ind2="0">
+			<marc:subfield code="a">Cello concerto op. 85 /</marc:subfield>
+			<marc:subfield code="c">Edward Elgar ; arranged for cello and piano by the composer ; edited by Eirian Griffiths.</marc:subfield>
+		</marc:datafield>
+		<marc:datafield tag="260" ind1=" " ind2=" ">
+			<marc:subfield code="a">Corby :</marc:subfield>
+			<marc:subfield code="b">Fentone Music,</marc:subfield>
+			<marc:subfield code="c">c1988.</marc:subfield>
+		</marc:datafield>
+		<marc:datafield tag="300" ind1=" " ind2=" ">
+			<marc:subfield code="a">1 score (34p) +</marc:subfield>
+			<marc:subfield code="e">1 part ;</marc:subfield>
+			<marc:subfield code="c">31cm.</marc:subfield>
+		</marc:datafield>
+		<marc:datafield tag="599" ind1=" " ind2=" ">
+			<marc:subfield code="a">Item no. 4 in volume M370.a.95.63-</marc:subfield>
+		</marc:datafield>
+		<marc:datafield tag="650" ind1=" " ind2="0">
+			<marc:subfield code="a">Concertos (Violoncello)</marc:subfield>
+			<marc:subfield code="v">Solo with piano.</marc:subfield>
+		</marc:datafield>
+		<marc:datafield tag="700" ind1="1" ind2=" ">
+			<marc:subfield code="a">Griffiths, Eirian.</marc:subfield>
+		</marc:datafield>
+	</marc:record>
+	<marc:record>
+		<marc:leader>00861ccm a2200217 a 4500</marc:leader>
+		<marc:controlfield tag="001">2091109</marc:controlfield>
+		<marc:controlfield tag="005">20090122131310.0</marc:controlfield>
+		<marc:controlfield tag="008">020607s1986    enk||b  |||||||n    zxx|d</marc:controlfield>
+		<marc:datafield tag="035" ind1=" " ind2=" ">
+			<marc:subfield code="a">(CStRLIN)NYRY6191078-C</marc:subfield>
+		</marc:datafield>
+		<marc:datafield tag="035" ind1=" " ind2=" ">
+			<marc:subfield code="9">7777544535</marc:subfield>
+		</marc:datafield>
+		<marc:datafield tag="084" ind1=" " ind2=" ">
+			<marc:subfield code="a">MPSRF</marc:subfield>
+			<marc:subfield code="2">bcmc</marc:subfield>
+		</marc:datafield>
+		<marc:datafield tag="100" ind1="1" ind2=" ">
+			<marc:subfield code="a">Elgar, Edward,</marc:subfield>
+			<marc:subfield code="d">1857-1934.</marc:subfield>
+		</marc:datafield>
+		<marc:datafield tag="240" ind1="1" ind2="0">
+			<marc:subfield code="a">Concertos,</marc:subfield>
+			<marc:subfield code="m">violoncello, orchestra,</marc:subfield>
+			<marc:subfield code="n">op. 85,</marc:subfield>
+			<marc:subfield code="r">E minor</marc:subfield>
+		</marc:datafield>
+		<marc:datafield tag="245" ind1="0" ind2="0">
+			<marc:subfield code="a">Concerto for violoncello and orchestra, E minor =</marc:subfield>
+			<marc:subfield code="b">e-Moll = Mi mineur : op. 85 /</marc:subfield>
+			<marc:subfield code="c">Edward Elgar.</marc:subfield>
+		</marc:datafield>
+		<marc:datafield tag="260" ind1=" " ind2=" ">
+			<marc:subfield code="a">London :</marc:subfield>
+			<marc:subfield code="b">Ernst Eulenburg,</marc:subfield>
+			<marc:subfield code="c">c1986.</marc:subfield>
+		</marc:datafield>
+		<marc:datafield tag="300" ind1=" " ind2=" ">
+			<marc:subfield code="a">1 miniature score (x, 104p) :</marc:subfield>
+			<marc:subfield code="b">facsim ;</marc:subfield>
+			<marc:subfield code="c">19cm.</marc:subfield>
+		</marc:datafield>
+		<marc:datafield tag="500" ind1=" " ind2=" ">
+			<marc:subfield code="a">Preface in English by Diane McVeagh with German translation by Norbert Henning.</marc:subfield>
+		</marc:datafield>
+		<marc:datafield tag="500" ind1=" " ind2=" ">
+			<marc:subfield code="a">Publisher's no.: Edition Eulenburg no. 1814.</marc:subfield>
+		</marc:datafield>
+		<marc:datafield tag="599" ind1=" " ind2=" ">
+			<marc:subfield code="a">Item no. 2 in volume M310.d.95.431.</marc:subfield>
+		</marc:datafield>
+		<marc:datafield tag="650" ind1=" " ind2="0">
+			<marc:subfield code="a">Concertos (Violoncello)</marc:subfield>
+			<marc:subfield code="v">Scores.</marc:subfield>
+		</marc:datafield>
+		<marc:datafield tag="700" ind1="1" ind2=" ">
+			<marc:subfield code="a">McVeagh, Diana M.,</marc:subfield>
+			<marc:subfield code="d">1926-</marc:subfield>
+		</marc:datafield>
+	</marc:record>
+</marc:collection>
