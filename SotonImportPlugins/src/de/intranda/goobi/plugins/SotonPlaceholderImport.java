@@ -36,7 +36,7 @@ public class SotonPlaceholderImport implements IImportPlugin, IPlugin {
 
 	private static final String ID = "soton_placeholder";
 	private static final String NAME = "SOTON Placeholder Import";
-	private static final String VERSION = "1.1.20110303";
+	private static final String VERSION = "1.1.20110307";
 
 	private Prefs prefs;
 	private String data = "";
@@ -122,19 +122,19 @@ public class SotonPlaceholderImport implements IImportPlugin, IPlugin {
 
 	@Override
 	public List<Record> generateRecordsFromFile() {
-		return null;
+		return new ArrayList<Record>();
 	}
 
 	@Override
 	public List<Record> splitRecords(String records) {
-		return null;
+		return new ArrayList<Record>();
 	}
 
 	@Override
 	public List<String> splitIds(String ids) {
 		List<String> ret = new ArrayList<String>();
 
-		String[] idsSplit = ids.trim().split("[ ]");
+		String[] idsSplit = ids.trim().split("[\n]");
 		for (String id : idsSplit) {
 			if (StringUtils.isNotBlank(id)) {
 				ret.add(id.trim());
