@@ -422,7 +422,7 @@ public class SotonMarcImport implements IImportPlugin, IPlugin {
 			logger.error(e.getMessage(), e);
 		}
 
-		converter.setFile(new File("samples/marc21/single.mrc"));
+		converter.setFile(new File("samples/marc21-soton/test2.mrc"));
 		List<Record> records = converter.generateRecordsFromFile();
 
 		// converter.importFile = new File("samples/marc21/multiple_records.mrk");

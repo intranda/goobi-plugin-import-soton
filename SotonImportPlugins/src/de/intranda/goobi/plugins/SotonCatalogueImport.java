@@ -13,6 +13,8 @@ import java.util.regex.Pattern;
 
 import net.xeoh.plugins.base.annotations.PluginImplementation;
 
+import org.apache.commons.httpclient.HttpClient;
+import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.goobi.production.Import.Record;
@@ -27,6 +29,7 @@ import org.jdom.JDOMException;
 import org.jdom.input.SAXBuilder;
 import org.jdom.output.XMLOutputter;
 import org.jdom.transform.XSLTransformer;
+import org.jdom.xpath.XPath;
 
 import ugh.dl.DigitalDocument;
 import ugh.dl.DocStruct;
@@ -40,7 +43,6 @@ import ugh.exceptions.TypeNotAllowedForParentException;
 import ugh.exceptions.WriteException;
 import ugh.fileformats.mets.MetsMods;
 import de.intranda.goobi.plugins.utils.ModsUtils;
-import de.intranda.goobi.plugins.utils.Z3950Client;
 import de.sub.goobi.Import.ImportOpac;
 import de.sub.goobi.config.ConfigMain;
 
@@ -87,11 +89,11 @@ public class SotonCatalogueImport implements IImportPlugin, IPlugin {
 		Document doc;
 		try {
 			String id1 = data;
-			// TODO CGI query
-			String id2 = "";
-			
-			Z3950Client zClient = new Z3950Client("URL", "PORT", "DATABASE", "idpass ," + "NAME" + " , ," + "PASS");
-			String marc = zClient.query("@attrset bib-1 @attr 1=" + id2 + " \"" + "\"", "usmarc");
+			String marc = fetchRecord("http://pdf.library.soton.ac.uk/example_output.html");
+			marc = extractMarcFromHtml(marc);
+
+			// Z3950Client zClient = new Z3950Client("URL", "PORT", "DATABASE", "idpass ," + "NAME" + " , ," + "PASS");
+			// String marc = zClient.query("@attrset bib-1 @attr 1=" + id2 + " \"" + "\"", "usmarc");
 
 			data = convertTextToMarcXml(marc);
 
@@ -336,6 +338,40 @@ public class SotonCatalogueImport implements IImportPlugin, IPlugin {
 		}
 
 		return null;
+	}
+
+	private String extractMarcFromHtml(String html) throws JDOMException, IOException {
+		Document doc = new SAXBuilder().build(new StringReader(html));
+		if (doc != null && doc.hasRootElement()) {
+			logger.debug(html);
+			XPath xp = XPath.newInstance("/p");
+			Element eleP = (Element) xp.selectSingleNode(doc);
+			return eleP.getText();
+		}
+
+		return null;
+	}
+
+	private String fetchRecord(String url) {
+		String ret = null;
+
+		if (StringUtils.isNotEmpty(url)) {
+			HttpClient client = new HttpClient();
+			GetMethod method = null;
+			try {
+				method = new GetMethod(url);
+				client.executeMethod(method);
+				ret = method.getResponseBodyAsString();
+			} catch (Exception e) {
+				logger.error(e.getMessage(), e);
+			} finally {
+				if (method != null) {
+					method.releaseConnection();
+				}
+			}
+		}
+
+		return ret;
 	}
 
 	public static void main(String[] args) {
