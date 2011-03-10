@@ -1,15 +1,17 @@
 package de.intranda.goobi.plugins;
 
 import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import net.xeoh.plugins.base.annotations.PluginImplementation;
 
@@ -27,9 +29,12 @@ import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.JDOMException;
 import org.jdom.input.SAXBuilder;
-import org.jdom.output.XMLOutputter;
 import org.jdom.transform.XSLTransformer;
-import org.jdom.xpath.XPath;
+import org.marc4j.MarcException;
+import org.marc4j.MarcReader;
+import org.marc4j.MarcStreamReader;
+import org.marc4j.MarcXmlWriter;
+import org.marc4j.converter.impl.AnselToUnicode;
 
 import ugh.dl.DigitalDocument;
 import ugh.dl.DocStruct;
@@ -54,7 +59,7 @@ public class SotonCatalogueImport implements IImportPlugin, IPlugin {
 
 	private static final String ID = "soton_catalogue";
 	private static final String NAME = "SOTON Catalogue Import";
-	private static final String VERSION = "1.0.201103XX";
+	private static final String VERSION = "1.0.20110310";
 	private static final String XSLT_PATH = ConfigMain.getParameter("xsltFolder") + "MARC21slim2MODS3.xsl";
 
 	private Prefs prefs;
@@ -88,15 +93,14 @@ public class SotonCatalogueImport implements IImportPlugin, IPlugin {
 		Fileformat ff = null;
 		Document doc;
 		try {
-			String id1 = data;
-			String marc = fetchRecord("http://pdf.library.soton.ac.uk/example_output.html");
+			// String marc = fetchRecord("http://pdf.library.soton.ac.uk/example_output.html");
+			String marc = fetchRecord("http://lms.soton.ac.uk/cgi-bin/goobi_marc.cgi?itemid=" + data);
+			if (marc.toLowerCase().contains("barcode not found")) {
+				return null;
+			}
 			marc = extractMarcFromHtml(marc);
-
-			// Z3950Client zClient = new Z3950Client("URL", "PORT", "DATABASE", "idpass ," + "NAME" + " , ," + "PASS");
-			// String marc = zClient.query("@attrset bib-1 @attr 1=" + id2 + " \"" + "\"", "usmarc");
-
-			data = convertTextToMarcXml(marc);
-
+			data = convertToMarcXml(marc);
+			logger.debug(data);
 			doc = new SAXBuilder().build(new StringReader(data));
 			if (doc != null && doc.hasRootElement()) {
 				XSLTransformer transformer = new XSLTransformer(XSLT_PATH);
@@ -281,72 +285,80 @@ public class SotonCatalogueImport implements IImportPlugin, IPlugin {
 		return ID;
 	}
 
-	/**
-	 * 
-	 * @param text
-	 * @return
-	 * @throws IOException
-	 */
-	private String convertTextToMarcXml(String text) throws IOException {
-		if (StringUtils.isNotEmpty(text)) {
-			Document doc = new Document();
-			text = text.replace((char) 0x1E, ' ');
-			BufferedReader reader = new BufferedReader(new StringReader(text));
-			Element eleRoot = new Element("collection");
-			doc.setRootElement(eleRoot);
-			Element eleRecord = new Element("record");
-			eleRoot.addContent(eleRecord);
-			String str;
-			while ((str = reader.readLine()) != null) {
-				if (str.toUpperCase().startsWith("=LDR")) {
-					// Leader
-					Element eleLeader = new Element("leader");
-					eleLeader.setText(str.substring(7));
-					eleRecord.addContent(eleLeader);
-				} else if (str.length() > 2) {
-					String tag = str.substring(1, 4);
-					if (tag.startsWith("00") && str.length() > 6) {
-						// Control field
-						str = str.substring(6);
-						Element eleControlField = new Element("controlfield");
-						eleControlField.setAttribute("tag", tag);
-						eleControlField.addContent(str);
-						eleRecord.addContent(eleControlField);
-					} else if (str.length() > 6) {
-						// Data field
-						String ind1 = str.substring(6, 7);
-						String ind2 = str.substring(7, 8);
-						str = str.substring(8);
-						Element eleDataField = new Element("datafield");
-						eleDataField.setAttribute("tag", tag);
-						eleDataField.setAttribute("ind1", !ind1.equals("\\") ? ind1 : "");
-						eleDataField.setAttribute("ind2", !ind2.equals("\\") ? ind2 : "");
-						Pattern p = Pattern.compile("[$]+[^$]+");
-						Matcher m = p.matcher(str);
-						while (m.find()) {
-							String sub = str.substring(m.start(), m.end());
-							Element eleSubField = new Element("subfield");
-							eleSubField.setAttribute("code", sub.substring(1, 2));
-							eleSubField.addContent(sub.substring(2));
-							eleDataField.addContent(eleSubField);
-						}
-						eleRecord.addContent(eleDataField);
-					}
+	private String convertToMarcXml(String marc) {
+		String ret = null;
+		InputStream input = null;
+		try {
+			input = new ByteArrayInputStream(marc.getBytes("iso8859-1"));
+			MarcReader reader = new MarcStreamReader(input);
+			while (reader.hasNext()) {
+				try {
+					org.marc4j.marc.Record marcRecord = (org.marc4j.marc.Record) reader.next();
+					ByteArrayOutputStream out = new ByteArrayOutputStream();
+					MarcXmlWriter writer = new MarcXmlWriter(out, "utf-8", true);
+					writer.setConverter(new AnselToUnicode());
+					writer.write(marcRecord);
+					writer.close();
+					ret = out.toString();
+					out.close();
+				} catch (MarcException e) {
+					logger.error(e.getMessage());
 				}
 			}
-			return new XMLOutputter().outputString(doc);
+		} catch (FileNotFoundException e) {
+			logger.error(e.getMessage(), e);
+		} catch (IOException e) {
+			logger.error(e.getMessage(), e);
+		} finally {
+			if (input != null) {
+				try {
+					input.close();
+				} catch (IOException e) {
+					logger.error(e.getMessage(), e);
+				}
+			}
 		}
 
-		return null;
+		return ret;
 	}
 
 	private String extractMarcFromHtml(String html) throws JDOMException, IOException {
-		Document doc = new SAXBuilder().build(new StringReader(html));
-		if (doc != null && doc.hasRootElement()) {
-			logger.debug(html);
-			XPath xp = XPath.newInstance("/p");
-			Element eleP = (Element) xp.selectSingleNode(doc);
-			return eleP.getText();
+		BufferedReader inputStream = new BufferedReader(new StringReader(html));
+		String l;
+		try {
+			int line = 0;
+			while ((l = inputStream.readLine()) != null) {
+				if (line == 2) {
+					l = l.substring(1, l.length());
+					l += "\n";
+
+					// BufferedReader inputStream2 = new BufferedReader(new StringReader(l));
+					// StringBuffer buffer = new StringBuffer();
+					// int ch;
+					// while ((ch = inputStream2.read()) != -1) {
+					// if (ch == 13) {
+					// buffer.append("[\\r]");
+					// } else if (ch == 10) {
+					// buffer.append("[\\n]\"");
+					// buffer.insert(0, "\"");
+					// logger.debug(buffer.toString());
+					// buffer.setLength(0);
+					// } else if ((ch < 32) || (ch > 127)) {
+					// buffer.append("[0x");
+					// buffer.append(Integer.toHexString(ch));
+					// buffer.append("]");
+					// } else {
+					// buffer.append((char) ch);
+					// }
+					// }
+
+					return l;
+				}
+				line++;
+			}
+			inputStream.close();
+		} catch (IOException e) {
+			logger.error(e.getMessage(), e);
 		}
 
 		return null;
@@ -384,7 +396,7 @@ public class SotonCatalogueImport implements IImportPlugin, IPlugin {
 		}
 
 		List<Record> records = new ArrayList<Record>();
-		List<String> ids = converter.splitIds("a1 a2  a3");
+		List<String> ids = converter.splitIds("00044167 00040558 00043679 00083328 00110330");
 		for (String id : ids) {
 			Record r = new Record();
 			r.setData(id);
@@ -398,7 +410,7 @@ public class SotonCatalogueImport implements IImportPlugin, IPlugin {
 			converter.data = record.getData();
 			Fileformat ff = converter.convertData();
 			try {
-				ff.write("c:/" + converter.importFile.getName().replace(".mrc", "") + "_" + counter + ".xml");
+				ff.write("c:/" + record.getId() + ".xml");
 			} catch (WriteException e) {
 				e.printStackTrace();
 			} catch (PreferencesException e) {

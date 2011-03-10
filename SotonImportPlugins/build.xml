@@ -21,8 +21,8 @@
 		<echo>generate jar file</echo>
 		<jar destfile="${jarfile-cambridge}">
 			<fileset dir="bin" excludes="**/Soton*" />
+	        <fileset dir="lib" includes="marc4j.jar" />
 			<fileset dir="resources" includes="**/*.xsl" />
-			<fileset dir="lib" includes="marc4j.jar" />
 		</jar>
 	</target>
 
@@ -34,8 +34,8 @@
 		<echo>generate jar file</echo>
 		<jar destfile="${jarfile-soton}">
 			<fileset dir="bin" excludes="**/Cam*" />
+	        <fileset dir="lib" includes="marc4j.jar" />
 			<fileset dir="resources" includes="**/*.xsl" />
-			<fileset dir="lib" includes="marc4j.jar, ki-*.jar, a2jruntime.jar" />
 		</jar>
 	</target>
 
