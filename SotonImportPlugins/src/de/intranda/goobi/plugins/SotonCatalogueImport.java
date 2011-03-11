@@ -41,13 +41,11 @@ import ugh.dl.DigitalDocument;
 import ugh.dl.DocStruct;
 import ugh.dl.Fileformat;
 import ugh.dl.Prefs;
-import ugh.exceptions.MetadataTypeNotAllowedException;
 import ugh.exceptions.PreferencesException;
 import ugh.exceptions.TypeNotAllowedForParentException;
 import ugh.exceptions.WriteException;
 import ugh.fileformats.mets.MetsMods;
 import de.intranda.goobi.plugins.utils.ModsUtils;
-import de.sub.goobi.Import.ImportOpac;
 import de.sub.goobi.config.ConfigMain;
 
 @PluginImplementation
@@ -67,8 +65,6 @@ public class SotonCatalogueImport implements IImportPlugin, IPlugin {
 	private String importFolder = "C:/Goobi/";
 	private Map<String, String> map = new HashMap<String, String>();
 	private String currentIdentifier;
-	private String currentTitle;
-	private String currentAuthor;
 
 	public SotonCatalogueImport() {
 		map.put("?monographic", "Monograph");
@@ -98,9 +94,9 @@ public class SotonCatalogueImport implements IImportPlugin, IPlugin {
 				return null;
 			}
 			marc = extractMarcFromHtml(marc);
-			data = convertToMarcXml(marc);
-			logger.debug(data);
-			doc = new SAXBuilder().build(new StringReader(data));
+			marc = convertToMarcXml(marc);
+			logger.debug(marc);
+			doc = new SAXBuilder().build(new StringReader(marc));
 			if (doc != null && doc.hasRootElement()) {
 				XSLTransformer transformer = new XSLTransformer(XSLT_PATH);
 				Document docMods = transformer.transform(doc);
@@ -137,9 +133,7 @@ public class SotonCatalogueImport implements IImportPlugin, IPlugin {
 
 				// Collect MODS metadata
 				ModsUtils.parseModsSection(prefs, dsRoot, dsBoundBook, eleMods);
-				currentIdentifier = ModsUtils.getIdentifier(prefs, dsRoot);
-				currentTitle = ModsUtils.getTitle(prefs, dsRoot);
-				currentAuthor = ModsUtils.getAuthor(prefs, dsRoot);
+				currentIdentifier = data;
 			}
 		} catch (JDOMException e) {
 			logger.error(e.getMessage(), e);
@@ -148,8 +142,6 @@ public class SotonCatalogueImport implements IImportPlugin, IPlugin {
 		} catch (PreferencesException e) {
 			logger.error(e.getMessage(), e);
 		} catch (TypeNotAllowedForParentException e) {
-			logger.error(e.getMessage(), e);
-		} catch (MetadataTypeNotAllowedException e) {
 			logger.error(e.getMessage(), e);
 		}
 
@@ -212,10 +204,6 @@ public class SotonCatalogueImport implements IImportPlugin, IPlugin {
 
 	@Override
 	public String getProcessTitle() {
-		if (StringUtils.isNotBlank(currentTitle)) {
-			return new ImportOpac().createAtstsl(currentTitle, currentAuthor).toLowerCase() + "_" + currentIdentifier + ".xml";
-		}
-
 		return currentIdentifier + ".xml";
 	}
 
