@@ -26,6 +26,7 @@ import ugh.exceptions.PreferencesException;
 import ugh.exceptions.TypeNotAllowedForParentException;
 import ugh.exceptions.WriteException;
 import ugh.fileformats.mets.MetsMods;
+import de.intranda.goobi.plugins.utils.ModsUtils;
 import de.sub.goobi.Import.ImportOpac;
 
 @PluginImplementation
@@ -67,18 +68,7 @@ public class SotonPlaceholderImport implements IImportPlugin, IPlugin {
 			DocStruct dsBoundBook = dd.createDocStruct(prefs.getDocStrctTypeByName("BoundBook"));
 			dd.setPhysicalDocStruct(dsBoundBook);
 
-			MetadataType mdTypeId = prefs.getMetadataTypeByName("CatalogIDDigital");
-			Metadata mdId = new Metadata(mdTypeId);
-			dsRoot.addMetadata(mdId);
-			if (StringUtils.isNotEmpty(data)) {
-				mdId.setValue(data);
-				currentIdentifier = data;
-			} else {
-				// Add a timestamp as identifer if the record still has none
-				mdId.setValue(String.valueOf(System.currentTimeMillis()));
-				currentIdentifier = mdId.getValue();
-			}
-
+			currentIdentifier = ModsUtils.getIdentifier(prefs, dsRoot);
 		} catch (PreferencesException e) {
 			logger.error(e.getMessage(), e);
 		} catch (TypeNotAllowedForParentException e) {

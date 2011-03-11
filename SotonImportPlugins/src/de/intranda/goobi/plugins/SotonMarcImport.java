@@ -42,6 +42,7 @@ import ugh.dl.DocStruct;
 import ugh.dl.Fileformat;
 import ugh.dl.Metadata;
 import ugh.dl.MetadataType;
+import ugh.dl.Person;
 import ugh.dl.Prefs;
 import ugh.exceptions.MetadataTypeNotAllowedException;
 import ugh.exceptions.PreferencesException;
@@ -136,25 +137,9 @@ public class SotonMarcImport implements IImportPlugin, IPlugin {
 
 				// Collect MODS metadata
 				ModsUtils.parseModsSection(prefs, dsRoot, dsBoundBook, eleMods);
-
-				// Set current identifier, or add a timestamp as identifer if the record still has none
-				MetadataType mdTypeId = prefs.getMetadataTypeByName("CatalogIDDigital");
-				if (!dsRoot.getAllMetadataByType(mdTypeId).isEmpty()) {
-					Metadata mdId = dsRoot.getAllMetadataByType(mdTypeId).get(0);
-					currentIdentifier = mdId.getValue();
-				} else {
-					Metadata mdId = new Metadata(mdTypeId);
-					dsRoot.addMetadata(mdId);
-					mdId.setValue(String.valueOf(System.currentTimeMillis()));
-					currentIdentifier = mdId.getValue();
-				}
-
-				// Set current title
-				MetadataType mdTypeTitle = prefs.getMetadataTypeByName("TitleDocMain");
-				if (!dsRoot.getAllMetadataByType(mdTypeTitle).isEmpty()) {
-					Metadata mdTitle = dsRoot.getAllMetadataByType(mdTypeId).get(0);
-					currentTitle = mdTitle.getValue();
-				}
+				currentIdentifier = ModsUtils.getIdentifier(prefs, dsRoot);
+				currentTitle = ModsUtils.getTitle(prefs, dsRoot);
+				currentAuthor =  ModsUtils.getAuthor(prefs, dsRoot);
 			}
 		} catch (JDOMException e) {
 			logger.error(e.getMessage(), e);

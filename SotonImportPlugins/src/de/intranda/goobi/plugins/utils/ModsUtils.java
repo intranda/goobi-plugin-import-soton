@@ -6,8 +6,10 @@ import org.jdom.Element;
 
 import ugh.dl.DocStruct;
 import ugh.dl.Metadata;
+import ugh.dl.MetadataType;
 import ugh.dl.Person;
 import ugh.dl.Prefs;
+import ugh.exceptions.DocStructHasNoTypeException;
 import ugh.exceptions.MetadataTypeNotAllowedException;
 
 public class ModsUtils {
@@ -129,6 +131,10 @@ public class ModsUtils {
 								dsLogical.addMetadata(metadata);
 								metadata.setValue(ele.getTextTrim());
 							}
+						} else if (ele.getName().equals("dateCreated")) {
+							Metadata metadata = new Metadata(prefs.getMetadataTypeByName("PublicationYear"));
+							dsLogical.addMetadata(metadata);
+							metadata.setValue(ele.getTextTrim());
 						}
 					}
 				} else if (eleMeta.getName().equals("language")) {
@@ -177,5 +183,76 @@ public class ModsUtils {
 				logger.warn(e.getMessage());
 			}
 		}
+	}
+
+	/**
+	 * Returns the document's identifier, or a timestamp if the record has none
+	 * 
+	 * @param prefs
+	 * @param ds
+	 * @return
+	 * @throws MetadataTypeNotAllowedException
+	 * @throws DocStructHasNoTypeException
+	 */
+	public static String getIdentifier(Prefs prefs, DocStruct ds) throws MetadataTypeNotAllowedException, DocStructHasNoTypeException {
+		String ret = null;
+
+		MetadataType mdTypeId = prefs.getMetadataTypeByName("CatalogIDDigital");
+		if (!ds.getAllMetadataByType(mdTypeId).isEmpty()) {
+			Metadata mdId = ds.getAllMetadataByType(mdTypeId).get(0);
+			ret = mdId.getValue();
+		} else {
+			Metadata mdId = new Metadata(mdTypeId);
+			ds.addMetadata(mdId);
+			mdId.setValue(String.valueOf(System.currentTimeMillis()));
+			ret = mdId.getValue();
+		}
+
+		return ret;
+	}
+
+	/**
+	 * Returns the document's title.
+	 * 
+	 * @param prefs
+	 * @param ds
+	 * @return
+	 * @throws MetadataTypeNotAllowedException
+	 * @throws DocStructHasNoTypeException
+	 */
+	public static String getTitle(Prefs prefs, DocStruct ds) throws MetadataTypeNotAllowedException, DocStructHasNoTypeException {
+		String ret = null;
+
+		MetadataType mdTypeTitle = prefs.getMetadataTypeByName("TitleDocMain");
+		if (!ds.getAllMetadataByType(mdTypeTitle).isEmpty()) {
+			Metadata mdTitle = ds.getAllMetadataByType(mdTypeTitle).get(0);
+			ret = mdTitle.getValue();
+		}
+
+		return ret;
+	}
+
+	/**
+	 * Returns the document's author.
+	 * 
+	 * @param prefs
+	 * @param ds
+	 * @return
+	 * @throws MetadataTypeNotAllowedException
+	 * @throws DocStructHasNoTypeException
+	 */
+	public static String getAuthor(Prefs prefs, DocStruct ds) throws MetadataTypeNotAllowedException, DocStructHasNoTypeException {
+		String ret = null;
+
+		MetadataType mdTypePerson = prefs.getMetadataTypeByName("Author");
+		if (!ds.getAllPersonsByType(mdTypePerson).isEmpty()) {
+			Person personAuthor = ds.getAllPersonsByType(mdTypePerson).get(0);
+			ret = personAuthor.getLastname();
+			if (StringUtils.isNotEmpty(personAuthor.getFirstname())) {
+				ret += ", " + personAuthor.getFirstname();
+			}
+		}
+
+		return ret;
 	}
 }

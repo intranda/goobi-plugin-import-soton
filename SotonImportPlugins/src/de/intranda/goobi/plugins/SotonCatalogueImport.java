@@ -29,6 +29,7 @@ import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.JDOMException;
 import org.jdom.input.SAXBuilder;
+import org.jdom.output.XMLOutputter;
 import org.jdom.transform.XSLTransformer;
 import org.marc4j.MarcException;
 import org.marc4j.MarcReader;
@@ -39,8 +40,6 @@ import org.marc4j.converter.impl.AnselToUnicode;
 import ugh.dl.DigitalDocument;
 import ugh.dl.DocStruct;
 import ugh.dl.Fileformat;
-import ugh.dl.Metadata;
-import ugh.dl.MetadataType;
 import ugh.dl.Prefs;
 import ugh.exceptions.MetadataTypeNotAllowedException;
 import ugh.exceptions.PreferencesException;
@@ -59,7 +58,7 @@ public class SotonCatalogueImport implements IImportPlugin, IPlugin {
 
 	private static final String ID = "soton_catalogue";
 	private static final String NAME = "SOTON Catalogue Import";
-	private static final String VERSION = "1.0.20110310";
+	private static final String VERSION = "1.0.20110311";
 	private static final String XSLT_PATH = ConfigMain.getParameter("xsltFolder") + "MARC21slim2MODS3.xsl";
 
 	private Prefs prefs;
@@ -105,7 +104,7 @@ public class SotonCatalogueImport implements IImportPlugin, IPlugin {
 			if (doc != null && doc.hasRootElement()) {
 				XSLTransformer transformer = new XSLTransformer(XSLT_PATH);
 				Document docMods = transformer.transform(doc);
-				// logger.debug(new XMLOutputter().outputString(docMods));
+				 logger.debug(new XMLOutputter().outputString(docMods));
 
 				ff = new MetsMods(prefs);
 				DigitalDocument dd = new DigitalDocument();
@@ -138,25 +137,9 @@ public class SotonCatalogueImport implements IImportPlugin, IPlugin {
 
 				// Collect MODS metadata
 				ModsUtils.parseModsSection(prefs, dsRoot, dsBoundBook, eleMods);
-
-				// Set current identifier, or add a timestamp as identifer if the record still has none
-				MetadataType mdTypeId = prefs.getMetadataTypeByName("CatalogIDDigital");
-				if (!dsRoot.getAllMetadataByType(mdTypeId).isEmpty()) {
-					Metadata mdId = dsRoot.getAllMetadataByType(mdTypeId).get(0);
-					currentIdentifier = mdId.getValue();
-				} else {
-					Metadata mdId = new Metadata(mdTypeId);
-					dsRoot.addMetadata(mdId);
-					mdId.setValue(String.valueOf(System.currentTimeMillis()));
-					currentIdentifier = mdId.getValue();
-				}
-
-				// Set current title
-				MetadataType mdTypeTitle = prefs.getMetadataTypeByName("TitleDocMain");
-				if (!dsRoot.getAllMetadataByType(mdTypeTitle).isEmpty()) {
-					Metadata mdTitle = dsRoot.getAllMetadataByType(mdTypeId).get(0);
-					currentTitle = mdTitle.getValue();
-				}
+				currentIdentifier = ModsUtils.getIdentifier(prefs, dsRoot);
+				currentTitle = ModsUtils.getTitle(prefs, dsRoot);
+				currentAuthor =  ModsUtils.getAuthor(prefs, dsRoot);
 			}
 		} catch (JDOMException e) {
 			logger.error(e.getMessage(), e);
