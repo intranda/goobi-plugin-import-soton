@@ -104,7 +104,7 @@ public class SotonCatalogueImport implements IImportPlugin, IPlugin {
 			if (doc != null && doc.hasRootElement()) {
 				XSLTransformer transformer = new XSLTransformer(XSLT_PATH);
 				Document docMods = transformer.transform(doc);
-				 logger.debug(new XMLOutputter().outputString(docMods));
+				logger.debug(new XMLOutputter().outputString(docMods));
 
 				ff = new MetsMods(prefs);
 				DigitalDocument dd = new DigitalDocument();
@@ -139,7 +139,7 @@ public class SotonCatalogueImport implements IImportPlugin, IPlugin {
 				ModsUtils.parseModsSection(prefs, dsRoot, dsBoundBook, eleMods);
 				currentIdentifier = ModsUtils.getIdentifier(prefs, dsRoot);
 				currentTitle = ModsUtils.getTitle(prefs, dsRoot);
-				currentAuthor =  ModsUtils.getAuthor(prefs, dsRoot);
+				currentAuthor = ModsUtils.getAuthor(prefs, dsRoot);
 			}
 		} catch (JDOMException e) {
 			logger.error(e.getMessage(), e);
@@ -379,7 +379,7 @@ public class SotonCatalogueImport implements IImportPlugin, IPlugin {
 		}
 
 		List<Record> records = new ArrayList<Record>();
-		List<String> ids = converter.splitIds("00044167 00040558 00043679 00083328 00110330");
+		List<String> ids = converter.splitIds("00000000 00044167 00040558 00043679 00083328 00110330");
 		for (String id : ids) {
 			Record r = new Record();
 			r.setData(id);
@@ -392,12 +392,14 @@ public class SotonCatalogueImport implements IImportPlugin, IPlugin {
 			logger.debug(counter + ":\n" + record.getData());
 			converter.data = record.getData();
 			Fileformat ff = converter.convertData();
-			try {
-				ff.write("c:/" + record.getId() + ".xml");
-			} catch (WriteException e) {
-				e.printStackTrace();
-			} catch (PreferencesException e) {
-				e.printStackTrace();
+			if (ff != null) {
+				try {
+					ff.write("c:/" + record.getId() + ".xml");
+				} catch (WriteException e) {
+					e.printStackTrace();
+				} catch (PreferencesException e) {
+					e.printStackTrace();
+				}
 			}
 			counter++;
 		}
