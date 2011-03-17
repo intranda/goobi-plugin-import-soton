@@ -56,7 +56,7 @@ public class SotonCatalogueImport implements IImportPlugin, IPlugin {
 
 	private static final String ID = "soton_catalogue";
 	private static final String NAME = "SOTON Catalogue Import";
-	private static final String VERSION = "1.0.20110311";
+	private static final String VERSION = "1.0.20110317";
 	private static final String XSLT_PATH = ConfigMain.getParameter("xsltFolder") + "MARC21slim2MODS3.xsl";
 
 	private Prefs prefs;
@@ -90,7 +90,7 @@ public class SotonCatalogueImport implements IImportPlugin, IPlugin {
 		try {
 			// String marc = fetchRecord("http://pdf.library.soton.ac.uk/example_output.html");
 			String marc = fetchRecord("http://lms.soton.ac.uk/cgi-bin/goobi_marc.cgi?itemid=" + data);
-			if (marc.toLowerCase().contains("barcode not found")) {
+			if (StringUtils.isEmpty(marc) || marc.toLowerCase().contains("barcode not found")) {
 				return null;
 			}
 			marc = extractMarcFromHtml(marc);
@@ -192,7 +192,8 @@ public class SotonCatalogueImport implements IImportPlugin, IPlugin {
 	public List<String> splitIds(String ids) {
 		List<String> ret = new ArrayList<String>();
 
-		String[] idsSplit = ids.trim().split("[ ]");
+		// String[] idsSplit = ids.trim().split("[ ]");
+		String[] idsSplit = ids.trim().split("[\n]");
 		for (String id : idsSplit) {
 			if (StringUtils.isNotBlank(id)) {
 				ret.add(id.trim());
@@ -336,7 +337,7 @@ public class SotonCatalogueImport implements IImportPlugin, IPlugin {
 	}
 
 	private String fetchRecord(String url) {
-		String ret = null;
+		String ret = "";
 
 		if (StringUtils.isNotEmpty(url)) {
 			HttpClient client = new HttpClient();
