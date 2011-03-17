@@ -193,7 +193,7 @@ public class SotonCatalogueImport implements IImportPlugin, IPlugin {
 		List<String> ret = new ArrayList<String>();
 
 		// String[] idsSplit = ids.trim().split("[ ]");
-		String[] idsSplit = ids.trim().split("[\n]");
+		String[] idsSplit = ids.trim().split("[\r\n]");
 		for (String id : idsSplit) {
 			if (StringUtils.isNotBlank(id)) {
 				ret.add(id.trim());
@@ -368,7 +368,7 @@ public class SotonCatalogueImport implements IImportPlugin, IPlugin {
 		}
 
 		List<Record> records = new ArrayList<Record>();
-		List<String> ids = converter.splitIds("00000000 00044167 00040558 00043679 00083328 00110330");
+		List<String> ids = converter.splitIds("00000000\r\n00044167\r\n00040558\r\n00043679\r\n00083328\r\n00110330");
 		for (String id : ids) {
 			Record r = new Record();
 			r.setData(id);
