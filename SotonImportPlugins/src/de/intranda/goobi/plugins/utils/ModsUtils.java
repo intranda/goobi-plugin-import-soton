@@ -170,10 +170,12 @@ public class ModsUtils {
 						Element ele = (Element) obj;
 						if (ele.getName().equals("physicalLocation")) {
 							Metadata metadata = new Metadata(prefs.getMetadataTypeByName("physicallocation"));
+							dsLogical.addMetadata(metadata);
 							dsPhysical.addMetadata(metadata);
 							metadata.setValue(ele.getTextTrim());
 						} else if (ele.getName().equals("shelfLocation")) {
 							Metadata metadata = new Metadata(prefs.getMetadataTypeByName("shelfmarksource"));
+							dsLogical.addMetadata(metadata);
 							dsPhysical.addMetadata(metadata);
 							metadata.setValue(ele.getTextTrim());
 						}
@@ -198,7 +200,7 @@ public class ModsUtils {
 		String ret = null;
 
 		MetadataType mdTypeId = prefs.getMetadataTypeByName("CatalogIDDigital");
-		if (!ds.getAllMetadataByType(mdTypeId).isEmpty()) {
+		if (ds.getAllMetadataByType(mdTypeId) != null && !ds.getAllMetadataByType(mdTypeId).isEmpty()) {
 			Metadata mdId = ds.getAllMetadataByType(mdTypeId).get(0);
 			ret = mdId.getValue();
 		} else {
@@ -224,7 +226,7 @@ public class ModsUtils {
 		String ret = null;
 
 		MetadataType mdTypeTitle = prefs.getMetadataTypeByName("TitleDocMain");
-		if (!ds.getAllMetadataByType(mdTypeTitle).isEmpty()) {
+		if (ds.getAllMetadataByType(mdTypeTitle) != null && !ds.getAllMetadataByType(mdTypeTitle).isEmpty()) {
 			Metadata mdTitle = ds.getAllMetadataByType(mdTypeTitle).get(0);
 			ret = mdTitle.getValue();
 		}
@@ -245,7 +247,7 @@ public class ModsUtils {
 		String ret = null;
 
 		MetadataType mdTypePerson = prefs.getMetadataTypeByName("Author");
-		if (!ds.getAllPersonsByType(mdTypePerson).isEmpty()) {
+		if (ds.getAllPersonsByType(mdTypePerson) != null && !ds.getAllPersonsByType(mdTypePerson).isEmpty()) {
 			Person personAuthor = ds.getAllPersonsByType(mdTypePerson).get(0);
 			ret = personAuthor.getLastname();
 			if (StringUtils.isNotEmpty(personAuthor.getFirstname())) {

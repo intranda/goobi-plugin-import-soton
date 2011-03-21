@@ -602,6 +602,8 @@
     <metadata num="*">FormatSourcePrint</metadata>
     <metadata num="1o">PlaceOfPublication</metadata>
     <metadata num="*">TitleDocParallel</metadata>
+    <metadata num="1o">shelfmarksource</metadata>
+    <metadata num="1o">physicallocation</metadata>
   </DocStrctType>
   <DocStrctType>
     <Name>Appendix</Name>
@@ -1131,6 +1133,8 @@
     <metadata num="1o">_purl</metadata>
     <metadata num="*" DefaultDisplay="true">PlaceOfPublication</metadata>
     <metadata num="*" DefaultDisplay="true">TitleDocParallel</metadata>
+    <metadata num="1o">shelfmarksource</metadata>
+    <metadata num="1o">physicallocation</metadata>
   </DocStrctType>
   <DocStrctType>
     <Name>ContainedWork</Name>
@@ -1480,6 +1484,8 @@
     <metadata num="*">FormatSourcePrint</metadata>
     <metadata num="1o">_purl</metadata>
     <metadata num="1o">PlaceOfPublication</metadata>
+    <metadata num="1o">shelfmarksource</metadata>
+    <metadata num="1o">physicallocation</metadata>
   </DocStrctType>
   <DocStrctType>
     <Name>Obituary</Name>

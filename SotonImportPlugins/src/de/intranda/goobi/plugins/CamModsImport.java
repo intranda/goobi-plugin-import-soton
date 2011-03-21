@@ -29,6 +29,7 @@ import ugh.dl.DocStruct;
 import ugh.dl.Fileformat;
 import ugh.dl.Metadata;
 import ugh.dl.Prefs;
+import ugh.exceptions.DocStructHasNoTypeException;
 import ugh.exceptions.MetadataTypeNotAllowedException;
 import ugh.exceptions.PreferencesException;
 import ugh.exceptions.TypeNotAllowedAsChildException;
@@ -46,7 +47,7 @@ public class CamModsImport implements IImportPlugin, IPlugin {
 
 	private static final String ID = "cam_mods";
 	private static final String NAME = "Cambridge MODS Import";
-	private static final String VERSION = "1.0.20110303";
+	private static final String VERSION = "1.0.20110321";
 
 	private Prefs prefs;
 	private String data = "";
@@ -128,6 +129,17 @@ public class CamModsImport implements IImportPlugin, IPlugin {
 					Metadata mdId = new Metadata(prefs.getMetadataTypeByName("CatalogIDDigital"));
 					mdId.setValue(currentIdentifier + "_0001");
 					dsVolume.addMetadata(mdId);
+				}
+				
+				// Add 'pathimagefiles'
+				try {
+					Metadata mdForPath = new Metadata(prefs.getMetadataTypeByName("pathimagefiles"));
+					mdForPath.setValue("./" + currentIdentifier);
+					dsBoundBook.addMetadata(mdForPath);
+				} catch (MetadataTypeNotAllowedException e1) {
+					logger.error("MetadataTypeNotAllowedException while reading images", e1);
+				} catch (DocStructHasNoTypeException e1) {
+					logger.error("DocStructHasNoTypeException while reading images", e1);
 				}
 			}
 		} catch (JDOMException e) {

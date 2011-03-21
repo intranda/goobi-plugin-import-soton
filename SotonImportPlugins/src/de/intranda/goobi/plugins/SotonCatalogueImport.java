@@ -40,7 +40,10 @@ import org.marc4j.converter.impl.AnselToUnicode;
 import ugh.dl.DigitalDocument;
 import ugh.dl.DocStruct;
 import ugh.dl.Fileformat;
+import ugh.dl.Metadata;
 import ugh.dl.Prefs;
+import ugh.exceptions.DocStructHasNoTypeException;
+import ugh.exceptions.MetadataTypeNotAllowedException;
 import ugh.exceptions.PreferencesException;
 import ugh.exceptions.TypeNotAllowedForParentException;
 import ugh.exceptions.WriteException;
@@ -56,7 +59,7 @@ public class SotonCatalogueImport implements IImportPlugin, IPlugin {
 
 	private static final String ID = "soton_catalogue";
 	private static final String NAME = "SOTON Catalogue Import";
-	private static final String VERSION = "1.0.20110317";
+	private static final String VERSION = "1.0.20110321";
 	private static final String XSLT_PATH = ConfigMain.getParameter("xsltFolder") + "MARC21slim2MODS3.xsl";
 
 	private Prefs prefs;
@@ -134,6 +137,17 @@ public class SotonCatalogueImport implements IImportPlugin, IPlugin {
 				// Collect MODS metadata
 				ModsUtils.parseModsSection(prefs, dsRoot, dsBoundBook, eleMods);
 				currentIdentifier = data;
+				
+				// Add 'pathimagefiles'
+				try {
+					Metadata mdForPath = new Metadata(prefs.getMetadataTypeByName("pathimagefiles"));
+					mdForPath.setValue("./" + currentIdentifier);
+					dsBoundBook.addMetadata(mdForPath);
+				} catch (MetadataTypeNotAllowedException e1) {
+					logger.error("MetadataTypeNotAllowedException while reading images", e1);
+				} catch (DocStructHasNoTypeException e1) {
+					logger.error("DocStructHasNoTypeException while reading images", e1);
+				}
 			}
 		} catch (JDOMException e) {
 			logger.error(e.getMessage(), e);

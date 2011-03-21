@@ -21,6 +21,7 @@ import ugh.dl.Fileformat;
 import ugh.dl.Metadata;
 import ugh.dl.MetadataType;
 import ugh.dl.Prefs;
+import ugh.exceptions.DocStructHasNoTypeException;
 import ugh.exceptions.MetadataTypeNotAllowedException;
 import ugh.exceptions.PreferencesException;
 import ugh.exceptions.TypeNotAllowedForParentException;
@@ -36,7 +37,7 @@ public class SotonPlaceholderImport implements IImportPlugin, IPlugin {
 
 	private static final String ID = "soton_placeholder";
 	private static final String NAME = "SOTON Placeholder Import";
-	private static final String VERSION = "1.0.20110307";
+	private static final String VERSION = "1.0.20110321";
 
 	private Prefs prefs;
 	private String data = "";
@@ -77,6 +78,17 @@ public class SotonPlaceholderImport implements IImportPlugin, IPlugin {
 				// Add a timestamp as identifer if the record still has none
 				mdId.setValue(String.valueOf(System.currentTimeMillis()));
 				currentIdentifier = mdId.getValue();
+			}
+			
+			// Add 'pathimagefiles'
+			try {
+				Metadata mdForPath = new Metadata(prefs.getMetadataTypeByName("pathimagefiles"));
+				mdForPath.setValue("./" + mdId.getValue());
+				dsBoundBook.addMetadata(mdForPath);
+			} catch (MetadataTypeNotAllowedException e1) {
+				logger.error("MetadataTypeNotAllowedException while reading images", e1);
+			} catch (DocStructHasNoTypeException e1) {
+				logger.error("DocStructHasNoTypeException while reading images", e1);
 			}
 		} catch (PreferencesException e) {
 			logger.error(e.getMessage(), e);
