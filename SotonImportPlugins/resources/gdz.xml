@@ -2365,14 +2365,6 @@
         <URI>http://gdz.sub.uni-goettingen.de/</URI>
         <prefix>gdz</prefix>
       </NamespaceDefinition>
-      <!-- Additional namespaces used in the mapping below -->
-      <!-- Additional namespaces used in the mapping below -->
-      <!-- Additional namespaces used in the mapping below -->
-      <!-- Additional namespaces used in the mapping below -->
-      <NamespaceDefinition>
-        <URI>http://gei-digital.gei.de/</URI>
-        <prefix>gei</prefix>
-      </NamespaceDefinition>
       <XPathAnchorQuery>./mods:mods/mods:relatedItem[@type='host']/mods:recordInfo/mods:recordIdentifier[@source='gbv-ppn']</XPathAnchorQuery>
       <!-- ##########################################################################
 				 ##  Only the <AnchorIdentifierMetadataType> is needed for internal      ##
