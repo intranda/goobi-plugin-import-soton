@@ -59,7 +59,8 @@ public class SotonCatalogueImport implements IImportPlugin, IPlugin {
 
 	private static final String ID = "soton_catalogue";
 	private static final String NAME = "SOTON Catalogue Import";
-	private static final String VERSION = "1.0.20110321";
+	private static final String DESCRIPTION = "";
+	private static final String VERSION = "1.0.20110325";
 	private static final String XSLT_PATH = ConfigMain.getParameter("xsltFolder") + "MARC21slim2MODS3.xsl";
 
 	private Prefs prefs;
@@ -137,7 +138,7 @@ public class SotonCatalogueImport implements IImportPlugin, IPlugin {
 				// Collect MODS metadata
 				ModsUtils.parseModsSection(prefs, dsRoot, dsBoundBook, eleMods);
 				currentIdentifier = data;
-				
+
 				// Add 'pathimagefiles'
 				try {
 					Metadata mdForPath = new Metadata(prefs.getMetadataTypeByName("pathimagefiles"));
@@ -269,6 +270,11 @@ public class SotonCatalogueImport implements IImportPlugin, IPlugin {
 	@Override
 	public String getId() {
 		return ID;
+	}
+
+	@Override
+	public String getDescription() {
+		return DESCRIPTION;
 	}
 
 	private String convertToMarcXml(String marc) {

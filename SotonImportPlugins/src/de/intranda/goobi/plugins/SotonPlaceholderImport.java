@@ -37,7 +37,8 @@ public class SotonPlaceholderImport implements IImportPlugin, IPlugin {
 
 	private static final String ID = "soton_placeholder";
 	private static final String NAME = "SOTON Placeholder Import";
-	private static final String VERSION = "1.0.20110321";
+	private static final String DESCRIPTION = "";
+	private static final String VERSION = "1.0.20110325";
 
 	private Prefs prefs;
 	private String data = "";
@@ -210,6 +211,11 @@ public class SotonPlaceholderImport implements IImportPlugin, IPlugin {
 	@Override
 	public String getId() {
 		return ID;
+	}
+	
+	@Override
+	public String getDescription() {
+		return DESCRIPTION;
 	}
 
 	public static void main(String[] args) {

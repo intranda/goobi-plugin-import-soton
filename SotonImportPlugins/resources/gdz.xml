@@ -276,6 +276,11 @@
     <language name="en">PPN</language>
   </MetadataType>
   <MetadataType>
+    <Name>ISBN</Name>
+    <language name="de">ISBN</language>
+    <language name="en">ISBN</language>
+  </MetadataType>
+  <MetadataType>
     <Name>ISSN</Name>
     <language name="de">ISSN</language>
     <language name="en">ISSN</language>
@@ -1133,6 +1138,7 @@
     <metadata num="1o">_purl</metadata>
     <metadata num="*" DefaultDisplay="true">PlaceOfPublication</metadata>
     <metadata num="*" DefaultDisplay="true">TitleDocParallel</metadata>
+    <metadata num="1o">ISBN</metadata>
     <metadata num="1o">shelfmarksource</metadata>
     <metadata num="1o">physicallocation</metadata>
   </DocStrctType>
@@ -1876,6 +1882,10 @@
         <RDFName>AGORA:CatalogIDDigital</RDFName>
       </Metadata>
       <Metadata>
+        <Name>ISBN</Name>
+        <RDFName>AGORA:ISBN</RDFName>
+      </Metadata>
+      <Metadata>
         <Name>ISSN</Name>
         <RDFName>AGORA:ISSN</RDFName>
       </Metadata>
@@ -2387,10 +2397,6 @@
         <WriteXPath>./mods:mods/mods:extension/gdz:gdz/#gdz:sponsorship</WriteXPath>
       </Metadata>
       <Metadata>
-        <InternalName>PartnerLibrary</InternalName>
-        <WriteXPath>./mods:mods/mods:extension/gei:gei/#gei:partnerlibrary</WriteXPath>
-      </Metadata>
-      <Metadata>
         <InternalName>PublisherName</InternalName>
         <WriteXPath>./mods:mods/mods:originInfo/#mods:publisher</WriteXPath>
       </Metadata>
@@ -2435,6 +2441,10 @@
       <Metadata>
         <InternalName>CatalogIDDigital</InternalName>
         <WriteXPath>./mods:mods/mods:recordInfo/#mods:recordIdentifier[@source='gbv-ppn']</WriteXPath>
+      </Metadata>
+      <Metadata>
+        <InternalName>ISBN</InternalName>
+        <WriteXPath>./mods:mods/#mods:identifier[@type='ISBN']</WriteXPath>
       </Metadata>
       <Metadata>
         <InternalName>ISSN</InternalName>

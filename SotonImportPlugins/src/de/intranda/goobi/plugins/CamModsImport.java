@@ -47,6 +47,7 @@ public class CamModsImport implements IImportPlugin, IPlugin {
 
 	private static final String ID = "cam_mods";
 	private static final String NAME = "Cambridge MODS Import";
+	private static final String DESCRIPTION = "";
 	private static final String VERSION = "1.0.20110321";
 
 	private Prefs prefs;
@@ -115,7 +116,7 @@ public class CamModsImport implements IImportPlugin, IPlugin {
 				ModsUtils.parseModsSection(prefs, dsRoot, dsBoundBook, eleMods);
 				currentIdentifier = ModsUtils.getIdentifier(prefs, dsRoot);
 				currentTitle = ModsUtils.getTitle(prefs, dsRoot);
-				currentAuthor =  ModsUtils.getAuthor(prefs, dsRoot);
+				currentAuthor = ModsUtils.getAuthor(prefs, dsRoot);
 
 				// Add dummy volume to anchors
 				if (dsRoot.getType().getName().equals("Periodical") || dsRoot.getType().getName().equals("MultiVolumeWork")) {
@@ -129,17 +130,28 @@ public class CamModsImport implements IImportPlugin, IPlugin {
 					Metadata mdId = new Metadata(prefs.getMetadataTypeByName("CatalogIDDigital"));
 					mdId.setValue(currentIdentifier + "_0001");
 					dsVolume.addMetadata(mdId);
-				}
-				
-				// Add 'pathimagefiles'
-				try {
-					Metadata mdForPath = new Metadata(prefs.getMetadataTypeByName("pathimagefiles"));
-					mdForPath.setValue("./" + currentIdentifier);
-					dsBoundBook.addMetadata(mdForPath);
-				} catch (MetadataTypeNotAllowedException e1) {
-					logger.error("MetadataTypeNotAllowedException while reading images", e1);
-				} catch (DocStructHasNoTypeException e1) {
-					logger.error("DocStructHasNoTypeException while reading images", e1);
+
+					// Add 'pathimagefiles'
+					try {
+						Metadata mdForPath = new Metadata(prefs.getMetadataTypeByName("pathimagefiles"));
+						mdForPath.setValue("./" + mdId);
+						dsBoundBook.addMetadata(mdForPath);
+					} catch (MetadataTypeNotAllowedException e1) {
+						logger.error("MetadataTypeNotAllowedException while reading images", e1);
+					} catch (DocStructHasNoTypeException e1) {
+						logger.error("DocStructHasNoTypeException while reading images", e1);
+					}
+				} else {
+					// Add 'pathimagefiles'
+					try {
+						Metadata mdForPath = new Metadata(prefs.getMetadataTypeByName("pathimagefiles"));
+						mdForPath.setValue("./" + currentIdentifier);
+						dsBoundBook.addMetadata(mdForPath);
+					} catch (MetadataTypeNotAllowedException e1) {
+						logger.error("MetadataTypeNotAllowedException while reading images", e1);
+					} catch (DocStructHasNoTypeException e1) {
+						logger.error("DocStructHasNoTypeException while reading images", e1);
+					}
 				}
 			}
 		} catch (JDOMException e) {
@@ -287,6 +299,11 @@ public class CamModsImport implements IImportPlugin, IPlugin {
 		return ID;
 	}
 
+	@Override
+	public String getDescription() {
+		return DESCRIPTION;
+	}
+
 	public static void main(String[] args) {
 		CamModsImport converter = new CamModsImport();
 		converter.prefs = new Prefs();
@@ -296,7 +313,7 @@ public class CamModsImport implements IImportPlugin, IPlugin {
 			logger.error(e.getMessage(), e);
 		}
 
-		converter.setFile(new File("samples/mods-cam/books_mods.xml"));
+		converter.setFile(new File("samples/mods-cam/monographs_5_mods.xml"));
 		List<Record> records = converter.generateRecordsFromFile();
 
 		// converter.importFile = new File("samples/mods-cam/bib_marc_mods.txt");

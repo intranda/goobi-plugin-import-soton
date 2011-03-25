@@ -61,7 +61,8 @@ public class CamMarcImport implements IImportPlugin, IPlugin {
 
 	private static final String ID = "cam_marc21";
 	private static final String NAME = "Cambridge MARC21 Import";
-	private static final String VERSION = "1.0.20110321";
+	private static final String DESCRIPTION = "";
+	private static final String VERSION = "1.0.20110325";
 	private static final String XSLT = ConfigMain.getParameter("xsltFolder") + "MARC21slim2MODS3.xsl";
 
 	private Prefs prefs;
@@ -99,7 +100,7 @@ public class CamMarcImport implements IImportPlugin, IPlugin {
 			if (doc != null && doc.hasRootElement()) {
 				XSLTransformer transformer = new XSLTransformer(XSLT);
 				Document docMods = transformer.transform(doc);
-				logger.debug(new XMLOutputter().outputString(docMods));
+				// logger.debug(new XMLOutputter().outputString(docMods));
 
 				ff = new MetsMods(prefs);
 				DigitalDocument dd = new DigitalDocument();
@@ -149,7 +150,7 @@ public class CamMarcImport implements IImportPlugin, IPlugin {
 					mdId.setValue(currentIdentifier + "_0001");
 					dsVolume.addMetadata(mdId);
 				}
-				
+
 				// Add 'pathimagefiles'
 				try {
 					Metadata mdForPath = new Metadata(prefs.getMetadataTypeByName("pathimagefiles"));
@@ -219,7 +220,6 @@ public class CamMarcImport implements IImportPlugin, IPlugin {
 			MarcReader reader = new MarcStreamReader(input, null);
 			int counter = 1;
 			while (reader.hasNext()) {
-				logger.debug(counter + ")");
 				try {
 					org.marc4j.marc.Record marcRecord = (org.marc4j.marc.Record) reader.next();
 					ByteArrayOutputStream out = new ByteArrayOutputStream();
@@ -366,6 +366,11 @@ public class CamMarcImport implements IImportPlugin, IPlugin {
 		return ID;
 	}
 
+	@Override
+	public String getDescription() {
+		return DESCRIPTION;
+	}
+
 	/**
 	 * 
 	 * @param text
@@ -434,7 +439,7 @@ public class CamMarcImport implements IImportPlugin, IPlugin {
 			logger.error(e.getMessage(), e);
 		}
 
-		converter.setFile(new File("samples/marc21-cam/books_852.mrc"));
+		converter.setFile(new File("samples/marc21-cam/monographs.mrc"));
 		List<Record> records = converter.generateRecordsFromFile();
 
 		// converter.importFile = new File("samples/marc21-cam/music.txt");

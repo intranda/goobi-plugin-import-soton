@@ -41,8 +41,6 @@ import ugh.dl.DigitalDocument;
 import ugh.dl.DocStruct;
 import ugh.dl.Fileformat;
 import ugh.dl.Metadata;
-import ugh.dl.MetadataType;
-import ugh.dl.Person;
 import ugh.dl.Prefs;
 import ugh.exceptions.DocStructHasNoTypeException;
 import ugh.exceptions.MetadataTypeNotAllowedException;
@@ -62,7 +60,8 @@ public class SotonMarcImport implements IImportPlugin, IPlugin {
 
 	private static final String ID = "soton_marc21";
 	private static final String NAME = "SOTON MARC21 Import";
-	private static final String VERSION = "1.0.20110321";
+	private static final String DESCRIPTION = "";
+	private static final String VERSION = "1.0.20110325";
 	// private static final String XSLT_PATH = "jar:file:/" + ConfigMain.getParameter("pluginFolder")
 	// + "import/SotonImportPlugins.jar!/resources/MARC21slim2MODS3.xsl";
 	private static final String XSLT_PATH = ConfigMain.getParameter("xsltFolder") + "MARC21slim2MODS3.xsl";
@@ -105,7 +104,7 @@ public class SotonMarcImport implements IImportPlugin, IPlugin {
 				// XSLTransformer transformer = new XSLTransformer(in);
 				// in.close();
 				Document docMods = transformer.transform(doc);
-				// logger.debug(new XMLOutputter().outputString(docMods));
+				 logger.debug(new XMLOutputter().outputString(docMods));
 
 				ff = new MetsMods(prefs);
 				DigitalDocument dd = new DigitalDocument();
@@ -349,6 +348,11 @@ public class SotonMarcImport implements IImportPlugin, IPlugin {
 	@Override
 	public String getId() {
 		return ID;
+	}
+	
+	@Override
+	public String getDescription() {
+		return DESCRIPTION;
 	}
 
 	/**

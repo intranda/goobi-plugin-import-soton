@@ -1,8 +1,18 @@
 package de.intranda.goobi.plugins.utils;
 
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
+import org.jdom.Document;
 import org.jdom.Element;
+import org.jdom.JDOMException;
+import org.jdom.Namespace;
+import org.jdom.input.SAXBuilder;
+import org.jdom.xpath.XPath;
 
 import ugh.dl.DocStruct;
 import ugh.dl.Metadata;
@@ -11,11 +21,131 @@ import ugh.dl.Person;
 import ugh.dl.Prefs;
 import ugh.exceptions.DocStructHasNoTypeException;
 import ugh.exceptions.MetadataTypeNotAllowedException;
+import de.sub.goobi.config.ConfigMain;
 
 public class ModsUtils {
 
 	/** Logger for this class. */
 	private static final Logger logger = Logger.getLogger(ModsUtils.class);
+
+	private static final String MAPPING_FILE_PATH = ConfigMain.getParameter("xsltFolder") + "map.xml";
+	private static final Namespace NS_MODS = Namespace.getNamespace("mods", "http://www.loc.gov/mods/v3");
+
+	public static void writeModsToFile(String fileName) {
+		// TODO
+	}
+
+	/**
+	 * 
+	 * @param pres
+	 * @param dsLogical
+	 * @param dsPhysical
+	 * @param eleMods
+	 * @param mappingFile
+	 * @throws IOException
+	 * @throws JDOMException
+	 */
+	@SuppressWarnings("unchecked")
+	public static void parseModsSection(Prefs prefs, DocStruct dsLogical, DocStruct dsPhysical, Element eleMods) throws JDOMException, IOException {
+		// logger.debug(new XMLOutputter().outputString(eleMods));
+		Document doc = new Document();
+		eleMods.detach();
+		doc.setRootElement(eleMods);
+		File file = new File(MAPPING_FILE_PATH);
+		Document mapDoc = new SAXBuilder().build(file);
+		for (Object obj : mapDoc.getRootElement().getChildren("metadata", null)) {
+			Element eleMetadata = (Element) obj;
+			String mdName = eleMetadata.getChildTextTrim("name", null);
+			MetadataType mdType = prefs.getMetadataTypeByName(mdName);
+			if (mdType != null) {
+				try {
+					List<Element> eleXpathList = eleMetadata.getChildren("xpath", null);
+					if (mdType.getIsPerson()) {
+						// Persons
+						String name = "";
+						String firstName = "";
+						String lastName = "";
+
+						for (Element eleXpath : eleXpathList) {
+							String query = eleXpath.getTextTrim();
+							// logger.debug("XPath: " + query);
+							XPath xpath = XPath.newInstance(query);
+							xpath.addNamespace(NS_MODS);
+							Element eleValue = (Element) xpath.selectSingleNode(doc);
+							if (eleValue != null) {
+								if (eleXpath.getAttribute("family") != null) {
+									lastName = eleValue.getTextTrim();
+								} else if (eleXpath.getAttribute("given") != null) {
+									firstName = eleValue.getTextTrim();
+								} else {
+									name = eleValue.getTextTrim();
+								}
+							}
+						}
+
+						if (name.contains(",")) {
+							String[] nameSplit = name.split("[,]");
+							if (nameSplit.length > 0 && StringUtils.isEmpty(lastName)) {
+								lastName = nameSplit[0].trim();
+							}
+							if (nameSplit.length > 1 && StringUtils.isEmpty(firstName)) {
+								firstName = nameSplit[1].trim();
+							}
+						} else {
+							lastName = name;
+						}
+
+						if (StringUtils.isNotEmpty(lastName)) {
+							Person person = new Person(mdType);
+							person.setFirstname(firstName);
+							person.setLastname(lastName);
+							person.setRole(mdType.getName());
+							if (eleMetadata.getAttribute("logical") != null && eleMetadata.getAttributeValue("logical").equalsIgnoreCase("true")) {
+								dsLogical.addPerson(person);
+							}
+						}
+					} else {
+						// Regular metadata
+						List<String> values = new ArrayList<String>();
+						for (Element eleXpath : eleXpathList) {
+							String query = eleXpath.getTextTrim();
+							// logger.debug("XPath: " + query);
+							XPath xpath = XPath.newInstance(query);
+							xpath.addNamespace(NS_MODS);
+							Element eleValue = (Element) xpath.selectSingleNode(doc);
+							if (eleValue != null) {
+								// logger.debug("value: " + eleValue.getTextTrim());
+								values.add(eleValue.getTextTrim());
+							}
+						}
+
+						String value = "";
+						for (String s : values) {
+							if (StringUtils.isNotEmpty(s)) {
+								value += " " + s;
+							}
+						}
+						value = value.trim();
+
+						if (value.length() > 0) {
+							Metadata metadata = new Metadata(mdType);
+							metadata.setValue(value);
+							if (eleMetadata.getAttribute("logical") != null && eleMetadata.getAttributeValue("logical").equalsIgnoreCase("true")) {
+								dsLogical.addMetadata(metadata);
+							}
+							if (eleMetadata.getAttribute("physical") != null && eleMetadata.getAttributeValue("physical").equalsIgnoreCase("true")) {
+								dsPhysical.addMetadata(metadata);
+							}
+						}
+					}
+				} catch (MetadataTypeNotAllowedException e) {
+					logger.warn(e.getMessage());
+				}
+			} else {
+				logger.warn("Metadata '" + mdName + "' is not defined in the ruleset.");
+			}
+		}
+	}
 
 	/**
 	 * 
@@ -24,7 +154,7 @@ public class ModsUtils {
 	 * @param eleMods
 	 * @throws MetadataTypeNotAllowedException
 	 */
-	public static void parseModsSection(Prefs prefs, DocStruct dsLogical, DocStruct dsPhysical, Element eleMods) {
+	public static void parseModsSectionOld(Prefs prefs, DocStruct dsLogical, DocStruct dsPhysical, Element eleMods) {
 		for (Object objMeta : eleMods.getChildren()) {
 			try {
 				Element eleMeta = (Element) objMeta;
