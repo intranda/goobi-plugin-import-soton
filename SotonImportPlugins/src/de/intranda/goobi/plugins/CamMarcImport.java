@@ -64,6 +64,7 @@ public class CamMarcImport implements IImportPlugin, IPlugin {
 	private static final String DESCRIPTION = "";
 	private static final String VERSION = "1.0.20110325";
 	private static final String XSLT = ConfigMain.getParameter("xsltFolder") + "MARC21slim2MODS3.xsl";
+	private static final String MODS_OUTPUT_FOLDER = "/opt/digiverso/goobi/mods_output/";
 
 	private Prefs prefs;
 	private String data = "";
@@ -161,6 +162,8 @@ public class CamMarcImport implements IImportPlugin, IPlugin {
 				} catch (DocStructHasNoTypeException e1) {
 					logger.error("DocStructHasNoTypeException while reading images", e1);
 				}
+				
+				ModsUtils.writeModsToFile(MODS_OUTPUT_FOLDER + currentIdentifier + "_mods.xml", docMods);
 			}
 		} catch (JDOMException e) {
 			logger.error(e.getMessage(), e);

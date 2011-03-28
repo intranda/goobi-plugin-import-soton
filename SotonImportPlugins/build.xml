@@ -22,7 +22,7 @@
 		<jar destfile="${jarfile-cambridge}">
 			<fileset dir="bin" excludes="**/Soton*" />
 	        <fileset dir="lib" includes="marc4j.jar" />
-			<fileset dir="resources" includes="**/*.xsl" />
+			<fileset dir="resources" includes="**/*.xsl mods_map.xml" />
 		</jar>
 	</target>
 
@@ -35,7 +35,7 @@
 		<jar destfile="${jarfile-soton}">
 			<fileset dir="bin" excludes="**/Cam*" />
 	        <fileset dir="lib" includes="marc4j.jar" />
-			<fileset dir="resources" includes="**/*.xsl" />
+			<fileset dir="resources" includes="**/*.xsl mods_map.xml" />
 		</jar>
 	</target>
 

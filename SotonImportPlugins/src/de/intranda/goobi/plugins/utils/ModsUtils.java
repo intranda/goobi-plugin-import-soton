@@ -1,6 +1,8 @@
 package de.intranda.goobi.plugins.utils;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -12,6 +14,7 @@ import org.jdom.Element;
 import org.jdom.JDOMException;
 import org.jdom.Namespace;
 import org.jdom.input.SAXBuilder;
+import org.jdom.output.XMLOutputter;
 import org.jdom.xpath.XPath;
 
 import ugh.dl.DocStruct;
@@ -28,11 +31,24 @@ public class ModsUtils {
 	/** Logger for this class. */
 	private static final Logger logger = Logger.getLogger(ModsUtils.class);
 
-	private static final String MAPPING_FILE_PATH = ConfigMain.getParameter("xsltFolder") + "map.xml";
+	private static final String MAPPING_FILE_PATH = ConfigMain.getParameter("xsltFolder") + "mods_map.xml";
 	private static final Namespace NS_MODS = Namespace.getNamespace("mods", "http://www.loc.gov/mods/v3");
 
-	public static void writeModsToFile(String fileName) {
-		// TODO
+	/**
+	 * 
+	 * @param fileName
+	 * @param modsDoc
+	 * @throws FileNotFoundException
+	 * @throws IOException
+	 */
+	public static void writeModsToFile(String fileName, Document modsDoc) {
+		try {
+			new XMLOutputter().output(modsDoc, new FileOutputStream(fileName));
+		} catch (FileNotFoundException e) {
+			logger.error(e.getMessage());
+		} catch (IOException e) {
+			logger.error(e.getMessage());
+		}
 	}
 
 	/**
@@ -49,8 +65,8 @@ public class ModsUtils {
 	public static void parseModsSection(Prefs prefs, DocStruct dsLogical, DocStruct dsPhysical, Element eleMods) throws JDOMException, IOException {
 		// logger.debug(new XMLOutputter().outputString(eleMods));
 		Document doc = new Document();
-		eleMods.detach();
-		doc.setRootElement(eleMods);
+		Element eleNewMods = (Element) eleMods.clone();
+		doc.setRootElement(eleNewMods);
 		File file = new File(MAPPING_FILE_PATH);
 		Document mapDoc = new SAXBuilder().build(file);
 		for (Object obj : mapDoc.getRootElement().getChildren("metadata", null)) {
