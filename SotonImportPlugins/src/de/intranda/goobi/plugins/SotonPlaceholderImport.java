@@ -35,7 +35,6 @@ public class SotonPlaceholderImport implements IImportPlugin, IPlugin {
 	/** Logger for this class. */
 	private static final Logger logger = Logger.getLogger(SotonPlaceholderImport.class);
 
-	private static final String ID = "soton_placeholder";
 	private static final String NAME = "SOTON Placeholder Import";
 	private static final String VERSION = "1.0.20110331";
 

@@ -58,12 +58,12 @@ public class SotonMarcImport implements IImportPlugin, IPlugin {
 	/** Logger for this class. */
 	private static final Logger logger = Logger.getLogger(SotonMarcImport.class);
 
-	private static final String ID = "soton_marc21";
 	private static final String NAME = "SOTON MARC21 Import";
 	private static final String VERSION = "1.0.20110331";
 	// private static final String XSLT_PATH = "jar:file:/" + ConfigMain.getParameter("pluginFolder")
 	// + "import/SotonImportPlugins.jar!/resources/MARC21slim2MODS3.xsl";
 	private static final String XSLT_PATH = ConfigMain.getParameter("xsltFolder") + "MARC21slim2MODS3.xsl";
+	private static final String MODS_MAPPING_FILE = ConfigMain.getParameter("xsltFolder") + "mods_map.xml";
 
 	private Prefs prefs;
 	private String data = "";
@@ -103,7 +103,7 @@ public class SotonMarcImport implements IImportPlugin, IPlugin {
 				// XSLTransformer transformer = new XSLTransformer(in);
 				// in.close();
 				Document docMods = transformer.transform(doc);
-				 logger.debug(new XMLOutputter().outputString(docMods));
+				logger.debug(new XMLOutputter().outputString(docMods));
 
 				ff = new MetsMods(prefs);
 				DigitalDocument dd = new DigitalDocument();
@@ -135,11 +135,11 @@ public class SotonMarcImport implements IImportPlugin, IPlugin {
 				dd.setPhysicalDocStruct(dsBoundBook);
 
 				// Collect MODS metadata
-				ModsUtils.parseModsSection(prefs, dsRoot, dsBoundBook, eleMods);
+				ModsUtils.parseModsSection(MODS_MAPPING_FILE, prefs, dsRoot, dsBoundBook, eleMods);
 				currentIdentifier = ModsUtils.getIdentifier(prefs, dsRoot);
 				currentTitle = ModsUtils.getTitle(prefs, dsRoot);
-				currentAuthor =  ModsUtils.getAuthor(prefs, dsRoot);
-				
+				currentAuthor = ModsUtils.getAuthor(prefs, dsRoot);
+
 				// Add 'pathimagefiles'
 				try {
 					Metadata mdForPath = new Metadata(prefs.getMetadataTypeByName("pathimagefiles"));
@@ -348,7 +348,7 @@ public class SotonMarcImport implements IImportPlugin, IPlugin {
 	public String getId() {
 		return getDescription();
 	}
-	
+
 	@Override
 	public String getDescription() {
 		return NAME + " v" + VERSION;

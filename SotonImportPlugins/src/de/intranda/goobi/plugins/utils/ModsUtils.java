@@ -24,14 +24,12 @@ import ugh.dl.Person;
 import ugh.dl.Prefs;
 import ugh.exceptions.DocStructHasNoTypeException;
 import ugh.exceptions.MetadataTypeNotAllowedException;
-import de.sub.goobi.config.ConfigMain;
 
 public class ModsUtils {
 
 	/** Logger for this class. */
 	private static final Logger logger = Logger.getLogger(ModsUtils.class);
 
-	private static final String MAPPING_FILE_PATH = ConfigMain.getParameter("xsltFolder") + "mods_map.xml";
 	private static final Namespace NS_MODS = Namespace.getNamespace("mods", "http://www.loc.gov/mods/v3");
 
 	/**
@@ -62,12 +60,12 @@ public class ModsUtils {
 	 * @throws JDOMException
 	 */
 	@SuppressWarnings("unchecked")
-	public static void parseModsSection(Prefs prefs, DocStruct dsLogical, DocStruct dsPhysical, Element eleMods) throws JDOMException, IOException {
+	public static void parseModsSection(String mappingFileName, Prefs prefs, DocStruct dsLogical, DocStruct dsPhysical, Element eleMods) throws JDOMException, IOException {
 		// logger.debug(new XMLOutputter().outputString(eleMods));
 		Document doc = new Document();
 		Element eleNewMods = (Element) eleMods.clone();
 		doc.setRootElement(eleNewMods);
-		File file = new File(MAPPING_FILE_PATH);
+		File file = new File(mappingFileName);
 		Document mapDoc = new SAXBuilder().build(file);
 		for (Object obj : mapDoc.getRootElement().getChildren("metadata", null)) {
 			Element eleMetadata = (Element) obj;

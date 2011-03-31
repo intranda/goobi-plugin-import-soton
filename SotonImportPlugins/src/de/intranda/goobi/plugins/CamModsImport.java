@@ -38,6 +38,7 @@ import ugh.exceptions.WriteException;
 import ugh.fileformats.mets.MetsMods;
 import de.intranda.goobi.plugins.utils.ModsUtils;
 import de.sub.goobi.Import.ImportOpac;
+import de.sub.goobi.config.ConfigMain;
 
 @PluginImplementation
 public class CamModsImport implements IImportPlugin, IPlugin {
@@ -45,9 +46,9 @@ public class CamModsImport implements IImportPlugin, IPlugin {
 	/** Logger for this class. */
 	private static final Logger logger = Logger.getLogger(CamModsImport.class);
 
-	private static final String ID = "cam_mods";
 	private static final String NAME = "Cambridge MODS Import";
 	private static final String VERSION = "1.0.20110331";
+	private static final String MODS_MAPPING_FILE = ConfigMain.getParameter("xsltFolder") + "mods_map.xml";
 
 	private Prefs prefs;
 	private String data = "";
@@ -112,7 +113,7 @@ public class CamModsImport implements IImportPlugin, IPlugin {
 				dd.setPhysicalDocStruct(dsBoundBook);
 
 				// Collect MODS metadata
-				ModsUtils.parseModsSection(prefs, dsRoot, dsBoundBook, eleMods);
+				ModsUtils.parseModsSection(MODS_MAPPING_FILE, prefs, dsRoot, dsBoundBook, eleMods);
 				currentIdentifier = ModsUtils.getIdentifier(prefs, dsRoot);
 				currentTitle = ModsUtils.getTitle(prefs, dsRoot);
 				currentAuthor = ModsUtils.getAuthor(prefs, dsRoot);
@@ -297,7 +298,7 @@ public class CamModsImport implements IImportPlugin, IPlugin {
 	public String getId() {
 		return getDescription();
 	}
-	
+
 	@Override
 	public String getDescription() {
 		return NAME + " v" + VERSION;

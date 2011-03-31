@@ -57,10 +57,10 @@ public class SotonCatalogueImport implements IImportPlugin, IPlugin {
 	/** Logger for this class. */
 	private static final Logger logger = Logger.getLogger(SotonCatalogueImport.class);
 
-	private static final String ID = "soton_catalogue";
 	private static final String NAME = "SOTON Catalogue Import";
 	private static final String VERSION = "1.0.20110331";
 	private static final String XSLT_PATH = ConfigMain.getParameter("xsltFolder") + "MARC21slim2MODS3.xsl";
+	private static final String MODS_MAPPING_FILE = ConfigMain.getParameter("xsltFolder") + "mods_map.xml";
 
 	private Prefs prefs;
 	private String data = "";
@@ -135,7 +135,7 @@ public class SotonCatalogueImport implements IImportPlugin, IPlugin {
 				dd.setPhysicalDocStruct(dsBoundBook);
 
 				// Collect MODS metadata
-				ModsUtils.parseModsSection(prefs, dsRoot, dsBoundBook, eleMods);
+				ModsUtils.parseModsSection(MODS_MAPPING_FILE, prefs, dsRoot, dsBoundBook, eleMods);
 				currentIdentifier = data;
 
 				// Add 'pathimagefiles'
@@ -270,7 +270,7 @@ public class SotonCatalogueImport implements IImportPlugin, IPlugin {
 	public String getId() {
 		return getDescription();
 	}
-	
+
 	@Override
 	public String getDescription() {
 		return NAME + " v" + VERSION;

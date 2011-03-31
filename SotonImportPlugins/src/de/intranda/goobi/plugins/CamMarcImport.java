@@ -59,10 +59,10 @@ public class CamMarcImport implements IImportPlugin, IPlugin {
 	/** Logger for this class. */
 	private static final Logger logger = Logger.getLogger(CamMarcImport.class);
 
-	private static final String ID = "cam_marc21";
 	private static final String NAME = "Cambridge MARC21 Import";
 	private static final String VERSION = "1.0.20110331";
 	private static final String XSLT = ConfigMain.getParameter("xsltFolder") + "MARC21slim2MODS3.xsl";
+	private static final String MODS_MAPPING_FILE = ConfigMain.getParameter("xsltFolder") + "mods_map.xml";
 	private static final String MODS_OUTPUT_FOLDER = "/opt/digiverso/goobi/mods_output/";
 
 	private Prefs prefs;
@@ -132,7 +132,7 @@ public class CamMarcImport implements IImportPlugin, IPlugin {
 				dd.setPhysicalDocStruct(dsBoundBook);
 
 				// Collect MODS metadata
-				ModsUtils.parseModsSection(prefs, dsRoot, dsBoundBook, eleMods);
+				ModsUtils.parseModsSection(MODS_MAPPING_FILE, prefs, dsRoot, dsBoundBook, eleMods);
 				currentIdentifier = ModsUtils.getIdentifier(prefs, dsRoot);
 				currentTitle = ModsUtils.getTitle(prefs, dsRoot);
 				currentAuthor = ModsUtils.getAuthor(prefs, dsRoot);
@@ -161,7 +161,7 @@ public class CamMarcImport implements IImportPlugin, IPlugin {
 				} catch (DocStructHasNoTypeException e1) {
 					logger.error("DocStructHasNoTypeException while reading images", e1);
 				}
-				
+
 				ModsUtils.writeModsToFile(MODS_OUTPUT_FOLDER + currentIdentifier + "_mods.xml", docMods);
 			}
 		} catch (JDOMException e) {
@@ -367,7 +367,7 @@ public class CamMarcImport implements IImportPlugin, IPlugin {
 	public String getId() {
 		return getDescription();
 	}
-	
+
 	@Override
 	public String getDescription() {
 		return NAME + " v" + VERSION;
