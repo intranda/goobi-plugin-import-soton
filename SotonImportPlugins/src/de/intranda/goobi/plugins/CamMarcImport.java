@@ -161,7 +161,7 @@ public class CamMarcImport implements IImportPlugin, IPlugin {
 					logger.error("DocStructHasNoTypeException while reading images", e1);
 				}
 
-				ModsUtils.writeXmlToFile(getImportFolder() + "/source", getProcessTitle() + "_mods.xml", docMods);
+				ModsUtils.writeXmlToFile(getImportFolder() + "/source", getProcessTitle().replace(".xml", "_mods.xml"), docMods);
 			}
 		} catch (JDOMException e) {
 			logger.error(e.getMessage(), e);
@@ -304,8 +304,7 @@ public class CamMarcImport implements IImportPlugin, IPlugin {
 
 	@Override
 	public List<String> splitIds(String ids) {
-		// TODO Auto-generated method stub
-		return null;
+		return new ArrayList<String>();
 	}
 
 	@Override
@@ -441,6 +440,7 @@ public class CamMarcImport implements IImportPlugin, IPlugin {
 		}
 
 		converter.setFile(new File("samples/marc21-cam/monographs.mrc"));
+		converter.setImportFolder("C:/Goobi/hotfolder/");
 		List<Record> records = converter.generateRecordsFromFile();
 
 		// converter.importFile = new File("samples/marc21-cam/music.txt");

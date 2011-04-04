@@ -153,7 +153,7 @@ public class CamModsImport implements IImportPlugin, IPlugin {
 						logger.error("DocStructHasNoTypeException while reading images", e1);
 					}
 				}
-				ModsUtils.writeXmlToFile(getImportFolder() + "/source", getProcessTitle() + "_mods.xml", doc);
+				ModsUtils.writeXmlToFile(getImportFolder() + "/source", getProcessTitle().replace(".xml", "_mods.xml"), doc);
 			}
 		} catch (JDOMException e) {
 			logger.error(e.getMessage(), e);
@@ -231,14 +231,12 @@ public class CamModsImport implements IImportPlugin, IPlugin {
 
 	@Override
 	public List<Record> splitRecords(String records) {
-		// TODO Auto-generated method stub
-		return null;
+		return new ArrayList<Record>();
 	}
 
 	@Override
 	public List<String> splitIds(String ids) {
-		// TODO Auto-generated method stub
-		return null;
+		return new ArrayList<String>();
 	}
 
 	@Override
@@ -278,7 +276,7 @@ public class CamModsImport implements IImportPlugin, IPlugin {
 
 	@Override
 	public List<ImportType> getImportTypes() {
-		List<ImportType> answer = new ArrayList<ImportType>();;
+		List<ImportType> answer = new ArrayList<ImportType>();
 		answer.add(ImportType.FILE);
 
 		return answer;
@@ -313,7 +311,8 @@ public class CamModsImport implements IImportPlugin, IPlugin {
 			logger.error(e.getMessage(), e);
 		}
 
-		converter.setFile(new File("samples/mods-cam/monographs_5_mods.xml"));
+		converter.setFile(new File("samples/mods-cam/bib_marc_mods.xml"));
+		converter.setImportFolder("C:/Goobi/hotfolder/");
 		List<Record> records = converter.generateRecordsFromFile();
 
 		// converter.importFile = new File("samples/mods-cam/bib_marc_mods.txt");
