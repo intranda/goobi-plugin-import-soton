@@ -153,7 +153,8 @@ public class CamModsImport implements IImportPlugin, IPlugin {
 						logger.error("DocStructHasNoTypeException while reading images", e1);
 					}
 				}
-				ModsUtils.writeXmlToFile(getImportFolder() + "/source", getProcessTitle().replace(".xml", "_mods.xml"), doc);
+				ModsUtils.writeXmlToFile(getImportFolder() + File.separator + getProcessTitle().replace(".xml", "_src"),
+						getProcessTitle().replace(".xml", "_mods.xml"), doc);
 			}
 		} catch (JDOMException e) {
 			logger.error(e.getMessage(), e);
