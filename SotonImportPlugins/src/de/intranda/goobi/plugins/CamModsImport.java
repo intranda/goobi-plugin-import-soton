@@ -277,8 +277,7 @@ public class CamModsImport implements IImportPlugin, IPlugin {
 
 	@Override
 	public List<ImportType> getImportTypes() {
-		List<ImportType> answer = new ArrayList<ImportType>();
-		answer.add(ImportType.Record);
+		List<ImportType> answer = new ArrayList<ImportType>();;
 		answer.add(ImportType.FILE);
 
 		return answer;
