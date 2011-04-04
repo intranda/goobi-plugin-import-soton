@@ -60,7 +60,7 @@ public class CamMarcImport implements IImportPlugin, IPlugin {
 	private static final Logger logger = Logger.getLogger(CamMarcImport.class);
 
 	private static final String NAME = "Cambridge MARC21 Import";
-	private static final String VERSION = "1.0.20110331";
+	private static final String VERSION = "1.0.20110404";
 	private static final String XSLT = ConfigMain.getParameter("xsltFolder") + "MARC21slim2MODS3.xsl";
 	private static final String MODS_MAPPING_FILE = ConfigMain.getParameter("xsltFolder") + "mods_map.xml";
 
