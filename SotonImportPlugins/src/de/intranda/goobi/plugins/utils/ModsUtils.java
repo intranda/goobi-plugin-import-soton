@@ -33,15 +33,21 @@ public class ModsUtils {
 	private static final Namespace NS_MODS = Namespace.getNamespace("mods", "http://www.loc.gov/mods/v3");
 
 	/**
+	 * Writes the given JDOM document into a file.
 	 * 
-	 * @param fileName
-	 * @param modsDoc
+	 * @param folderName Folder in which to write the destination file.
+	 * @param fileName Name of the destination file.
+	 * @param doc JDOM document containing the data.
 	 * @throws FileNotFoundException
 	 * @throws IOException
 	 */
-	public static void writeModsToFile(String fileName, Document modsDoc) {
+	public static void writeXmlToFile(String folderName, String fileName, Document doc) {
 		try {
-			new XMLOutputter().output(modsDoc, new FileOutputStream(fileName));
+			File folder = new File(folderName);
+			if (!folder.exists()) {
+				folder.mkdirs();
+			}
+			new XMLOutputter().output(doc, new FileOutputStream(folder.getAbsolutePath() + File.separator + fileName));
 		} catch (FileNotFoundException e) {
 			logger.error(e.getMessage());
 		} catch (IOException e) {
@@ -60,7 +66,8 @@ public class ModsUtils {
 	 * @throws JDOMException
 	 */
 	@SuppressWarnings("unchecked")
-	public static void parseModsSection(String mappingFileName, Prefs prefs, DocStruct dsLogical, DocStruct dsPhysical, Element eleMods) throws JDOMException, IOException {
+	public static void parseModsSection(String mappingFileName, Prefs prefs, DocStruct dsLogical, DocStruct dsPhysical, Element eleMods)
+			throws JDOMException, IOException {
 		// logger.debug(new XMLOutputter().outputString(eleMods));
 		Document doc = new Document();
 		Element eleNewMods = (Element) eleMods.clone();
@@ -168,6 +175,7 @@ public class ModsUtils {
 	 * @param eleMods
 	 * @throws MetadataTypeNotAllowedException
 	 */
+	@Deprecated
 	public static void parseModsSectionOld(Prefs prefs, DocStruct dsLogical, DocStruct dsPhysical, Element eleMods) {
 		for (Object objMeta : eleMods.getChildren()) {
 			try {
