@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 
-<project name="soton import plugins" basedir="." default="deploy-all">
+<project name="SOTON/Cambridge Import Plugins" basedir="." default="deploy-all">
 
 	<!-- ================================= 
 	          properties             
