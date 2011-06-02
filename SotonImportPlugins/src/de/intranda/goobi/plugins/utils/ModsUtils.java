@@ -35,9 +35,12 @@ public class ModsUtils {
 	/**
 	 * Writes the given JDOM document into a file.
 	 * 
-	 * @param folderName Folder in which to write the destination file.
-	 * @param fileName Name of the destination file.
-	 * @param doc JDOM document containing the data.
+	 * @param folderName
+	 *            Folder in which to write the destination file.
+	 * @param fileName
+	 *            Name of the destination file.
+	 * @param doc
+	 *            JDOM document containing the data.
 	 * @throws FileNotFoundException
 	 * @throws IOException
 	 */
@@ -66,8 +69,8 @@ public class ModsUtils {
 	 * @throws JDOMException
 	 */
 	@SuppressWarnings("unchecked")
-	public static void parseModsSection(String mappingFileName, Prefs prefs, DocStruct dsLogical, DocStruct dsPhysical, Element eleMods)
-			throws JDOMException, IOException {
+	public static void parseModsSection(String mappingFileName, Prefs prefs, DocStruct dsLogical, DocStruct dsPhysical,
+			Element eleMods) throws JDOMException, IOException {
 		// logger.debug(new XMLOutputter().outputString(eleMods));
 		Document doc = new Document();
 		Element eleNewMods = (Element) eleMods.clone();
@@ -83,81 +86,91 @@ public class ModsUtils {
 					List<Element> eleXpathList = eleMetadata.getChildren("xpath", null);
 					if (mdType.getIsPerson()) {
 						// Persons
-						String name = "";
-						String firstName = "";
-						String lastName = "";
-
 						for (Element eleXpath : eleXpathList) {
 							String query = eleXpath.getTextTrim();
 							// logger.debug("XPath: " + query);
 							XPath xpath = XPath.newInstance(query);
 							xpath.addNamespace(NS_MODS);
-							Element eleValue = (Element) xpath.selectSingleNode(doc);
-							if (eleValue != null) {
-								if (eleXpath.getAttribute("family") != null) {
-									lastName = eleValue.getTextTrim();
-								} else if (eleXpath.getAttribute("given") != null) {
-									firstName = eleValue.getTextTrim();
-								} else {
-									name = eleValue.getTextTrim();
+							// Element eleValue = (Element) xpath.selectSingleNode(doc);
+							List<Element> eleValueList = xpath.selectNodes(doc);
+							if (eleValueList != null) {
+								for (Element eleValue : eleValueList) {
+									String name = "";
+									String firstName = "";
+									String lastName = "";
+
+									if (eleXpath.getAttribute("family") != null) {
+										lastName = eleValue.getTextTrim();
+									} else if (eleXpath.getAttribute("given") != null) {
+										firstName = eleValue.getTextTrim();
+									} else {
+										name = eleValue.getTextTrim();
+									}
+
+									if (name.contains(",")) {
+										String[] nameSplit = name.split("[,]");
+										if (nameSplit.length > 0 && StringUtils.isEmpty(lastName)) {
+											lastName = nameSplit[0].trim();
+										}
+										if (nameSplit.length > 1 && StringUtils.isEmpty(firstName)) {
+											firstName = nameSplit[1].trim();
+										}
+									} else {
+										lastName = name;
+									}
+
+									if (StringUtils.isNotEmpty(lastName)) {
+										Person person = new Person(mdType);
+										person.setFirstname(firstName);
+										person.setLastname(lastName);
+										person.setRole(mdType.getName());
+										if (eleMetadata.getAttribute("logical") != null
+												&& eleMetadata.getAttributeValue("logical").equalsIgnoreCase("true")) {
+											dsLogical.addPerson(person);
+										}
+									}
 								}
 							}
 						}
 
-						if (name.contains(",")) {
-							String[] nameSplit = name.split("[,]");
-							if (nameSplit.length > 0 && StringUtils.isEmpty(lastName)) {
-								lastName = nameSplit[0].trim();
-							}
-							if (nameSplit.length > 1 && StringUtils.isEmpty(firstName)) {
-								firstName = nameSplit[1].trim();
-							}
-						} else {
-							lastName = name;
-						}
-
-						if (StringUtils.isNotEmpty(lastName)) {
-							Person person = new Person(mdType);
-							person.setFirstname(firstName);
-							person.setLastname(lastName);
-							person.setRole(mdType.getName());
-							if (eleMetadata.getAttribute("logical") != null && eleMetadata.getAttributeValue("logical").equalsIgnoreCase("true")) {
-								dsLogical.addPerson(person);
-							}
-						}
 					} else {
 						// Regular metadata
-						List<String> values = new ArrayList<String>();
 						for (Element eleXpath : eleXpathList) {
 							String query = eleXpath.getTextTrim();
 							// logger.debug("XPath: " + query);
 							XPath xpath = XPath.newInstance(query);
 							xpath.addNamespace(NS_MODS);
-							Element eleValue = (Element) xpath.selectSingleNode(doc);
-							if (eleValue != null) {
-								// logger.debug("value: " + eleValue.getTextTrim());
-								values.add(eleValue.getTextTrim());
+							List<Element> eleValueList = xpath.selectNodes(doc);
+							if (eleValueList != null) {
+								for (Element eleValue : eleValueList) {
+									List<String> values = new ArrayList<String>();
+									// logger.debug("value: " + eleValue.getTextTrim());
+									values.add(eleValue.getTextTrim());
+
+									String value = "";
+									for (String s : values) {
+										if (StringUtils.isNotEmpty(s)) {
+											value += " " + s;
+										}
+									}
+									value = value.trim();
+
+									if (value.length() > 0) {
+										Metadata metadata = new Metadata(mdType);
+										metadata.setValue(value);
+										if (eleMetadata.getAttribute("logical") != null
+												&& eleMetadata.getAttributeValue("logical").equalsIgnoreCase("true")) {
+											dsLogical.addMetadata(metadata);
+										}
+										if (eleMetadata.getAttribute("physical") != null
+												&& eleMetadata.getAttributeValue("physical").equalsIgnoreCase("true")) {
+											dsPhysical.addMetadata(metadata);
+										}
+									}
+								}
 							}
 						}
 
-						String value = "";
-						for (String s : values) {
-							if (StringUtils.isNotEmpty(s)) {
-								value += " " + s;
-							}
-						}
-						value = value.trim();
-
-						if (value.length() > 0) {
-							Metadata metadata = new Metadata(mdType);
-							metadata.setValue(value);
-							if (eleMetadata.getAttribute("logical") != null && eleMetadata.getAttributeValue("logical").equalsIgnoreCase("true")) {
-								dsLogical.addMetadata(metadata);
-							}
-							if (eleMetadata.getAttribute("physical") != null && eleMetadata.getAttributeValue("physical").equalsIgnoreCase("true")) {
-								dsPhysical.addMetadata(metadata);
-							}
-						}
 					}
 				} catch (MetadataTypeNotAllowedException e) {
 					logger.warn(e.getMessage());
@@ -348,7 +361,8 @@ public class ModsUtils {
 	 * @throws MetadataTypeNotAllowedException
 	 * @throws DocStructHasNoTypeException
 	 */
-	public static String getIdentifier(Prefs prefs, DocStruct ds) throws MetadataTypeNotAllowedException, DocStructHasNoTypeException {
+	public static String getIdentifier(Prefs prefs, DocStruct ds) throws MetadataTypeNotAllowedException,
+			DocStructHasNoTypeException {
 		String ret = null;
 
 		MetadataType mdTypeId = prefs.getMetadataTypeByName("CatalogIDDigital");
@@ -374,7 +388,8 @@ public class ModsUtils {
 	 * @throws MetadataTypeNotAllowedException
 	 * @throws DocStructHasNoTypeException
 	 */
-	public static String getTitle(Prefs prefs, DocStruct ds) throws MetadataTypeNotAllowedException, DocStructHasNoTypeException {
+	public static String getTitle(Prefs prefs, DocStruct ds) throws MetadataTypeNotAllowedException,
+			DocStructHasNoTypeException {
 		String ret = null;
 
 		MetadataType mdTypeTitle = prefs.getMetadataTypeByName("TitleDocMain");
@@ -395,7 +410,8 @@ public class ModsUtils {
 	 * @throws MetadataTypeNotAllowedException
 	 * @throws DocStructHasNoTypeException
 	 */
-	public static String getAuthor(Prefs prefs, DocStruct ds) throws MetadataTypeNotAllowedException, DocStructHasNoTypeException {
+	public static String getAuthor(Prefs prefs, DocStruct ds) throws MetadataTypeNotAllowedException,
+			DocStructHasNoTypeException {
 		String ret = null;
 
 		MetadataType mdTypePerson = prefs.getMetadataTypeByName("Author");
