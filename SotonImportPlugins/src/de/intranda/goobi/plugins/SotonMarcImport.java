@@ -59,7 +59,7 @@ public class SotonMarcImport implements IImportPlugin, IPlugin {
 	private static final Logger logger = Logger.getLogger(SotonMarcImport.class);
 
 	private static final String NAME = "SOTON MARC21 Import";
-	private static final String VERSION = "1.0.20110603";
+	private static final String VERSION = "1.0.20110608";
 	// private static final String XSLT_PATH = "jar:file:/" + ConfigMain.getParameter("pluginFolder")
 	// + "import/SotonImportPlugins.jar!/resources/MARC21slim2MODS3.xsl";
 	private static final String XSLT_PATH = ConfigMain.getParameter("xsltFolder") + "MARC21slim2MODS3.xsl";
