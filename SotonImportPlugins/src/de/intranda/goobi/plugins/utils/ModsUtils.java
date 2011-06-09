@@ -1,3 +1,8 @@
+/**
+ * (c) 2011 intranda GmbH
+ * 
+ * @author Andrey Kozhushkov
+ */
 package de.intranda.goobi.plugins.utils;
 
 import java.io.File;
@@ -35,12 +40,9 @@ public class ModsUtils {
 	/**
 	 * Writes the given JDOM document into a file.
 	 * 
-	 * @param folderName
-	 *            Folder in which to write the destination file.
-	 * @param fileName
-	 *            Name of the destination file.
-	 * @param doc
-	 *            JDOM document containing the data.
+	 * @param folderName Folder in which to write the destination file.
+	 * @param fileName Name of the destination file.
+	 * @param doc JDOM document containing the data.
 	 * @throws FileNotFoundException
 	 * @throws IOException
 	 */
@@ -69,8 +71,8 @@ public class ModsUtils {
 	 * @throws JDOMException
 	 */
 	@SuppressWarnings("unchecked")
-	public static void parseModsSection(String mappingFileName, Prefs prefs, DocStruct dsLogical, DocStruct dsPhysical,
-			Element eleMods) throws JDOMException, IOException {
+	public static void parseModsSection(String mappingFileName, Prefs prefs, DocStruct dsLogical, DocStruct dsPhysical, Element eleMods)
+			throws JDOMException, IOException {
 		// logger.debug(new XMLOutputter().outputString(eleMods));
 		Document doc = new Document();
 		Element eleNewMods = (Element) eleMods.clone();
@@ -361,8 +363,7 @@ public class ModsUtils {
 	 * @throws MetadataTypeNotAllowedException
 	 * @throws DocStructHasNoTypeException
 	 */
-	public static String getIdentifier(Prefs prefs, DocStruct ds) throws MetadataTypeNotAllowedException,
-			DocStructHasNoTypeException {
+	public static String getIdentifier(Prefs prefs, DocStruct ds) throws MetadataTypeNotAllowedException, DocStructHasNoTypeException {
 		String ret = null;
 
 		MetadataType mdTypeId = prefs.getMetadataTypeByName("CatalogIDDigital");
@@ -388,8 +389,7 @@ public class ModsUtils {
 	 * @throws MetadataTypeNotAllowedException
 	 * @throws DocStructHasNoTypeException
 	 */
-	public static String getTitle(Prefs prefs, DocStruct ds) throws MetadataTypeNotAllowedException,
-			DocStructHasNoTypeException {
+	public static String getTitle(Prefs prefs, DocStruct ds) throws MetadataTypeNotAllowedException, DocStructHasNoTypeException {
 		String ret = null;
 
 		MetadataType mdTypeTitle = prefs.getMetadataTypeByName("TitleDocMain");
@@ -410,8 +410,7 @@ public class ModsUtils {
 	 * @throws MetadataTypeNotAllowedException
 	 * @throws DocStructHasNoTypeException
 	 */
-	public static String getAuthor(Prefs prefs, DocStruct ds) throws MetadataTypeNotAllowedException,
-			DocStructHasNoTypeException {
+	public static String getAuthor(Prefs prefs, DocStruct ds) throws MetadataTypeNotAllowedException, DocStructHasNoTypeException {
 		String ret = null;
 
 		MetadataType mdTypePerson = prefs.getMetadataTypeByName("Author");

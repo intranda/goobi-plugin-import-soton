@@ -1,3 +1,8 @@
+/**
+ * (c) 2011 intranda GmbH
+ * 
+ * @author Andrey Kozhushkov
+ */
 package de.intranda.goobi.plugins;
 import java.io.File;
 import java.util.ArrayList;
