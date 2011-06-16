@@ -7,6 +7,8 @@
 	 ================================= -->
 	<property name="jarfile-cambridge" value="CamImportPlugins.jar" />
 	<property name="jarfile-soton" value="SotonImportPlugins.jar" />
+	<property name="zipfile-cambridge-source" value="CamImportPlugins-source.zip" />
+	<property name="zipfile-soton-source" value="SotonImportPlugins-source.zip" />
 	<property name="pluginFolderWin" value="C:/Goobi/plugins/import/" />
 	<property name="pluginFolderMac" value="/opt/digiverso/goobi/plugins/import/" />
 
@@ -21,7 +23,7 @@
 		<echo>generate jar file</echo>
 		<jar destfile="${jarfile-cambridge}">
 			<fileset dir="bin" excludes="**/Soton*" />
-	        <fileset dir="lib" includes="marc4j.jar" />
+			<fileset dir="lib" includes="marc4j.jar" />
 			<fileset dir="resources" includes="**/*.xsl mods_map.xml" />
 		</jar>
 	</target>
@@ -34,7 +36,7 @@
 		<echo>generate jar file</echo>
 		<jar destfile="${jarfile-soton}">
 			<fileset dir="bin" excludes="**/Cam*" />
-	        <fileset dir="lib" includes="marc4j.jar" />
+			<fileset dir="lib" includes="marc4j.jar" />
 			<fileset dir="resources" includes="**/*.xsl mods_map.xml" />
 		</jar>
 	</target>
@@ -103,6 +105,26 @@
 		</condition>
 		<antcall target="copyToPluginFolder-cambridge" />
 		<antcall target="copyToPluginFolder-soton" />
+		<echo>intranda ... alles ist gut!</echo>
+	</target>
+
+	<target name="source-cambridge">
+		<echo>generate zip file</echo>
+		<zip destfile="${zipfile-cambridge-source}">
+			<fileset dir="src" excludes="**/Soton*" />
+			<fileset dir="lib" includes="marc4j.jar" />
+			<fileset dir="resources" includes="**/*.xsl mods_map.xml" />
+		</zip>
+		<echo>intranda ... alles ist gut!</echo>
+	</target>
+
+	<target name="source-soton">
+		<echo>generate zip file</echo>
+		<jar destfile="${zipfile-cambridge-source}">
+			<fileset dir="src" excludes="**/Cam*" />
+			<fileset dir="lib" includes="marc4j.jar" />
+			<fileset dir="resources" includes="**/*.xsl mods_map.xml" />
+		</jar>
 		<echo>intranda ... alles ist gut!</echo>
 	</target>
 
