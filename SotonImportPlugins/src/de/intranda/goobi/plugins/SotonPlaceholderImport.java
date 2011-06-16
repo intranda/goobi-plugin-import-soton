@@ -1,5 +1,20 @@
 /**
- * (c) 2011 intranda GmbH
+ * This file is part of CamImportPlugins/SotonImportPlugins.
+ * 
+ * Copyright (C) 2011 intranda GmbH
+ * 
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  * 
  * @author Andrey Kozhushkov
  */
@@ -40,13 +55,14 @@ public class SotonPlaceholderImport implements IImportPlugin, IPlugin {
 	private static final Logger logger = Logger.getLogger(SotonPlaceholderImport.class);
 
 	private static final String NAME = "SOTON Placeholder Import";
-	private static final String VERSION = "1.0.20110408";
+	private static final String VERSION = "1.0.20110616";
 
 	private Prefs prefs;
 	private String data = "";
 	private File importFile = null;
 	private String importFolder = "C:/Goobi/";
 	private String currentIdentifier;
+	private List<String> currentCollectionList;
 
 	public SotonPlaceholderImport() {
 	}
@@ -91,6 +107,16 @@ public class SotonPlaceholderImport implements IImportPlugin, IPlugin {
 			} catch (DocStructHasNoTypeException e1) {
 				logger.error("DocStructHasNoTypeException while reading images", e1);
 			}
+			
+			// Add collection names attached to the current record
+			if (currentCollectionList != null) {
+				MetadataType mdTypeCollection = prefs.getMetadataTypeByName("singleDigCollection");
+				for (String collection : currentCollectionList) {
+					Metadata mdCollection = new Metadata(mdTypeCollection);
+					mdCollection.setValue(collection);
+					dsRoot.addMetadata(mdCollection);
+				}
+			}
 		} catch (PreferencesException e) {
 			logger.error(e.getMessage(), e);
 		} catch (TypeNotAllowedForParentException e) {
@@ -108,6 +134,7 @@ public class SotonPlaceholderImport implements IImportPlugin, IPlugin {
 
 		for (Record r : records) {
 			data = r.getData();
+			currentCollectionList = r.getCollections();
 			Fileformat ff = convertData();
 			if (ff != null) {
 				try {

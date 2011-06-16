@@ -1,5 +1,20 @@
 /**
- * (c) 2011 intranda GmbH
+ * This file is part of CamImportPlugins/SotonImportPlugins.
+ * 
+ * Copyright (C) 2011 intranda GmbH
+ * 
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  * 
  * @author Andrey Kozhushkov
  */
@@ -9,6 +24,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.StringReader;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -33,6 +49,7 @@ import ugh.dl.DigitalDocument;
 import ugh.dl.DocStruct;
 import ugh.dl.Fileformat;
 import ugh.dl.Metadata;
+import ugh.dl.MetadataType;
 import ugh.dl.Prefs;
 import ugh.exceptions.DocStructHasNoTypeException;
 import ugh.exceptions.MetadataTypeNotAllowedException;
@@ -52,7 +69,7 @@ public class CamModsImport implements IImportPlugin, IPlugin {
 	private static final Logger logger = Logger.getLogger(CamModsImport.class);
 
 	private static final String NAME = "Cambridge MODS Import";
-	private static final String VERSION = "1.0.20110608";
+	private static final String VERSION = "1.0.20110616";
 	private static final String MODS_MAPPING_FILE = ConfigMain.getParameter("xsltFolder") + "mods_map.xml";
 
 	private Prefs prefs;
@@ -63,6 +80,7 @@ public class CamModsImport implements IImportPlugin, IPlugin {
 	private String currentIdentifier;
 	private String currentTitle;
 	private String currentAuthor;
+	private List<String> currentCollectionList;
 
 	public CamModsImport() {
 		map.put("?monographic", "Monograph");
@@ -158,6 +176,17 @@ public class CamModsImport implements IImportPlugin, IPlugin {
 						logger.error("DocStructHasNoTypeException while reading images", e1);
 					}
 				}
+
+				// Add collection names attached to the current record
+				if (currentCollectionList != null) {
+					MetadataType mdTypeCollection = prefs.getMetadataTypeByName("singleDigCollection");
+					for (String collection : currentCollectionList) {
+						Metadata mdCollection = new Metadata(mdTypeCollection);
+						mdCollection.setValue(collection);
+						dsRoot.addMetadata(mdCollection);
+					}
+				}
+
 				ModsUtils.writeXmlToFile(getImportFolder() + File.separator + getProcessTitle().replace(".xml", "_src"),
 						getProcessTitle().replace(".xml", "_mods.xml"), doc);
 			}
@@ -184,6 +213,7 @@ public class CamModsImport implements IImportPlugin, IPlugin {
 
 		for (Record r : records) {
 			data = r.getData();
+			currentCollectionList = r.getCollections();
 			Fileformat ff = convertData();
 			if (ff != null) {
 				r.setId(currentIdentifier);
@@ -344,9 +374,12 @@ public class CamModsImport implements IImportPlugin, IPlugin {
 		// List<Record> records = converter.splitRecords(sb.toString());
 
 		int counter = 1;
+		String[] collections = { "Varia", "DigiWunschbuch" };
 		for (Record record : records) {
+			record.setCollections(Arrays.asList(collections));
 			logger.debug(counter + ":\n" + record.getData());
 			converter.data = record.getData();
+			converter.currentCollectionList = record.getCollections();
 			Fileformat ff = converter.convertData();
 			try {
 				ff.write("c:/" + converter.importFile.getName().replace(".xml", "") + "_" + counter + ".xml");
