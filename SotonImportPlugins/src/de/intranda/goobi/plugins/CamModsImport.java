@@ -347,7 +347,7 @@ public class CamModsImport implements IImportPlugin, IPlugin {
 			logger.error(e.getMessage(), e);
 		}
 
-		converter.setFile(new File("samples/mods-cam/bib_marc_mods.xml"));
+		converter.setFile(new File("samples/mods-cam/books_mods_eg.xml"));
 		converter.setImportFolder("C:/Goobi/hotfolder/");
 		List<Record> records = converter.generateRecordsFromFile();
 

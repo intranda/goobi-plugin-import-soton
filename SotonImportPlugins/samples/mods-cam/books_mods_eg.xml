@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<modsCollection xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns="http://www.loc.gov/mods/v3"
+  xsi:schemaLocation="http://www.loc.gov/mods/v3 http://www.loc.gov/standards/mods/v3/mods-3-4.xsd">
+  <mods version="3.4">
+    <titleInfo>
+      <nonSort>A </nonSort>
+      <title>bibliography of Anglo-Welsh literature, 1900-1965</title>
+      <subTitle>Wales and it's place in the UK</subTitle>
+      <partName>Vol. 3</partName>
+    </titleInfo>
+    <titleInfo type="uniform">
+      <title>Example uniform title</title>
+      <subTitle>example uniform subtitle</subTitle>
+    </titleInfo>
+    <name type="personal" usage="primary" nameTitleGroup="1">
+      <namePart>Jones, Brynmor</namePart>
+      <namePart type="termsOfAddress">F.L.A</namePart>
+    </name>
+    <name type="conference">
+      <namePart>10th Annual Conference of Welsh Bibliography</namePart>
+    </name>
+    <name type="corporate">
+      <namePart>Welsh University Press</namePart>
+    </name>
+    <typeOfResource>text</typeOfResource>
+    <originInfo script="Latn">
+      <place>
+        <placeTerm type="code" authority="marccountry">wlk</placeTerm>
+      </place>
+      <place>
+        <placeTerm type="text">Swansea (Glamorgan)</placeTerm>
+      </place>
+      <publisher>Library Association (Wales &amp; Monmouthshire Branch)</publisher>
+      <dateIssued>1970</dateIssued>
+      <issuance>monographic</issuance>
+      <frequency/>
+    </originInfo>
+    <language>
+      <languageTerm authority="iso639-2b" type="code">eng</languageTerm>
+    </language>
+    <physicalDescription>
+      <extent>139p ; 25cm.</extent>
+    </physicalDescription>
+    <note type="statement of responsibility" altRepGroup="00" script="Latn">B. Jones.</note>
+    <subject authority="lcsh">
+      <topic>English literature</topic>
+      <topic>Welsh authors</topic>
+      <genre>Bibliography</genre>
+    </subject>
+    <subject authority="lcsh">
+      <topic>English literature</topic>
+      <temporal>20th century</temporal>
+      <genre>Bibliography</genre>
+    </subject>
+    <subject authority="lcsh">
+      <topic>Wales</topic>
+      <topic>In literature</topic>
+      <genre>Bibliography</genre>
+    </subject>
+    <subject authority="lcsh">
+      <name type="personal">
+        <namePart>Jones, Huw</namePart>
+      </name>
+      <genre>Bibliography</genre>
+    </subject>
+    <note>An example note</note>
+    <location>
+      <physicalLocation>R3-900x</physicalLocation>
+      <shelfLocator>R734:5.1</shelfLocator>
+    </location>
+    <identifier type="isbn">0853652147</identifier>
+    <identifier type="lccn">lc74856788</identifier>
+    <recordInfo>
+      <descriptionStandard>aacr</descriptionStandard>
+      <recordCreationDate encoding="marc">020607</recordCreationDate>
+      <recordChangeDate encoding="iso8601">20070721081225.0</recordChangeDate>
+      <recordIdentifier>2205853</recordIdentifier>
+      <recordOrigin>Converted from MARCXML to MODS version 3.4 using MARC21slim2MODS3-4.xsl
+        (Revision 1.70)</recordOrigin>
+    </recordInfo>
+  </mods>
+</modsCollection>
+
