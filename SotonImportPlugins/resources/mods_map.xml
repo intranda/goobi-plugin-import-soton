@@ -53,6 +53,11 @@
 		</xpath>
 	</metadata>
 	<metadata logical="true">
+        <name>PublicationYear</name>
+        <xpath>/mods:mods/mods:originInfo/mods:dateCreated
+        </xpath>
+    </metadata>
+	<metadata logical="true">
 		<name>PublicationYear</name>
 		<xpath>/mods:mods/mods:originInfo/mods:dateIssued
 		</xpath>
