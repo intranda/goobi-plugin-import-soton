@@ -66,6 +66,7 @@ import ugh.dl.Prefs;
 import ugh.exceptions.DocStructHasNoTypeException;
 import ugh.exceptions.MetadataTypeNotAllowedException;
 import ugh.exceptions.PreferencesException;
+import ugh.exceptions.TypeNotAllowedAsChildException;
 import ugh.exceptions.TypeNotAllowedForParentException;
 import ugh.exceptions.WriteException;
 import ugh.fileformats.mets.MetsMods;
@@ -80,7 +81,7 @@ public class SotonMarcImport implements IImportPlugin, IPlugin {
 	private static final Logger logger = Logger.getLogger(SotonMarcImport.class);
 
 	private static final String NAME = "SOTON MARC21 Import";
-	private static final String VERSION = "1.0.20110616";
+	private static final String VERSION = "1.0.20111216";
 	// private static final String XSLT_PATH = "jar:file:/" + ConfigMain.getParameter("pluginFolder")
 	// + "import/SotonImportPlugins.jar!/resources/MARC21slim2MODS3.xsl";
 	private static final String XSLT_PATH = ConfigMain.getParameter("xsltFolder") + "MARC21slim2MODS3.xsl";
@@ -161,6 +162,20 @@ public class SotonMarcImport implements IImportPlugin, IPlugin {
 				currentIdentifier = ModsUtils.getIdentifier(prefs, dsRoot);
 				currentTitle = ModsUtils.getTitle(prefs, dsRoot);
 				currentAuthor = ModsUtils.getAuthor(prefs, dsRoot);
+				
+				// Add dummy volume to anchors
+				if (dsRoot.getType().getName().equals("Periodical") || dsRoot.getType().getName().equals("MultiVolumeWork")) {
+					DocStruct dsVolume = null;
+					if (dsRoot.getType().getName().equals("Periodical")) {
+						dsVolume = dd.createDocStruct(prefs.getDocStrctTypeByName("PeriodicalVolume"));
+					} else if (dsRoot.getType().getName().equals("MultiVolumeWork")) {
+						dsVolume = dd.createDocStruct(prefs.getDocStrctTypeByName("Volume"));
+					}
+					dsRoot.addChild(dsVolume);
+					Metadata mdId = new Metadata(prefs.getMetadataTypeByName("CatalogIDDigital"));
+					mdId.setValue(currentIdentifier + "_0001");
+					dsVolume.addMetadata(mdId);
+				}
 
 				// Add 'pathimagefiles'
 				try {
@@ -192,6 +207,8 @@ public class SotonMarcImport implements IImportPlugin, IPlugin {
 		} catch (TypeNotAllowedForParentException e) {
 			logger.error(e.getMessage(), e);
 		} catch (MetadataTypeNotAllowedException e) {
+			logger.error(e.getMessage(), e);
+		} catch (TypeNotAllowedAsChildException e) {
 			logger.error(e.getMessage(), e);
 		}
 

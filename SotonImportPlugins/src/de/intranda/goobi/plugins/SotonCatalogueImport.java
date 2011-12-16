@@ -66,6 +66,7 @@ import ugh.dl.Prefs;
 import ugh.exceptions.DocStructHasNoTypeException;
 import ugh.exceptions.MetadataTypeNotAllowedException;
 import ugh.exceptions.PreferencesException;
+import ugh.exceptions.TypeNotAllowedAsChildException;
 import ugh.exceptions.TypeNotAllowedForParentException;
 import ugh.exceptions.WriteException;
 import ugh.fileformats.mets.MetsMods;
@@ -79,7 +80,7 @@ public class SotonCatalogueImport implements IImportPlugin, IPlugin {
 	private static final Logger logger = Logger.getLogger(SotonCatalogueImport.class);
 
 	private static final String NAME = "SOTON Catalogue Import";
-	private static final String VERSION = "1.0.20110616";
+	private static final String VERSION = "1.0.20111216";
 	private static final String XSLT_PATH = ConfigMain.getParameter("xsltFolder") + "MARC21slim2MODS3.xsl";
 	private static final String MODS_MAPPING_FILE = ConfigMain.getParameter("xsltFolder") + "mods_map.xml";
 
@@ -159,6 +160,20 @@ public class SotonCatalogueImport implements IImportPlugin, IPlugin {
 				// Collect MODS metadata
 				ModsUtils.parseModsSection(MODS_MAPPING_FILE, prefs, dsRoot, dsBoundBook, eleMods);
 				currentIdentifier = data;
+				
+				// Add dummy volume to anchors
+				if (dsRoot.getType().getName().equals("Periodical") || dsRoot.getType().getName().equals("MultiVolumeWork")) {
+					DocStruct dsVolume = null;
+					if (dsRoot.getType().getName().equals("Periodical")) {
+						dsVolume = dd.createDocStruct(prefs.getDocStrctTypeByName("PeriodicalVolume"));
+					} else if (dsRoot.getType().getName().equals("MultiVolumeWork")) {
+						dsVolume = dd.createDocStruct(prefs.getDocStrctTypeByName("Volume"));
+					}
+					dsRoot.addChild(dsVolume);
+					Metadata mdId = new Metadata(prefs.getMetadataTypeByName("CatalogIDDigital"));
+					mdId.setValue(currentIdentifier + "_0001");
+					dsVolume.addMetadata(mdId);
+				}
 
 				// Add 'pathimagefiles'
 				try {
@@ -192,6 +207,8 @@ public class SotonCatalogueImport implements IImportPlugin, IPlugin {
 		} catch (MetadataTypeNotAllowedException e) {
 			logger.error(e.getMessage(), e);
 		} catch (DocStructHasNoTypeException e) {
+			logger.error(e.getMessage(), e);
+		} catch (TypeNotAllowedAsChildException e) {
 			logger.error(e.getMessage(), e);
 		}
 
@@ -424,7 +441,8 @@ public class SotonCatalogueImport implements IImportPlugin, IPlugin {
 		}
 
 		List<Record> records = new ArrayList<Record>();
-		List<String> ids = converter.splitIds("00000000\r\n00044167\r\n00040558\r\n00043679\r\n00083328\r\n00110330");
+//		List<String> ids = converter.splitIds("00000000\r\n00044167\r\n00040558\r\n00043679\r\n00083328\r\n00110330");
+		List<String> ids = converter.splitIds("257042-1001");
 		for (String id : ids) {
 			Record r = new Record();
 			r.setData(id);
