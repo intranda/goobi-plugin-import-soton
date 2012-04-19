@@ -226,7 +226,7 @@ public class SotonCatalogueImport implements IImportPlugin, IPlugin {
 			this.currentCollectionList = r.getCollections();
 			Fileformat ff = convertData();
 			ImportObject io = new ImportObject();
-			io.setProcessTitle(getProcessTitle());
+			io.setProcessTitle(getProcessTitle().substring(0, getProcessTitle().length() -4));
 			if (ff != null) {
 				r.setId(this.currentIdentifier);
 				try {
@@ -247,6 +247,7 @@ public class SotonCatalogueImport implements IImportPlugin, IPlugin {
 			} else {
 				io.setImportReturnValue(ImportReturnValue.InvalidData);
 			}
+			answer.add(io);
 		}
 
 		return answer;

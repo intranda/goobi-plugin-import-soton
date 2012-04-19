@@ -100,20 +100,20 @@ public class SotonMarcImport implements IImportPlugin, IPlugin {
 	private List<String> currentCollectionList;
 
 	public SotonMarcImport() {
-		map.put("?monographic", "Monograph");
-		map.put("?continuing", "Periodical");
-		map.put("?multipart monograph", "MultiVolumeWork");
-		map.put("?single unit", "Monograph");
-		map.put("?integrating resource", "MultiVolumeWork");
-		map.put("?serial", "Periodical");
-		map.put("?cartographic", "Map");
-		map.put("?notated music", null);
-		map.put("?sound recording-nonmusical", null);
-		map.put("?sound recording-musical", null);
-		map.put("?moving image", null);
-		map.put("?three dimensional object", null);
-		map.put("?software, multimedia", null);
-		map.put("?mixed material", null);
+		this.map.put("?monographic", "Monograph");
+		this.map.put("?continuing", "Periodical");
+		this.map.put("?multipart monograph", "MultiVolumeWork");
+		this.map.put("?single unit", "Monograph");
+		this.map.put("?integrating resource", "MultiVolumeWork");
+		this.map.put("?serial", "Periodical");
+		this.map.put("?cartographic", "Map");
+		this.map.put("?notated music", null);
+		this.map.put("?sound recording-nonmusical", null);
+		this.map.put("?sound recording-musical", null);
+		this.map.put("?moving image", null);
+		this.map.put("?three dimensional object", null);
+		this.map.put("?software, multimedia", null);
+		this.map.put("?mixed material", null);
 	}
 
 	@Override
@@ -121,7 +121,7 @@ public class SotonMarcImport implements IImportPlugin, IPlugin {
 		Fileformat ff = null;
 		Document doc;
 		try {
-			doc = new SAXBuilder().build(new StringReader(data));
+			doc = new SAXBuilder().build(new StringReader(this.data));
 			if (doc != null && doc.hasRootElement()) {
 				XSLTransformer transformer = new XSLTransformer(XSLT_PATH);
 				// InputStream in = getClass().getResourceAsStream("/MARC21slim2MODS3.xsl");
@@ -130,7 +130,7 @@ public class SotonMarcImport implements IImportPlugin, IPlugin {
 				Document docMods = transformer.transform(doc);
 				logger.debug(new XMLOutputter().outputString(docMods));
 
-				ff = new MetsMods(prefs);
+				ff = new MetsMods(this.prefs);
 				DigitalDocument dd = new DigitalDocument();
 				ff.setDigitalDocument(dd);
 
@@ -143,46 +143,46 @@ public class SotonMarcImport implements IImportPlugin, IPlugin {
 				String dsType = "Monograph";
 				if (eleMods.getChild("originInfo", null) != null) {
 					Element eleIssuance = eleMods.getChild("originInfo", null).getChild("issuance", null);
-					if (eleIssuance != null && map.get("?" + eleIssuance.getTextTrim()) != null) {
-						dsType = map.get("?" + eleIssuance.getTextTrim());
+					if (eleIssuance != null && this.map.get("?" + eleIssuance.getTextTrim()) != null) {
+						dsType = this.map.get("?" + eleIssuance.getTextTrim());
 					}
 				}
 				Element eleTypeOfResource = eleMods.getChild("typeOfResource", null);
-				if (eleTypeOfResource != null && map.get("?" + eleTypeOfResource.getTextTrim()) != null) {
-					dsType = map.get("?" + eleTypeOfResource.getTextTrim());
+				if (eleTypeOfResource != null && this.map.get("?" + eleTypeOfResource.getTextTrim()) != null) {
+					dsType = this.map.get("?" + eleTypeOfResource.getTextTrim());
 				}
 				logger.debug("Docstruct type: " + dsType);
 
-				DocStruct dsRoot = dd.createDocStruct(prefs.getDocStrctTypeByName(dsType));
+				DocStruct dsRoot = dd.createDocStruct(this.prefs.getDocStrctTypeByName(dsType));
 				dd.setLogicalDocStruct(dsRoot);
 
-				DocStruct dsBoundBook = dd.createDocStruct(prefs.getDocStrctTypeByName("BoundBook"));
+				DocStruct dsBoundBook = dd.createDocStruct(this.prefs.getDocStrctTypeByName("BoundBook"));
 				dd.setPhysicalDocStruct(dsBoundBook);
 
 				// Collect MODS metadata
-				ModsUtils.parseModsSection(MODS_MAPPING_FILE, prefs, dsRoot, dsBoundBook, eleMods);
-				currentIdentifier = ModsUtils.getIdentifier(prefs, dsRoot);
-				currentTitle = ModsUtils.getTitle(prefs, dsRoot);
-				currentAuthor = ModsUtils.getAuthor(prefs, dsRoot);
+				ModsUtils.parseModsSection(MODS_MAPPING_FILE, this.prefs, dsRoot, dsBoundBook, eleMods);
+				this.currentIdentifier = ModsUtils.getIdentifier(this.prefs, dsRoot);
+				this.currentTitle = ModsUtils.getTitle(this.prefs, dsRoot);
+				this.currentAuthor = ModsUtils.getAuthor(this.prefs, dsRoot);
 				
 				// Add dummy volume to anchors
 				if (dsRoot.getType().getName().equals("Periodical") || dsRoot.getType().getName().equals("MultiVolumeWork")) {
 					DocStruct dsVolume = null;
 					if (dsRoot.getType().getName().equals("Periodical")) {
-						dsVolume = dd.createDocStruct(prefs.getDocStrctTypeByName("PeriodicalVolume"));
+						dsVolume = dd.createDocStruct(this.prefs.getDocStrctTypeByName("PeriodicalVolume"));
 					} else if (dsRoot.getType().getName().equals("MultiVolumeWork")) {
-						dsVolume = dd.createDocStruct(prefs.getDocStrctTypeByName("Volume"));
+						dsVolume = dd.createDocStruct(this.prefs.getDocStrctTypeByName("Volume"));
 					}
 					dsRoot.addChild(dsVolume);
-					Metadata mdId = new Metadata(prefs.getMetadataTypeByName("CatalogIDDigital"));
-					mdId.setValue(currentIdentifier + "_0001");
+					Metadata mdId = new Metadata(this.prefs.getMetadataTypeByName("CatalogIDDigital"));
+					mdId.setValue(this.currentIdentifier + "_0001");
 					dsVolume.addMetadata(mdId);
 				}
 
 				// Add 'pathimagefiles'
 				try {
-					Metadata mdForPath = new Metadata(prefs.getMetadataTypeByName("pathimagefiles"));
-					mdForPath.setValue("./" + currentIdentifier);
+					Metadata mdForPath = new Metadata(this.prefs.getMetadataTypeByName("pathimagefiles"));
+					mdForPath.setValue("./" + this.currentIdentifier);
 					dsBoundBook.addMetadata(mdForPath);
 				} catch (MetadataTypeNotAllowedException e1) {
 					logger.error("MetadataTypeNotAllowedException while reading images", e1);
@@ -191,9 +191,9 @@ public class SotonMarcImport implements IImportPlugin, IPlugin {
 				}
 				
 				// Add collection names attached to the current record
-				if (currentCollectionList != null) {
-					MetadataType mdTypeCollection = prefs.getMetadataTypeByName("singleDigCollection");
-					for (String collection : currentCollectionList) {
+				if (this.currentCollectionList != null) {
+					MetadataType mdTypeCollection = this.prefs.getMetadataTypeByName("singleDigCollection");
+					for (String collection : this.currentCollectionList) {
 						Metadata mdCollection = new Metadata(mdTypeCollection);
 						mdCollection.setValue(collection);
 						dsRoot.addMetadata(mdCollection);
@@ -226,7 +226,7 @@ public class SotonMarcImport implements IImportPlugin, IPlugin {
 			this.currentCollectionList = r.getCollections();
 			Fileformat ff = convertData();
 			ImportObject io = new ImportObject();
-			io.setProcessTitle(getProcessTitle());
+			io.setProcessTitle(getProcessTitle().substring(0, getProcessTitle().length() -4));
 			if (ff != null) {
 				r.setId(this.currentIdentifier);
 				try {
@@ -247,6 +247,7 @@ public class SotonMarcImport implements IImportPlugin, IPlugin {
 			} else {
 				io.setImportReturnValue(ImportReturnValue.InvalidData);
 			}
+			answer.add(io);
 		}
 
 		return answer;
@@ -257,12 +258,12 @@ public class SotonMarcImport implements IImportPlugin, IPlugin {
 		List<Record> ret = new ArrayList<Record>();
 		InputStream input = null;
 		try {
-			logger.debug("loaded file: " + importFile.getAbsolutePath());
-			input = new FileInputStream(importFile);
+			logger.debug("loaded file: " + this.importFile.getAbsolutePath());
+			input = new FileInputStream(this.importFile);
 			MarcReader reader = new MarcStreamReader(input);
 			while (reader.hasNext()) {
 				try {
-					org.marc4j.marc.Record marcRecord = (org.marc4j.marc.Record) reader.next();
+					org.marc4j.marc.Record marcRecord = reader.next();
 					ByteArrayOutputStream out = new ByteArrayOutputStream();
 					MarcXmlWriter writer = new MarcXmlWriter(out, "utf-8", true);
 					writer.setConverter(new AnselToUnicode());
@@ -288,7 +289,7 @@ public class SotonMarcImport implements IImportPlugin, IPlugin {
 					logger.error(e.getMessage(), e);
 				}
 			}
-			logger.info("Extracted " + ret.size() + " records from '" + importFile.getName() + "'.");
+			logger.info("Extracted " + ret.size() + " records from '" + this.importFile.getName() + "'.");
 		}
 
 		return ret;
@@ -349,10 +350,10 @@ public class SotonMarcImport implements IImportPlugin, IPlugin {
 
 	@Override
 	public String getProcessTitle() {
-		if (StringUtils.isNotBlank(currentTitle)) {
-			return new ImportOpac().createAtstsl(currentTitle, currentAuthor).toLowerCase() + "_" + currentIdentifier + ".xml";
+		if (StringUtils.isNotBlank(this.currentTitle)) {
+			return new ImportOpac().createAtstsl(this.currentTitle, this.currentAuthor).toLowerCase() + "_" + this.currentIdentifier + ".xml";
 		}
-		return currentIdentifier + ".xml";
+		return this.currentIdentifier + ".xml";
 	}
 
 	@Override
@@ -362,7 +363,7 @@ public class SotonMarcImport implements IImportPlugin, IPlugin {
 
 	@Override
 	public String getImportFolder() {
-		return importFolder;
+		return this.importFolder;
 	}
 
 	@Override
