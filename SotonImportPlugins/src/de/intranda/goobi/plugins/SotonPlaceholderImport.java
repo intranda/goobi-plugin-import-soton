@@ -21,19 +21,20 @@
 package de.intranda.goobi.plugins;
 import java.io.File;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 import net.xeoh.plugins.base.annotations.PluginImplementation;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
+import org.goobi.production.Import.ImportObject;
 import org.goobi.production.Import.Record;
 import org.goobi.production.enums.ImportReturnValue;
 import org.goobi.production.enums.ImportType;
 import org.goobi.production.enums.PluginType;
 import org.goobi.production.plugin.interfaces.IImportPlugin;
 import org.goobi.production.plugin.interfaces.IPlugin;
+import org.goobi.production.properties.ImportProperty;
 
 import ugh.dl.DigitalDocument;
 import ugh.dl.DocStruct;
@@ -71,7 +72,7 @@ public class SotonPlaceholderImport implements IImportPlugin, IPlugin {
 	public Fileformat convertData() {
 		Fileformat ff = null;
 		try {
-			ff = new MetsMods(prefs);
+			ff = new MetsMods(this.prefs);
 			DigitalDocument dd = new DigitalDocument();
 			ff.setDigitalDocument(dd);
 
@@ -79,27 +80,27 @@ public class SotonPlaceholderImport implements IImportPlugin, IPlugin {
 			String dsType = "Monograph";
 			logger.debug("Docstruct type: " + dsType);
 
-			DocStruct dsRoot = dd.createDocStruct(prefs.getDocStrctTypeByName(dsType));
+			DocStruct dsRoot = dd.createDocStruct(this.prefs.getDocStrctTypeByName(dsType));
 			dd.setLogicalDocStruct(dsRoot);
 
-			DocStruct dsBoundBook = dd.createDocStruct(prefs.getDocStrctTypeByName("BoundBook"));
+			DocStruct dsBoundBook = dd.createDocStruct(this.prefs.getDocStrctTypeByName("BoundBook"));
 			dd.setPhysicalDocStruct(dsBoundBook);
 
-			MetadataType mdTypeId = prefs.getMetadataTypeByName("CatalogIDDigital");
+			MetadataType mdTypeId = this.prefs.getMetadataTypeByName("CatalogIDDigital");
 			Metadata mdId = new Metadata(mdTypeId);
 			dsRoot.addMetadata(mdId);
-			if (StringUtils.isNotEmpty(data)) {
-				mdId.setValue(data);
-				currentIdentifier = data;
+			if (StringUtils.isNotEmpty(this.data)) {
+				mdId.setValue(this.data);
+				this.currentIdentifier = this.data;
 			} else {
 				// Add a timestamp as identifer if the record still has none
 				mdId.setValue(String.valueOf(System.currentTimeMillis()));
-				currentIdentifier = mdId.getValue();
+				this.currentIdentifier = mdId.getValue();
 			}
 			
 			// Add 'pathimagefiles'
 			try {
-				Metadata mdForPath = new Metadata(prefs.getMetadataTypeByName("pathimagefiles"));
+				Metadata mdForPath = new Metadata(this.prefs.getMetadataTypeByName("pathimagefiles"));
 				mdForPath.setValue("./" + mdId.getValue());
 				dsBoundBook.addMetadata(mdForPath);
 			} catch (MetadataTypeNotAllowedException e1) {
@@ -109,9 +110,9 @@ public class SotonPlaceholderImport implements IImportPlugin, IPlugin {
 			}
 			
 			// Add collection names attached to the current record
-			if (currentCollectionList != null) {
-				MetadataType mdTypeCollection = prefs.getMetadataTypeByName("singleDigCollection");
-				for (String collection : currentCollectionList) {
+			if (this.currentCollectionList != null) {
+				MetadataType mdTypeCollection = this.prefs.getMetadataTypeByName("singleDigCollection");
+				for (String collection : this.currentCollectionList) {
 					Metadata mdCollection = new Metadata(mdTypeCollection);
 					mdCollection.setValue(collection);
 					dsRoot.addMetadata(mdCollection);
@@ -129,34 +130,38 @@ public class SotonPlaceholderImport implements IImportPlugin, IPlugin {
 	}
 
 	@Override
-	public HashMap<String, ImportReturnValue> generateFiles(List<Record> records) {
-		HashMap<String, ImportReturnValue> ret = new HashMap<String, ImportReturnValue>();
+	public List<ImportObject> generateFiles(List<Record> records) {
+		List<ImportObject> answer = new ArrayList<ImportObject>();
 
 		for (Record r : records) {
-			data = r.getData();
-			currentCollectionList = r.getCollections();
+			this.data = r.getData();
+			this.currentCollectionList = r.getCollections();
 			Fileformat ff = convertData();
+			ImportObject io = new ImportObject();
+			io.setProcessTitle(getProcessTitle());
 			if (ff != null) {
+				r.setId(this.currentIdentifier);
 				try {
-					MetsMods mm = new MetsMods(prefs);
+					MetsMods mm = new MetsMods(this.prefs);
 					mm.setDigitalDocument(ff.getDigitalDocument());
 					String fileName = getImportFolder() + getProcessTitle();
 					logger.debug("Writing '" + fileName + "' into hotfolder...");
 					mm.write(fileName);
-					ret.put(getProcessTitle(), ImportReturnValue.ExportFinished);
+					io.setMetsFilename(fileName);
+					io.setImportReturnValue(ImportReturnValue.ExportFinished);
 				} catch (PreferencesException e) {
 					logger.error(e.getMessage(), e);
-					ret.put(getProcessTitle(), ImportReturnValue.InvalidData);
+					io.setImportReturnValue(ImportReturnValue.InvalidData);
 				} catch (WriteException e) {
 					logger.error(e.getMessage(), e);
-					ret.put(getProcessTitle(), ImportReturnValue.WriteError);
+					io.setImportReturnValue(ImportReturnValue.InvalidData);
 				}
 			} else {
-				ret.put(getProcessTitle(), ImportReturnValue.InvalidData);
+				io.setImportReturnValue(ImportReturnValue.InvalidData);
 			}
 		}
 
-		return ret;
+		return answer;
 	}
 
 	@Override
@@ -185,7 +190,7 @@ public class SotonPlaceholderImport implements IImportPlugin, IPlugin {
 
 	@Override
 	public String getProcessTitle() {
-		return currentIdentifier + ".xml";
+		return this.currentIdentifier + ".xml";
 	}
 
 	@Override
@@ -195,7 +200,7 @@ public class SotonPlaceholderImport implements IImportPlugin, IPlugin {
 
 	@Override
 	public String getImportFolder() {
-		return importFolder;
+		return this.importFolder;
 	}
 
 	@Override
@@ -274,5 +279,24 @@ public class SotonPlaceholderImport implements IImportPlugin, IPlugin {
 			}
 			counter++;
 		}
+	}
+	
+	@Override
+	public List<Record> generateRecordsFromFilenames(List<String> filenames) {
+		return new ArrayList<Record>();
+	}
+
+	@Override
+	public List<ImportProperty> getProperties() {
+		return new ArrayList<ImportProperty>();
+	}
+
+	@Override
+	public List<String> getAllFilenames() {
+		return new ArrayList<String>();
+	}
+
+	@Override
+	public void deleteFiles(List<String> selectedFilenames) {		
 	}
 }

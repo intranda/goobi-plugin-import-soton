@@ -33,12 +33,14 @@ import net.xeoh.plugins.base.annotations.PluginImplementation;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
+import org.goobi.production.Import.ImportObject;
 import org.goobi.production.Import.Record;
 import org.goobi.production.enums.ImportReturnValue;
 import org.goobi.production.enums.ImportType;
 import org.goobi.production.enums.PluginType;
 import org.goobi.production.plugin.interfaces.IImportPlugin;
 import org.goobi.production.plugin.interfaces.IPlugin;
+import org.goobi.production.properties.ImportProperty;
 import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.JDOMException;
@@ -83,20 +85,20 @@ public class CamModsImport implements IImportPlugin, IPlugin {
 	private List<String> currentCollectionList;
 
 	public CamModsImport() {
-		map.put("?monographic", "Monograph");
-		map.put("?continuing", "Periodical");
-		map.put("?multipart monograph", "MultiVolumeWork");
-		map.put("?single unit", "Monograph");
-		map.put("?integrating resource", "MultiVolumeWork");
-		map.put("?serial", "Periodical");
-		map.put("?cartographic", "Map");
-		map.put("?notated music", null);
-		map.put("?sound recording-nonmusical", null);
-		map.put("?sound recording-musical", null);
-		map.put("?moving image", null);
-		map.put("?three dimensional object", null);
-		map.put("?software, multimedia", null);
-		map.put("?mixed material", null);
+		this.map.put("?monographic", "Monograph");
+		this.map.put("?continuing", "Periodical");
+		this.map.put("?multipart monograph", "MultiVolumeWork");
+		this.map.put("?single unit", "Monograph");
+		this.map.put("?integrating resource", "MultiVolumeWork");
+		this.map.put("?serial", "Periodical");
+		this.map.put("?cartographic", "Map");
+		this.map.put("?notated music", null);
+		this.map.put("?sound recording-nonmusical", null);
+		this.map.put("?sound recording-musical", null);
+		this.map.put("?moving image", null);
+		this.map.put("?three dimensional object", null);
+		this.map.put("?software, multimedia", null);
+		this.map.put("?mixed material", null);
 	}
 
 	@Override
@@ -104,9 +106,9 @@ public class CamModsImport implements IImportPlugin, IPlugin {
 		Fileformat ff = null;
 		Document doc;
 		try {
-			doc = new SAXBuilder().build(new StringReader(data));
+			doc = new SAXBuilder().build(new StringReader(this.data));
 			if (doc != null && doc.hasRootElement()) {
-				ff = new MetsMods(prefs);
+				ff = new MetsMods(this.prefs);
 				DigitalDocument dd = new DigitalDocument();
 				ff.setDigitalDocument(dd);
 
@@ -119,44 +121,44 @@ public class CamModsImport implements IImportPlugin, IPlugin {
 				String dsType = "Monograph";
 				if (eleMods.getChild("originInfo", null) != null) {
 					Element eleIssuance = eleMods.getChild("originInfo", null).getChild("issuance", null);
-					if (eleIssuance != null && map.get("?" + eleIssuance.getTextTrim()) != null) {
-						dsType = map.get("?" + eleIssuance.getTextTrim());
+					if (eleIssuance != null && this.map.get("?" + eleIssuance.getTextTrim()) != null) {
+						dsType = this.map.get("?" + eleIssuance.getTextTrim());
 					}
 				}
 				Element eleTypeOfResource = eleMods.getChild("typeOfResource", null);
-				if (eleTypeOfResource != null && map.get("?" + eleTypeOfResource.getTextTrim()) != null) {
-					dsType = map.get("?" + eleTypeOfResource.getTextTrim());
+				if (eleTypeOfResource != null && this.map.get("?" + eleTypeOfResource.getTextTrim()) != null) {
+					dsType = this.map.get("?" + eleTypeOfResource.getTextTrim());
 				}
 				logger.debug("Docstruct type: " + dsType);
 
-				DocStruct dsRoot = dd.createDocStruct(prefs.getDocStrctTypeByName(dsType));
+				DocStruct dsRoot = dd.createDocStruct(this.prefs.getDocStrctTypeByName(dsType));
 				dd.setLogicalDocStruct(dsRoot);
 
-				DocStruct dsBoundBook = dd.createDocStruct(prefs.getDocStrctTypeByName("BoundBook"));
+				DocStruct dsBoundBook = dd.createDocStruct(this.prefs.getDocStrctTypeByName("BoundBook"));
 				dd.setPhysicalDocStruct(dsBoundBook);
 
 				// Collect MODS metadata
-				ModsUtils.parseModsSection(MODS_MAPPING_FILE, prefs, dsRoot, dsBoundBook, eleMods);
-				currentIdentifier = ModsUtils.getIdentifier(prefs, dsRoot);
-				currentTitle = ModsUtils.getTitle(prefs, dsRoot);
-				currentAuthor = ModsUtils.getAuthor(prefs, dsRoot);
+				ModsUtils.parseModsSection(MODS_MAPPING_FILE, this.prefs, dsRoot, dsBoundBook, eleMods);
+				this.currentIdentifier = ModsUtils.getIdentifier(this.prefs, dsRoot);
+				this.currentTitle = ModsUtils.getTitle(this.prefs, dsRoot);
+				this.currentAuthor = ModsUtils.getAuthor(this.prefs, dsRoot);
 
 				// Add dummy volume to anchors
 				if (dsRoot.getType().getName().equals("Periodical") || dsRoot.getType().getName().equals("MultiVolumeWork")) {
 					DocStruct dsVolume = null;
 					if (dsRoot.getType().getName().equals("Periodical")) {
-						dsVolume = dd.createDocStruct(prefs.getDocStrctTypeByName("PeriodicalVolume"));
+						dsVolume = dd.createDocStruct(this.prefs.getDocStrctTypeByName("PeriodicalVolume"));
 					} else if (dsRoot.getType().getName().equals("MultiVolumeWork")) {
-						dsVolume = dd.createDocStruct(prefs.getDocStrctTypeByName("Volume"));
+						dsVolume = dd.createDocStruct(this.prefs.getDocStrctTypeByName("Volume"));
 					}
 					dsRoot.addChild(dsVolume);
-					Metadata mdId = new Metadata(prefs.getMetadataTypeByName("CatalogIDDigital"));
-					mdId.setValue(currentIdentifier + "_0001");
+					Metadata mdId = new Metadata(this.prefs.getMetadataTypeByName("CatalogIDDigital"));
+					mdId.setValue(this.currentIdentifier + "_0001");
 					dsVolume.addMetadata(mdId);
 
 					// Add 'pathimagefiles'
 					try {
-						Metadata mdForPath = new Metadata(prefs.getMetadataTypeByName("pathimagefiles"));
+						Metadata mdForPath = new Metadata(this.prefs.getMetadataTypeByName("pathimagefiles"));
 						mdForPath.setValue("./" + mdId);
 						dsBoundBook.addMetadata(mdForPath);
 					} catch (MetadataTypeNotAllowedException e1) {
@@ -167,8 +169,8 @@ public class CamModsImport implements IImportPlugin, IPlugin {
 				} else {
 					// Add 'pathimagefiles'
 					try {
-						Metadata mdForPath = new Metadata(prefs.getMetadataTypeByName("pathimagefiles"));
-						mdForPath.setValue("./" + currentIdentifier);
+						Metadata mdForPath = new Metadata(this.prefs.getMetadataTypeByName("pathimagefiles"));
+						mdForPath.setValue("./" + this.currentIdentifier);
 						dsBoundBook.addMetadata(mdForPath);
 					} catch (MetadataTypeNotAllowedException e1) {
 						logger.error("MetadataTypeNotAllowedException while reading images", e1);
@@ -178,9 +180,9 @@ public class CamModsImport implements IImportPlugin, IPlugin {
 				}
 
 				// Add collection names attached to the current record
-				if (currentCollectionList != null) {
-					MetadataType mdTypeCollection = prefs.getMetadataTypeByName("singleDigCollection");
-					for (String collection : currentCollectionList) {
+				if (this.currentCollectionList != null) {
+					MetadataType mdTypeCollection = this.prefs.getMetadataTypeByName("singleDigCollection");
+					for (String collection : this.currentCollectionList) {
 						Metadata mdCollection = new Metadata(mdTypeCollection);
 						mdCollection.setValue(collection);
 						dsRoot.addMetadata(mdCollection);
@@ -208,35 +210,38 @@ public class CamModsImport implements IImportPlugin, IPlugin {
 	}
 
 	@Override
-	public HashMap<String, ImportReturnValue> generateFiles(List<Record> records) {
-		HashMap<String, ImportReturnValue> ret = new HashMap<String, ImportReturnValue>();
+	public List<ImportObject> generateFiles(List<Record> records) {
+		List<ImportObject> answer = new ArrayList<ImportObject>();
 
 		for (Record r : records) {
-			data = r.getData();
-			currentCollectionList = r.getCollections();
+			this.data = r.getData();
+			this.currentCollectionList = r.getCollections();
 			Fileformat ff = convertData();
+			ImportObject io = new ImportObject();
+			io.setProcessTitle(getProcessTitle());
 			if (ff != null) {
-				r.setId(currentIdentifier);
+				r.setId(this.currentIdentifier);
 				try {
-					MetsMods mm = new MetsMods(prefs);
+					MetsMods mm = new MetsMods(this.prefs);
 					mm.setDigitalDocument(ff.getDigitalDocument());
 					String fileName = getImportFolder() + getProcessTitle();
 					logger.debug("Writing '" + fileName + "' into hotfolder...");
 					mm.write(fileName);
-					ret.put(getProcessTitle(), ImportReturnValue.ExportFinished);
+					io.setMetsFilename(fileName);
+					io.setImportReturnValue(ImportReturnValue.ExportFinished);
 				} catch (PreferencesException e) {
 					logger.error(e.getMessage(), e);
-					ret.put(getProcessTitle(), ImportReturnValue.InvalidData);
+					io.setImportReturnValue(ImportReturnValue.InvalidData);
 				} catch (WriteException e) {
 					logger.error(e.getMessage(), e);
-					ret.put(getProcessTitle(), ImportReturnValue.WriteError);
+					io.setImportReturnValue(ImportReturnValue.InvalidData);
 				}
 			} else {
-				ret.put(getProcessTitle(), ImportReturnValue.InvalidData);
+				io.setImportReturnValue(ImportReturnValue.InvalidData);
 			}
 		}
 
-		return ret;
+		return answer;
 	}
 
 	@Override
@@ -244,7 +249,7 @@ public class CamModsImport implements IImportPlugin, IPlugin {
 		List<Record> ret = new ArrayList<Record>();
 
 		try {
-			Document doc = new SAXBuilder().build(importFile);
+			Document doc = new SAXBuilder().build(this.importFile);
 			if (doc != null && doc.getRootElement() != null) {
 				for (Object obj : doc.getRootElement().getChildren("mods", null)) {
 					Element eleMods = (Element) obj;
@@ -254,7 +259,7 @@ public class CamModsImport implements IImportPlugin, IPlugin {
 				}
 				logger.debug(ret.size() + " records extracted.");
 			} else {
-				logger.error("Could not parse '" + importFile + "'.");
+				logger.error("Could not parse '" + this.importFile + "'.");
 			}
 		} catch (JDOMException e) {
 			logger.error(e.getMessage(), e);
@@ -277,10 +282,10 @@ public class CamModsImport implements IImportPlugin, IPlugin {
 
 	@Override
 	public String getProcessTitle() {
-		if (StringUtils.isNotBlank(currentTitle)) {
-			return new ImportOpac().createAtstsl(currentTitle, currentAuthor).toLowerCase() + "_" + currentIdentifier + ".xml";
+		if (StringUtils.isNotBlank(this.currentTitle)) {
+			return new ImportOpac().createAtstsl(this.currentTitle, this.currentAuthor).toLowerCase() + "_" + this.currentIdentifier + ".xml";
 		}
-		return currentIdentifier + ".xml";
+		return this.currentIdentifier + ".xml";
 	}
 
 	@Override
@@ -290,7 +295,7 @@ public class CamModsImport implements IImportPlugin, IPlugin {
 
 	@Override
 	public String getImportFolder() {
-		return importFolder;
+		return this.importFolder;
 	}
 
 	@Override
@@ -390,5 +395,24 @@ public class CamModsImport implements IImportPlugin, IPlugin {
 			}
 			counter++;
 		}
+	}
+	
+	@Override
+	public List<Record> generateRecordsFromFilenames(List<String> filenames) {
+		return new ArrayList<Record>();
+	}
+
+	@Override
+	public List<ImportProperty> getProperties() {
+		return new ArrayList<ImportProperty>();
+	}
+
+	@Override
+	public List<String> getAllFilenames() {
+		return new ArrayList<String>();
+	}
+
+	@Override
+	public void deleteFiles(List<String> selectedFilenames) {		
 	}
 }

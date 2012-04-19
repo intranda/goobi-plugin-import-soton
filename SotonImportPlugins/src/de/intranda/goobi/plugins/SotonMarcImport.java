@@ -39,12 +39,14 @@ import net.xeoh.plugins.base.annotations.PluginImplementation;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
+import org.goobi.production.Import.ImportObject;
 import org.goobi.production.Import.Record;
 import org.goobi.production.enums.ImportReturnValue;
 import org.goobi.production.enums.ImportType;
 import org.goobi.production.enums.PluginType;
 import org.goobi.production.plugin.interfaces.IImportPlugin;
 import org.goobi.production.plugin.interfaces.IPlugin;
+import org.goobi.production.properties.ImportProperty;
 import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.JDOMException;
@@ -216,34 +218,38 @@ public class SotonMarcImport implements IImportPlugin, IPlugin {
 	}
 
 	@Override
-	public HashMap<String, ImportReturnValue> generateFiles(List<Record> records) {
-		HashMap<String, ImportReturnValue> ret = new HashMap<String, ImportReturnValue>();
+	public List<ImportObject> generateFiles(List<Record> records) {
+		List<ImportObject> answer = new ArrayList<ImportObject>();
 
 		for (Record r : records) {
-			data = r.getData();
-			currentCollectionList = r.getCollections();
+			this.data = r.getData();
+			this.currentCollectionList = r.getCollections();
 			Fileformat ff = convertData();
+			ImportObject io = new ImportObject();
+			io.setProcessTitle(getProcessTitle());
 			if (ff != null) {
+				r.setId(this.currentIdentifier);
 				try {
-					MetsMods mm = new MetsMods(prefs);
+					MetsMods mm = new MetsMods(this.prefs);
 					mm.setDigitalDocument(ff.getDigitalDocument());
 					String fileName = getImportFolder() + getProcessTitle();
 					logger.debug("Writing '" + fileName + "' into hotfolder...");
 					mm.write(fileName);
-					ret.put(getProcessTitle(), ImportReturnValue.ExportFinished);
+					io.setMetsFilename(fileName);
+					io.setImportReturnValue(ImportReturnValue.ExportFinished);
 				} catch (PreferencesException e) {
 					logger.error(e.getMessage(), e);
-					ret.put(getProcessTitle(), ImportReturnValue.InvalidData);
+					io.setImportReturnValue(ImportReturnValue.InvalidData);
 				} catch (WriteException e) {
 					logger.error(e.getMessage(), e);
-					ret.put(getProcessTitle(), ImportReturnValue.WriteError);
+					io.setImportReturnValue(ImportReturnValue.WriteError);
 				}
 			} else {
-				ret.put(getProcessTitle(), ImportReturnValue.InvalidData);
+				io.setImportReturnValue(ImportReturnValue.InvalidData);
 			}
 		}
 
-		return ret;
+		return answer;
 	}
 
 	@Override
@@ -511,5 +517,24 @@ public class SotonMarcImport implements IImportPlugin, IPlugin {
 			}
 			counter++;
 		}
+	}
+	
+	@Override
+	public List<Record> generateRecordsFromFilenames(List<String> filenames) {
+		return new ArrayList<Record>();
+	}
+
+	@Override
+	public List<ImportProperty> getProperties() {
+		return new ArrayList<ImportProperty>();
+	}
+
+	@Override
+	public List<String> getAllFilenames() {
+		return new ArrayList<String>();
+	}
+
+	@Override
+	public void deleteFiles(List<String> selectedFilenames) {		
 	}
 }
