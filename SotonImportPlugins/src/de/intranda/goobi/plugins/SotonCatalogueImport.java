@@ -233,10 +233,13 @@ public class SotonCatalogueImport implements IImportPlugin, IPlugin {
 					MetsMods mm = new MetsMods(this.prefs);
 					mm.setDigitalDocument(ff.getDigitalDocument());
 					String fileName = getImportFolder() + getProcessTitle();
-					logger.debug("Writing '" + fileName + "' into hotfolder...");
+					logger.debug("Writing '" + fileName + "' into temp folder ...");
 					mm.write(fileName);
+					logger.debug("finished writing of file " + fileName);
 					io.setMetsFilename(fileName);
+					logger.debug("added metsfilename to answer");
 					io.setImportReturnValue(ImportReturnValue.ExportFinished);
+					logger.debug("finished conversion");
 				} catch (PreferencesException e) {
 					logger.error(e.getMessage(), e);
 					io.setImportReturnValue(ImportReturnValue.InvalidData);
