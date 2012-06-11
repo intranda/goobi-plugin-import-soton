@@ -33,6 +33,7 @@ import net.xeoh.plugins.base.annotations.PluginImplementation;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
+import org.goobi.production.Import.DocstructElement;
 import org.goobi.production.Import.ImportObject;
 import org.goobi.production.Import.Record;
 import org.goobi.production.enums.ImportReturnValue;
@@ -415,5 +416,41 @@ public class CamModsImport implements IImportPlugin, IPlugin {
 
 	@Override
 	public void deleteFiles(List<String> selectedFilenames) {		
+	}
+
+	@Override
+	public List<DocstructElement> getCurrentDocStructs() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String deleteDocstruct() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String addDocstruct() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<String> getPossibleDocstructs() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public DocstructElement getDocstruct() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void setDocstruct(DocstructElement dse) {
+		// TODO Auto-generated method stub
+		
 	}
 }
