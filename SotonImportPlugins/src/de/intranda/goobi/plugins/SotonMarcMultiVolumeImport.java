@@ -93,7 +93,7 @@ public class SotonMarcMultiVolumeImport implements IImportPlugin, IPlugin {
 
 	private static final String TYPE_PROPERTY_NAME = "Publication type";
 	
-	private static final String DOCSTRUCT_TYPE_SERIAL = "Serial";
+	private static final String DOCSTRUCT_TYPE_SERIAL = "Series";
 	private static final String DOCSTRUCT_TYPE_PERIODICAL = "Periodical";
 	private static final String DOCSTRUCT_TYPE_MULTIVOLUME = "Multipart monograph";
 
@@ -532,8 +532,6 @@ public class SotonMarcMultiVolumeImport implements IImportPlugin, IPlugin {
 				dsVolume.addMetadata(currentNoSorting);
 
 				// Add volume to child element
-
-				// TODO richtiges Metadata finden (TitleDocMain?)
 				Metadata volumeNumber = new Metadata(this.prefs.getMetadataTypeByName("volumeNumber"));
 				volumeNumber.setValue(docstruct.getVolumeProperty().getValue());
 				dsVolume.addMetadata(volumeNumber);
