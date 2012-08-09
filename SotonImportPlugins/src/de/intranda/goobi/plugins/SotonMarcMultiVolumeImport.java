@@ -25,6 +25,7 @@ import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -102,6 +103,8 @@ public class SotonMarcMultiVolumeImport implements IImportPlugin, IPlugin {
 	private List<SotonDocstructElement> currentDocStructs = new ArrayList<SotonDocstructElement>();
 	private SotonDocstructElement docstruct;
 	// private HashMap<String, String> structType = new HashMap<String, String>();;
+
+	private File importFile = null;
 
 	private Prefs prefs;
 	private String data = "";
@@ -199,6 +202,42 @@ public class SotonMarcMultiVolumeImport implements IImportPlugin, IPlugin {
 	@Override
 	public List<Record> generateRecordsFromFile() {
 		List<Record> ret = new ArrayList<Record>();
+		InputStream input = null;
+		try {
+			logger.debug("loaded file: " + this.importFile.getAbsolutePath());
+			input = new FileInputStream(this.importFile);
+			MarcReader reader = new MarcStreamReader(input);
+			while (reader.hasNext()) {
+				try {
+					org.marc4j.marc.Record marcRecord = reader.next();
+					ByteArrayOutputStream out = new ByteArrayOutputStream();
+					MarcXmlWriter writer = new MarcXmlWriter(out, "utf-8", true);
+					writer.setConverter(new AnselToUnicode());
+					writer.write(marcRecord);
+					writer.close();
+					Record record = new Record();
+					ret.add(record);
+					record.setData(out.toString());
+					out.close();
+				} catch (MarcException e) {
+					logger.error(e.getMessage());
+				}
+			}
+		} catch (FileNotFoundException e) {
+			logger.error(e.getMessage(), e);
+		} catch (IOException e) {
+			logger.error(e.getMessage(), e);
+		} finally {
+			if (input != null) {
+				try {
+					input.close();
+				} catch (IOException e) {
+					logger.error(e.getMessage(), e);
+				}
+			}
+			logger.info("Extracted " + ret.size() + " records from '" + this.importFile.getName() + "'.");
+		}
+
 		return ret;
 	}
 
@@ -273,6 +312,7 @@ public class SotonMarcMultiVolumeImport implements IImportPlugin, IPlugin {
 
 	@Override
 	public void setFile(File importFile) {
+		this.importFile = importFile;
 	}
 
 	@Override
@@ -284,8 +324,9 @@ public class SotonMarcMultiVolumeImport implements IImportPlugin, IPlugin {
 	@Override
 	public List<ImportType> getImportTypes() {
 		List<ImportType> answer = new ArrayList<ImportType>();
+		answer.add(ImportType.Record);
 		answer.add(ImportType.ID);
-
+		answer.add(ImportType.FILE);
 		return answer;
 	}
 
