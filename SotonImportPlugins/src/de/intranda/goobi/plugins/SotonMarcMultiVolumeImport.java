@@ -92,7 +92,7 @@ public class SotonMarcMultiVolumeImport implements IImportPlugin, IPlugin {
 	private static final String MODS_MAPPING_FILE = ConfigMain.getParameter("xsltFolder") + "mods_map_multi.xml";
 
 	private static final String TYPE_PROPERTY_NAME = "Publication type";
-	
+
 	private static final String DOCSTRUCT_TYPE_SERIAL = "Series";
 	private static final String DOCSTRUCT_TYPE_PERIODICAL = "Periodical";
 	private static final String DOCSTRUCT_TYPE_MULTIVOLUME = "Multipart monograph";
@@ -108,7 +108,7 @@ public class SotonMarcMultiVolumeImport implements IImportPlugin, IPlugin {
 
 	private Prefs prefs;
 	private String data = "";
-//	private File importFile = null;
+	// private File importFile = null;
 	private String importFolder = "C:/Goobi/";
 	private String currentIdentifier;
 
@@ -464,13 +464,17 @@ public class SotonMarcMultiVolumeImport implements IImportPlugin, IPlugin {
 		Fileformat ff = null;
 		Document doc;
 		try {
+			String marc = data;
 			// String marc = fetchRecord("http://pdf.library.soton.ac.uk/example_output.html");
-			String marc = fetchRecord("http://lms.soton.ac.uk/cgi-bin/goobi_marc.cgi?itemid=" + this.data);
-			if (StringUtils.isEmpty(marc) || marc.toLowerCase().contains("barcode not found")) {
-				return null;
+			if (!data.startsWith("<?xml")) {
+				marc = fetchRecord("http://lms.soton.ac.uk/cgi-bin/goobi_marc.cgi?itemid=" + this.data);
+
+				if (StringUtils.isEmpty(marc) || marc.toLowerCase().contains("barcode not found")) {
+					return null;
+				}
+				marc = extractMarcFromHtml(marc);
+				marc = convertToMarcXml(marc);
 			}
-			marc = extractMarcFromHtml(marc);
-			marc = convertToMarcXml(marc);
 			logger.debug(marc);
 			doc = new SAXBuilder().build(new StringReader(marc));
 			if (doc != null && doc.hasRootElement()) {
@@ -514,7 +518,19 @@ public class SotonMarcMultiVolumeImport implements IImportPlugin, IPlugin {
 
 				// Collect MODS metadata
 				ModsUtils.parseModsSectionForMultivolumes(MODS_MAPPING_FILE, this.prefs, dsRoot, dsVolume, dsBoundBook, eleMods);
-				this.currentIdentifier = this.data;
+
+				if (dsRoot.getAllMetadataByType(this.prefs.getMetadataTypeByName("CatalogIDDigital")) != null
+						&& dsRoot.getAllMetadataByType(this.prefs.getMetadataTypeByName("CatalogIDDigital")).size() > 0) {
+					currentIdentifier = dsRoot.getAllMetadataByType(this.prefs.getMetadataTypeByName("CatalogIDDigital")).get(0).getValue();
+				} else if (importFile != null) {
+					this.currentIdentifier = importFile.getName().replace(".mrc", "").replace(".xml", "");
+
+				}
+				// TODO find identifier for free text record import
+				else {
+
+					this.currentIdentifier = this.data;
+				}
 
 				// Add volume to anchors
 
@@ -535,12 +551,12 @@ public class SotonMarcMultiVolumeImport implements IImportPlugin, IPlugin {
 				Metadata volumeNumber = new Metadata(this.prefs.getMetadataTypeByName("volumeNumber"));
 				volumeNumber.setValue(docstruct.getVolumeProperty().getValue());
 				dsVolume.addMetadata(volumeNumber);
-				
+
 				// Add Part number to child element
 				if (docstruct.getPartProperty().getValue() != null && docstruct.getPartProperty().getValue().length() > 0) {
 					currentNo.setValue(String.valueOf(docstruct.getPartProperty().getValue()));
 				}
-				
+
 				// Add Date/Year to child element
 				if (docstruct.getYearProperty().getValue() != null && docstruct.getYearProperty().getValue().length() > 0) {
 					Metadata publicationYear = new Metadata(this.prefs.getMetadataTypeByName("PublicationYear"));
