@@ -468,7 +468,7 @@ public class SotonMarcMultiVolumeImport implements IImportPlugin, IPlugin {
 			// String marc = fetchRecord("http://pdf.library.soton.ac.uk/example_output.html");
 			if (!data.startsWith("<?xml")) {
 				marc = fetchRecord("http://lms.soton.ac.uk/cgi-bin/goobi_marc.cgi?itemid=" + this.data);
-
+				currentIdentifier = data;
 				if (StringUtils.isEmpty(marc) || marc.toLowerCase().contains("barcode not found")) {
 					return null;
 				}
@@ -518,20 +518,20 @@ public class SotonMarcMultiVolumeImport implements IImportPlugin, IPlugin {
 
 				// Collect MODS metadata
 				ModsUtils.parseModsSectionForMultivolumes(MODS_MAPPING_FILE, this.prefs, dsRoot, dsVolume, dsBoundBook, eleMods);
-
-				if (dsRoot.getAllMetadataByType(this.prefs.getMetadataTypeByName("CatalogIDDigital")) != null
-						&& dsRoot.getAllMetadataByType(this.prefs.getMetadataTypeByName("CatalogIDDigital")).size() > 0) {
-					currentIdentifier = dsRoot.getAllMetadataByType(this.prefs.getMetadataTypeByName("CatalogIDDigital")).get(0).getValue();
-				} else if (importFile != null) {
+				// use filename as identifier
+				if (importFile != null) {
 					this.currentIdentifier = importFile.getName().replace(".mrc", "").replace(".xml", "");
-
-				}
-				// TODO find identifier for free text record import
-				else {
-
+					// use ID as identifier
+				} else if (data.startsWith("<")) {
 					this.currentIdentifier = this.data;
 				}
-
+				// use control field 001 as identifier
+				else if (dsRoot.getAllMetadataByType(this.prefs.getMetadataTypeByName("CatalogIDDigital")) != null
+						&& dsRoot.getAllMetadataByType(this.prefs.getMetadataTypeByName("CatalogIDDigital")).size() > 0) {
+					currentIdentifier = dsRoot.getAllMetadataByType(this.prefs.getMetadataTypeByName("CatalogIDDigital")).get(0).getValue();
+				} else {
+					currentIdentifier = String.valueOf(System.currentTimeMillis());
+				}
 				// Add volume to anchors
 
 				dsRoot.addChild(dsVolume);
