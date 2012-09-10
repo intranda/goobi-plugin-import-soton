@@ -1,0 +1,246 @@
+<?xml version="1.0"?>
+<map>
+	<metadata logical="true" depth="root">
+		<name>CatalogIDDigital</name>
+		<xpath>/mods:mods/mods:recordInfo/mods:recordIdentifier</xpath>
+		<!-- <xpath>/mods:mods/mods:location/mods:holdingSimple/mods:copyInformation/mods:pieceDesignation</xpath> -->
+	</metadata>
+	<metadata logical="true" depth="root">
+		<name>TitleDocMain</name>
+		<xpath>/mods:mods/mods:titleInfo[not(@type='alternative')]/mods:*
+		</xpath>
+	</metadata>
+	<metadata logical="true" depth="root">
+		<name>TitleDocSub1</name>
+		<xpath>/mods:mods/mods:titleInfo/mods:subTitle</xpath>
+	</metadata>
+	<metadata logical="true" depth="child">
+		<name>TitleDocMain</name>
+		<xpath>/mods:mods/mods:titleInfo[not(@type='alternative')]/mods:*
+		</xpath>
+	</metadata>
+	<metadata logical="true" depth="child">
+		<name>TitleDocSub1</name>
+		<xpath>/mods:mods/mods:titleInfo/mods:subTitle</xpath>
+	</metadata>
+	<metadata logical="true" depth="child">
+		<name>TitleDocParallel</name>
+		<xpath>/mods:mods/mods:titleInfo[@type='alternative']/mods:title
+		</xpath>
+	</metadata>
+	<metadata logical="true" depth="root">
+		<name>ISBN</name>
+		<xpath>/mods:mods/mods:identifier[@type='ISBN' or @type='isbn']
+		</xpath>
+	</metadata>
+	<metadata logical="true" depth="child">
+		<name>ISSN</name>
+		<xpath>/mods:mods/mods:identifier[@type='ISSN' or @type='issn']
+		</xpath>
+	</metadata>
+	<metadata logical="true" depth="child">
+		<name>LCCN</name>
+		<xpath>/mods:mods/mods:identifier[@type='LCCN' or @type='lccn']
+		</xpath>
+	</metadata>
+	<metadata logical="true" physical="true" depth="child">
+		<name>shelfmarksource</name>
+		<xpath>/mods:mods/mods:location/mods:shelfLocator</xpath>
+	</metadata>
+	<metadata logical="true" physical="true" depth="child">
+		<name>physicalLocation</name>
+		<xpath>/mods:mods/mods:location/mods:physicalLocation</xpath>
+	</metadata>
+	<metadata logical="true" depth="child">
+		<name>SizeSourcePrint</name>
+		<xpath>/mods:mods/mods:physicalDescription/mods:extent</xpath>
+	</metadata>
+	<metadata logical="true" depth="child">
+		<name>DocLanguage</name>
+		<xpath>/mods:mods/mods:language/mods:languageTerm[@type='code'][@authority='iso639-2b']
+		</xpath>
+	</metadata>
+	<metadata logical="true" depth="child">
+		<name>_electronicEdition</name>
+		<xpath>/mods:mods/mods:originInfo/mods:edition
+		</xpath>
+	</metadata>
+	<metadata logical="true" depth="child">
+		<name>PublicationYear</name>
+		<xpath>/mods:mods/mods:originInfo/mods:dateCreated
+		</xpath>
+	</metadata>
+	<metadata logical="true" depth="child">
+		<name>PublicationYear</name>
+		<xpath>/mods:mods/mods:originInfo/mods:dateIssued
+		</xpath>
+	</metadata>
+	<metadata logical="true" depth="root">
+		<name>PublicationStart</name>
+		<xpath>/mods:mods/mods:originInfo/mods:dateIssued[@point='start']
+		</xpath>
+	</metadata>
+	<metadata logical="true" depth="root">
+		<name>PublicationEnd</name>
+		<xpath>/mods:mods/mods:originInfo/mods:dateIssued[@point='end']
+		</xpath>
+	</metadata>
+	<metadata logical="true" depth="child">
+		<name>PublisherName</name>
+		<xpath>/mods:mods/mods:originInfo/mods:publisher</xpath>
+	</metadata>
+	<metadata logical="true" depth="child">
+		<name>PlaceOfPublication</name>
+		<xpath>/mods:mods/mods:originInfo/mods:place/mods:placeTerm[@type='text']
+		</xpath>
+	</metadata>
+	<metadata logical="true" depth="child">
+		<name>Author</name>
+		<xpath>/mods:mods/mods:name[@type='personal']/mods:namePart[not(@type)]
+		</xpath>
+		<xpath type="family">/mods:mods/mods:name[@type='personal']/mods:namePart[@type='family']
+		</xpath>
+		<xpath type="given">/mods:mods/mods:name[@type='personal']/mods:namePart[@type='given']
+		</xpath>
+	</metadata>
+	<metadata logical="true" depth="child">
+		<name>CorporateName</name>
+		<xpath>/mods:mods/mods:name[@type='corporate']/mods:namePart[not(@type)]
+		</xpath>
+	</metadata>
+	<metadata logical="true" depth="child">
+		<name>ConferenceName</name>
+		<xpath>/mods:mods/mods:name[@type='conference']/mods:namePart[not(@type)]
+		</xpath>
+	</metadata>
+	<metadata physical="true" depth="child">
+		<name>datedigit</name>
+		<xpath>/mods:mods/mods:recordInfo/mods:recordCreationDate</xpath>
+	</metadata>
+	<metadata logical="true" depth="child">
+		<name>AdditionalInformation</name>
+		<xpath>/mods:mods/mods:note[not(@type)]</xpath>
+	</metadata>
+	<metadata logical="true" depth="child">
+		<name>CreationProductionCreditsNote</name>
+		<xpath>/mods:mods/mods:note[@type='creation/production credits']</xpath>
+	</metadata>
+	<metadata logical="true" depth="child">
+		<name>PreferredCitation</name>
+		<xpath>/mods:mods/mods:note[@type='preferred citation']</xpath>
+	</metadata>
+	<metadata logical="true" depth="child">
+		<name>relatedSeries</name>
+		<xpath>/mods:mods/mods:relatedItem[@type='series']/mods:titleInfo/mods:title</xpath>
+	</metadata>
+	<metadata logical="true" depth="root">
+		<name>relatedSeries</name>
+		<xpath>/mods:mods/mods:relatedItem[@type='series']/mods:titleInfo/mods:title</xpath>
+	</metadata>
+	<metadata logical="true" depth="child">
+		<name>CurrentNo</name>
+		<xpath>/mods:mods/mods:relatedItem[@type='series']/mods:titleInfo/mods:partNumber</xpath>
+	</metadata>
+	<metadata logical="true" depth="child">
+		<name>CurrentNoSorting</name>
+		<xpath>/mods:mods/mods:relatedItem[@type='series']/mods:titleInfo/mods:partNumber</xpath>
+	</metadata>
+	<metadata logical="true" depth="child">
+		<name>singleDigCollection</name>
+		<xpath>/mods:mods/mods:location/mods:holdingSimple/mods:copyInformation/mods:subLocation</xpath>
+	</metadata>
+	<metadata logical="true" depth="root">
+		<name>singleDigCollection</name>
+		<xpath>/mods:mods/mods:location/mods:holdingSimple/mods:copyInformation/mods:subLocation</xpath>
+	</metadata>
+	<metadata logical="true" depth="child">
+		<name>CountryCode</name>
+		<xpath>/mods:mods/mods:originInfo/mods:place/mods:placeTerm[@type='code']</xpath>
+	</metadata>
+	<metadata logical="true" depth="child">
+		<name>recordContentSource</name>
+		<xpath>/mods:mods/mods:recordInfo/mods:recordContentSource</xpath>
+	</metadata>
+	<metadata logical="true" depth="child">
+		<name>CatalogLanguage</name>
+		<xpath>/mods:mods/mods:originInfo/mods:languageOfCataloging/mods:languageTerm</xpath>
+	</metadata>
+	<metadata physical="true" depth="child">
+		<name>pieceDesignation</name>
+		<xpath>/mods:mods/mods:location/mods:holdingSimple/mods:copyInformation/mods:pieceDesignation</xpath>
+	</metadata>
+	<metadata logical="true" depth="child">
+		<name>Note</name>
+		<xpath>/mods:mods/mods:note[not(@type)]</xpath>
+	</metadata>
+	
+<!-- added by intranda -->
+	<metadata logical="true" depth="root">
+		<Name>Country</Name>
+		<xpath>/mods:mods/mods:subject/mods:hierarchicalGeographic/mods:country</xpath>
+	</metadata>
+	<metadata logical="true" depth="root">
+		<Name>State</Name>
+		<xpath>/mods:mods/mods:subject/mods:hierarchicalGeographic/mods:state</xpath>
+	</metadata>
+	<metadata logical="true" depth="root">
+		<Name>Region</Name>
+		<xpath>/mods:mods/mods:subject/mods:hierarchicalGeographic/mods:county</xpath>
+	</metadata>
+	<metadata logical="true" depth="root">
+		<Name>City</Name>
+		<xpath>/mods:mods/mods:subject/mods:hierarchicalGeographic/mods:city</xpath>
+	</metadata>
+	<metadata logical="true" depth="root">
+		<Name>Area</Name>
+		<xpath>/mods:mods/mods:subject/mods:hierarchicalGeographic/mods:area</xpath>
+	</metadata>
+	<metadata logical="true" depth="root">
+		<Name>ExtraterrestrialArea</Name>
+		<xpath>/mods:mods/mods:subject/mods:hierarchicalGeographic/mods:extraterrestrialArea</xpath>
+	</metadata>
+	<metadata logical="true" depth="child">
+		<Name>DDC</Name>
+		<xpath>/mods:mods/mods:classification[@authority='ddc']</xpath>
+	</metadata>
+	<metadata logical="true" depth="child">
+		<Name>LCC</Name>
+		<xpath>/mods:mods/mods:classification[@authority='lcc']</xpath>
+	</metadata>
+	<metadata logical="true" depth="root">
+		<Name>PublicationRun</Name>
+		<xpath>/mods:mods/mods:note[@type='date/sequential designation']</xpath>
+	</metadata>
+	<metadata logical="true" depth="root">
+		<Name>PublicationRun</Name>
+		<xpath>/mods:mods/mods:note[@type='date/sequential designation']</xpath>
+	</metadata>
+	<metadata logical="true" depth="child">
+		<Name>Ownership</Name>
+		<xpath>/mods:mods/mods:note[@type='ownership']</xpath>
+	</metadata>
+	<metadata logical="true" depth="child">
+		<Name>Content</Name>
+		<xpath>/mods:mods/mods:subject/mods:topic</xpath>
+	</metadata>
+	<metadata logical="true" depth="child">
+		<Name>GeographicName</Name>
+		<xpath>/mods:mods/mods:subject/mods:geographic</xpath>
+	</metadata>
+
+	<metadata logical="true" depth="root">
+		<Name>LocalID</Name>
+		<xpath>/mods:mods/identifier[@type='local'][@displayLabel='Call number']</xpath>
+	</metadata>
+	<metadata logical="true" depth="child">
+		<name>BindingInformation</name>
+		<xpath>/mods:mods/mods:note[@type='bindingInfo']</xpath>
+	</metadata>
+	<metadata logical="true" depth="child">
+		<name>Description</name>
+		<xpath>/mods:mods/mods:subject/mods:topic</xpath>
+	</metadata>
+
+
+</map>
+
