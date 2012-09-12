@@ -335,7 +335,6 @@ public class CamModsImport implements IImportPlugin, IPlugin {
 		return getDescription();
 	}
 
-	@Override
 	public String getId() {
 		return getDescription();
 	}

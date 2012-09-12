@@ -87,7 +87,7 @@ public class SotonMarcMultiVolumeImport implements IImportPlugin, IPlugin {
 	private static final Logger logger = Logger.getLogger(SotonMarcMultiVolumeImport.class);
 
 	private static final String NAME = "Soton Multivolume Import";
-	private static final String ID = "sotonMultiVolumeImport";
+//	private static final String ID = "sotonMultiVolumeImport";
 	private static final String XSLT = ConfigMain.getParameter("xsltFolder") + "MARC21slim2MODS3.xsl";
 	private static final String MODS_MAPPING_FILE = ConfigMain.getParameter("xsltFolder") + "mods_map_multi.xml";
 
@@ -129,11 +129,11 @@ public class SotonMarcMultiVolumeImport implements IImportPlugin, IPlugin {
 
 	}
 
-	@Override
 	public String getId() {
-		return ID;
+		return getDescription();
 	}
-
+	
+	
 	@Override
 	public PluginType getType() {
 		return PluginType.Import;

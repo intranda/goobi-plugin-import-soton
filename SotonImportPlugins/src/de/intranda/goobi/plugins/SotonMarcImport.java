@@ -402,7 +402,6 @@ public class SotonMarcImport implements IImportPlugin, IPlugin {
 		return getDescription();
 	}
 
-	@Override
 	public String getId() {
 		return getDescription();
 	}
@@ -480,7 +479,7 @@ public class SotonMarcImport implements IImportPlugin, IPlugin {
 			logger.error(e.getMessage(), e);
 		}
 
-		converter.setFile(new File("samples/marc21-soton/test2.mrc"));
+		converter.setFile(new File("/home/robert/Arbeitsfläche/soton/00291405.mrc"));
 		List<Record> records = converter.generateRecordsFromFile();
 
 		// converter.importFile = new File("samples/marc21/multiple_records.mrk");

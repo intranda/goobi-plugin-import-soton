@@ -331,7 +331,6 @@ public class SotonCatalogueImport implements IImportPlugin, IPlugin {
 		return getDescription();
 	}
 
-	@Override
 	public String getId() {
 		return getDescription();
 	}

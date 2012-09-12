@@ -403,7 +403,6 @@ public class CamMarcImport implements IImportPlugin, IPlugin {
 		return getDescription();
 	}
 
-	@Override
 	public String getId() {
 		return getDescription();
 	}
