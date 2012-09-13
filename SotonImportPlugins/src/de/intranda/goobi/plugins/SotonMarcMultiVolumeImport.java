@@ -475,12 +475,12 @@ public class SotonMarcMultiVolumeImport implements IImportPlugin, IPlugin {
 				marc = extractMarcFromHtml(marc);
 				marc = convertToMarcXml(marc);
 			}
-			logger.debug(marc);
+			logger.trace(marc);
 			doc = new SAXBuilder().build(new StringReader(marc));
 			if (doc != null && doc.hasRootElement()) {
 				XSLTransformer transformer = new XSLTransformer(XSLT);
 				Document docMods = transformer.transform(doc);
-				logger.debug(new XMLOutputter().outputString(docMods));
+				logger.trace(new XMLOutputter().outputString(docMods));
 
 				ff = new MetsMods(this.prefs);
 				DigitalDocument dd = new DigitalDocument();

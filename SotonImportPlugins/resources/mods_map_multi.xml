@@ -60,11 +60,11 @@
 		<xpath>/mods:mods/mods:language/mods:languageTerm[@type='code'][@authority='iso639-2b']
 		</xpath>
 	</metadata>
-	<metadata logical="true" depth="child">
-		<name>_electronicEdition</name>
-		<xpath>/mods:mods/mods:originInfo/mods:edition
-		</xpath>
-	</metadata>
+<!-- 	<metadata logical="true" depth="child"> -->
+<!-- 		<name>_electronicEdition</name> -->
+<!-- 		<xpath>/mods:mods/mods:originInfo/mods:edition -->
+<!-- 		</xpath> -->
+<!-- 	</metadata> -->
 	<metadata logical="true" depth="child">
 		<name>PublicationYear</name>
 		<xpath>/mods:mods/mods:originInfo/mods:dateCreated
@@ -103,40 +103,37 @@
 		<xpath type="given">/mods:mods/mods:name[@type='personal']/mods:namePart[@type='given']
 		</xpath>
 	</metadata>
-	<metadata logical="true" depth="child">
-		<name>CorporateName</name>
-		<xpath>/mods:mods/mods:name[@type='corporate']/mods:namePart[not(@type)]
-		</xpath>
-	</metadata>
-	<metadata logical="true" depth="child">
-		<name>ConferenceName</name>
-		<xpath>/mods:mods/mods:name[@type='conference']/mods:namePart[not(@type)]
-		</xpath>
-	</metadata>
+<!-- 	<metadata logical="true" depth="child"> -->
+<!-- 		<name>CorporateName</name> -->
+<!-- 		<xpath>/mods:mods/mods:name[@type='corporate']/mods:namePart[not(@type)] -->
+<!-- 		</xpath> -->
+<!-- 	</metadata> -->
+<!-- 	<metadata logical="true" depth="child"> -->
+<!-- 		<name>ConferenceName</name> -->
+<!-- 		<xpath>/mods:mods/mods:name[@type='conference']/mods:namePart[not(@type)] -->
+<!-- 		</xpath> -->
+<!-- 	</metadata> -->
 	<metadata physical="true" depth="child">
 		<name>datedigit</name>
 		<xpath>/mods:mods/mods:recordInfo/mods:recordCreationDate</xpath>
 	</metadata>
-	<metadata logical="true" depth="child">
-		<name>AdditionalInformation</name>
-		<xpath>/mods:mods/mods:note[not(@type)]</xpath>
-	</metadata>
-	<metadata logical="true" depth="child">
-		<name>CreationProductionCreditsNote</name>
-		<xpath>/mods:mods/mods:note[@type='creation/production credits']</xpath>
-	</metadata>
-	<metadata logical="true" depth="child">
-		<name>PreferredCitation</name>
-		<xpath>/mods:mods/mods:note[@type='preferred citation']</xpath>
-	</metadata>
-	<metadata logical="true" depth="child">
-		<name>relatedSeries</name>
-		<xpath>/mods:mods/mods:relatedItem[@type='series']/mods:titleInfo/mods:title</xpath>
-	</metadata>
-	<metadata logical="true" depth="root">
-		<name>relatedSeries</name>
-		<xpath>/mods:mods/mods:relatedItem[@type='series']/mods:titleInfo/mods:title</xpath>
-	</metadata>
+	
+<!-- 	<metadata logical="true" depth="child"> -->
+<!-- 		<name>CreationProductionCreditsNote</name> -->
+<!-- 		<xpath>/mods:mods/mods:note[@type='creation/production credits']</xpath> -->
+<!-- 	</metadata> -->
+<!-- 	<metadata logical="true" depth="child"> -->
+<!-- 		<name>PreferredCitation</name> -->
+<!-- 		<xpath>/mods:mods/mods:note[@type='preferred citation']</xpath> -->
+<!-- 	</metadata> -->
+<!-- 	<metadata logical="true" depth="child"> -->
+<!-- 		<name>relatedSeries</name> -->
+<!-- 		<xpath>/mods:mods/mods:relatedItem[@type='series']/mods:titleInfo/mods:title</xpath> -->
+<!-- 	</metadata> -->
+<!-- 	<metadata logical="true" depth="root"> -->
+<!-- 		<name>relatedSeries</name> -->
+<!-- 		<xpath>/mods:mods/mods:relatedItem[@type='series']/mods:titleInfo/mods:title</xpath> -->
+<!-- 	</metadata> -->
 	<metadata logical="true" depth="child">
 		<name>CurrentNo</name>
 		<xpath>/mods:mods/mods:relatedItem[@type='series']/mods:titleInfo/mods:partNumber</xpath>
@@ -153,22 +150,22 @@
 		<name>singleDigCollection</name>
 		<xpath>/mods:mods/mods:location/mods:holdingSimple/mods:copyInformation/mods:subLocation</xpath>
 	</metadata>
-	<metadata logical="true" depth="child">
-		<name>CountryCode</name>
-		<xpath>/mods:mods/mods:originInfo/mods:place/mods:placeTerm[@type='code']</xpath>
-	</metadata>
-	<metadata logical="true" depth="child">
-		<name>recordContentSource</name>
-		<xpath>/mods:mods/mods:recordInfo/mods:recordContentSource</xpath>
-	</metadata>
-	<metadata logical="true" depth="child">
-		<name>CatalogLanguage</name>
-		<xpath>/mods:mods/mods:originInfo/mods:languageOfCataloging/mods:languageTerm</xpath>
-	</metadata>
-	<metadata physical="true" depth="child">
-		<name>pieceDesignation</name>
-		<xpath>/mods:mods/mods:location/mods:holdingSimple/mods:copyInformation/mods:pieceDesignation</xpath>
-	</metadata>
+<!-- 	<metadata logical="true" depth="child"> -->
+<!-- 		<name>CountryCode</name> -->
+<!-- 		<xpath>/mods:mods/mods:originInfo/mods:place/mods:placeTerm[@type='code']</xpath> -->
+<!-- 	</metadata> -->
+<!-- 	<metadata logical="true" depth="child"> -->
+<!-- 		<name>recordContentSource</name> -->
+<!-- 		<xpath>/mods:mods/mods:recordInfo/mods:recordContentSource</xpath> -->
+<!-- 	</metadata> -->
+<!-- 	<metadata logical="true" depth="child"> -->
+<!-- 		<name>CatalogLanguage</name> -->
+<!-- 		<xpath>/mods:mods/mods:originInfo/mods:languageOfCataloging/mods:languageTerm</xpath> -->
+<!-- 	</metadata> -->
+<!-- 	<metadata physical="true" depth="child"> -->
+<!-- 		<name>pieceDesignation</name> -->
+<!-- 		<xpath>/mods:mods/mods:location/mods:holdingSimple/mods:copyInformation/mods:pieceDesignation</xpath> -->
+<!-- 	</metadata> -->
 	<metadata logical="true" depth="child">
 		<name>Note</name>
 		<xpath>/mods:mods/mods:note[not(@type)]</xpath>

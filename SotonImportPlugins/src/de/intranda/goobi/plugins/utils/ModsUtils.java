@@ -56,9 +56,12 @@ public class ModsUtils {
 	/**
 	 * Writes the given JDOM document into a file.
 	 * 
-	 * @param folderName Folder in which to write the destination file.
-	 * @param fileName Name of the destination file.
-	 * @param doc JDOM document containing the data.
+	 * @param folderName
+	 *            Folder in which to write the destination file.
+	 * @param fileName
+	 *            Name of the destination file.
+	 * @param doc
+	 *            JDOM document containing the data.
 	 * @throws FileNotFoundException
 	 * @throws IOException
 	 */
@@ -199,10 +202,8 @@ public class ModsUtils {
 		}
 	}
 
-	
-	
-	public static void parseModsSectionForMultivolumes(String mappingFileName, Prefs prefs, DocStruct rootElement, DocStruct firstChild, DocStruct dsPhysical, Element eleMods)
-			throws JDOMException, IOException {
+	public static void parseModsSectionForMultivolumes(String mappingFileName, Prefs prefs, DocStruct rootElement, DocStruct firstChild,
+			DocStruct dsPhysical, Element eleMods) throws JDOMException, IOException {
 		// logger.debug(new XMLOutputter().outputString(eleMods));
 		Document doc = new Document();
 		Element eleNewMods = (Element) eleMods.clone();
@@ -261,7 +262,7 @@ public class ModsUtils {
 											if (eleMetadata.getAttribute("depth") != null && eleMetadata.getAttributeValue("depth").equals("child")) {
 												firstChild.addPerson(person);
 											} else {
-												rootElement.addPerson(person);												
+												rootElement.addPerson(person);
 											}
 										}
 									}
@@ -318,11 +319,13 @@ public class ModsUtils {
 					logger.warn(e.getMessage());
 				}
 			} else {
-				logger.warn("Metadata '" + mdName + "' is not defined in the ruleset.");
+				if (mdName != null && !mdName.equals("null")) {
+					logger.warn("Metadata '" + mdName + "' is not defined in the ruleset.");
+				}
 			}
 		}
 	}
-	
+
 	/**
 	 * 
 	 * @param dsLogical
