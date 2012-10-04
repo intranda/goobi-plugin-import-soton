@@ -582,6 +582,9 @@ public class SotonMarcMultiVolumeImport implements IImportPlugin, IPlugin {
 						Metadata mdCollection = new Metadata(mdTypeCollection);
 						mdCollection.setValue(collection);
 						dsRoot.addMetadata(mdCollection);
+						Metadata mdCollectionVolume = new Metadata(mdTypeCollection);
+						mdCollectionVolume.setValue(collection);
+						dsVolume.addMetadata(mdCollectionVolume);
 					}
 				}
 			}
