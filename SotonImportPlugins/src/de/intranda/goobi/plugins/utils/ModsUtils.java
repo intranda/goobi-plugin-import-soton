@@ -161,37 +161,63 @@ public class ModsUtils {
 							// logger.debug("XPath: " + query);
 							XPath xpath = XPath.newInstance(query);
 							xpath.addNamespace(NS_MODS);
-							List<Element> eleValueList = xpath.selectNodes(doc);
-							if (eleValueList != null) {
-								for (Element eleValue : eleValueList) {
-									List<String> values = new ArrayList<String>();
-									// logger.debug("value: " + eleValue.getTextTrim());
-									values.add(eleValue.getTextTrim());
-
-									String value = "";
-									for (String s : values) {
-										if (StringUtils.isNotEmpty(s)) {
-											value += " " + s;
-										}
+							if (eleXpath.getAttribute("type") != null && eleXpath.getAttributeValue("type") != null
+									&& eleXpath.getAttributeValue("type").equals("String")) {
+								List<String> values = xpath.selectNodes(doc);
+								String value = "";
+								for (String s : values) {
+									if (StringUtils.isNotEmpty(s)) {
+										value += " " + s;
 									}
-									value = value.trim();
+								}
+								value = value.trim();
 
-									if (value.length() > 0) {
-										Metadata metadata = new Metadata(mdType);
-										metadata.setValue(value);
-										if (eleMetadata.getAttribute("logical") != null
-												&& eleMetadata.getAttributeValue("logical").equalsIgnoreCase("true")) {
-											dsLogical.addMetadata(metadata);
+								if (value.length() > 0) {
+									Metadata metadata = new Metadata(mdType);
+									metadata.setValue(value);
+									if (eleMetadata.getAttribute("logical") != null
+											&& eleMetadata.getAttributeValue("logical").equalsIgnoreCase("true")) {
+										dsLogical.addMetadata(metadata);
+									}
+									if (eleMetadata.getAttribute("physical") != null
+											&& eleMetadata.getAttributeValue("physical").equalsIgnoreCase("true")) {
+										dsPhysical.addMetadata(metadata);
+									}
+								}
+
+							} else {
+
+								List<Element> eleValueList = xpath.selectNodes(doc);
+								if (eleValueList != null) {
+									for (Element eleValue : eleValueList) {
+										List<String> values = new ArrayList<String>();
+										// logger.debug("value: " + eleValue.getTextTrim());
+										values.add(eleValue.getTextTrim());
+
+										String value = "";
+										for (String s : values) {
+											if (StringUtils.isNotEmpty(s)) {
+												value += " " + s;
+											}
 										}
-										if (eleMetadata.getAttribute("physical") != null
-												&& eleMetadata.getAttributeValue("physical").equalsIgnoreCase("true")) {
-											dsPhysical.addMetadata(metadata);
+										value = value.trim();
+
+										if (value.length() > 0) {
+											Metadata metadata = new Metadata(mdType);
+											metadata.setValue(value);
+											if (eleMetadata.getAttribute("logical") != null
+													&& eleMetadata.getAttributeValue("logical").equalsIgnoreCase("true")) {
+												dsLogical.addMetadata(metadata);
+											}
+											if (eleMetadata.getAttribute("physical") != null
+													&& eleMetadata.getAttributeValue("physical").equalsIgnoreCase("true")) {
+												dsPhysical.addMetadata(metadata);
+											}
 										}
 									}
 								}
 							}
 						}
-
 					}
 				} catch (MetadataTypeNotAllowedException e) {
 					logger.warn(e.getMessage());
@@ -277,43 +303,72 @@ public class ModsUtils {
 							// logger.debug("XPath: " + query);
 							XPath xpath = XPath.newInstance(query);
 							xpath.addNamespace(NS_MODS);
-							List<Element> eleValueList = xpath.selectNodes(doc);
-							if (eleValueList != null) {
-								for (Element eleValue : eleValueList) {
-									List<String> values = new ArrayList<String>();
-									// logger.debug("value: " + eleValue.getTextTrim());
-									// System.out.println("value: " + eleValue.getTextTrim());
+							if (eleXpath.getAttribute("type") != null && eleXpath.getAttributeValue("type") != null
+									&& eleXpath.getAttributeValue("type").equals("String")) {
+								List<String> values = xpath.selectNodes(doc);
+								String value = "";
+								for (String s : values) {
+									if (StringUtils.isNotEmpty(s)) {
+										value += " " + s;
+									}
+								}
+								value = value.trim();
 
-									values.add(eleValue.getTextTrim());
-
-									String value = "";
-									for (String s : values) {
-										if (StringUtils.isNotEmpty(s)) {
-											value += " " + s;
+								if (value.length() > 0) {
+									Metadata metadata = new Metadata(mdType);
+									metadata.setValue(value);
+									if (eleMetadata.getAttribute("logical") != null
+											&& eleMetadata.getAttributeValue("logical").equalsIgnoreCase("true")) {
+										if (eleMetadata.getAttribute("depth") != null && eleMetadata.getAttributeValue("depth").equals("child")) {
+											firstChild.addMetadata(metadata);
+										} else {
+											rootElement.addMetadata(metadata);
 										}
 									}
-									value = value.trim();
+									if (eleMetadata.getAttribute("physical") != null
+											&& eleMetadata.getAttributeValue("physical").equalsIgnoreCase("true")) {
+										dsPhysical.addMetadata(metadata);
+									}
+								}
+							} else {
+								List<Element> eleValueList = xpath.selectNodes(doc);
+								if (eleValueList != null) {
+									for (Element eleValue : eleValueList) {
+										List<String> values = new ArrayList<String>();
+										// logger.debug("value: " + eleValue.getTextTrim());
+										// System.out.println("value: " + eleValue.getTextTrim());
 
-									if (value.length() > 0) {
-										Metadata metadata = new Metadata(mdType);
-										metadata.setValue(value);
-										if (eleMetadata.getAttribute("logical") != null
-												&& eleMetadata.getAttributeValue("logical").equalsIgnoreCase("true")) {
-											if (eleMetadata.getAttribute("depth") != null && eleMetadata.getAttributeValue("depth").equals("child")) {
-												firstChild.addMetadata(metadata);
-											} else {
-												rootElement.addMetadata(metadata);
+										values.add(eleValue.getTextTrim());
+
+										String value = "";
+										for (String s : values) {
+											if (StringUtils.isNotEmpty(s)) {
+												value += " " + s;
 											}
 										}
-										if (eleMetadata.getAttribute("physical") != null
-												&& eleMetadata.getAttributeValue("physical").equalsIgnoreCase("true")) {
-											dsPhysical.addMetadata(metadata);
+										value = value.trim();
+
+										if (value.length() > 0) {
+											Metadata metadata = new Metadata(mdType);
+											metadata.setValue(value);
+											if (eleMetadata.getAttribute("logical") != null
+													&& eleMetadata.getAttributeValue("logical").equalsIgnoreCase("true")) {
+												if (eleMetadata.getAttribute("depth") != null
+														&& eleMetadata.getAttributeValue("depth").equals("child")) {
+													firstChild.addMetadata(metadata);
+												} else {
+													rootElement.addMetadata(metadata);
+												}
+											}
+											if (eleMetadata.getAttribute("physical") != null
+													&& eleMetadata.getAttributeValue("physical").equalsIgnoreCase("true")) {
+												dsPhysical.addMetadata(metadata);
+											}
 										}
 									}
 								}
 							}
 						}
-
 					}
 				} catch (MetadataTypeNotAllowedException e) {
 					logger.warn(e.getMessage());
