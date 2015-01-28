@@ -32,6 +32,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.StringTokenizer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -39,21 +40,21 @@ import net.xeoh.plugins.base.annotations.PluginImplementation;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
-import org.goobi.production.Import.DocstructElement;
-import org.goobi.production.Import.ImportObject;
-import org.goobi.production.Import.Record;
+import org.goobi.production.importer.DocstructElement;
+import org.goobi.production.importer.ImportObject;
+import org.goobi.production.importer.Record;
 import org.goobi.production.enums.ImportReturnValue;
 import org.goobi.production.enums.ImportType;
 import org.goobi.production.enums.PluginType;
 import org.goobi.production.plugin.interfaces.IImportPlugin;
 import org.goobi.production.plugin.interfaces.IPlugin;
 import org.goobi.production.properties.ImportProperty;
-import org.jdom.Document;
-import org.jdom.Element;
-import org.jdom.JDOMException;
-import org.jdom.input.SAXBuilder;
-import org.jdom.output.XMLOutputter;
-import org.jdom.transform.XSLTransformer;
+import org.jdom2.Document;
+import org.jdom2.Element;
+import org.jdom2.JDOMException;
+import org.jdom2.input.SAXBuilder;
+import org.jdom2.output.XMLOutputter;
+import org.jdom2.transform.XSLTransformer;
 import org.marc4j.MarcException;
 import org.marc4j.MarcReader;
 import org.marc4j.MarcStreamReader;
@@ -74,8 +75,8 @@ import ugh.exceptions.TypeNotAllowedForParentException;
 import ugh.exceptions.WriteException;
 import ugh.fileformats.mets.MetsMods;
 import de.intranda.goobi.plugins.utils.ModsUtils;
-import de.sub.goobi.Import.ImportOpac;
-import de.sub.goobi.config.ConfigMain;
+import de.sub.goobi.config.ConfigurationHelper;
+import de.sub.goobi.helper.UghHelper;
 
 @PluginImplementation
 public class SotonMarcImport implements IImportPlugin, IPlugin {
@@ -87,8 +88,8 @@ public class SotonMarcImport implements IImportPlugin, IPlugin {
 	private static final String VERSION = "1.0.20111216";
 	// private static final String XSLT_PATH = "jar:file:/" + ConfigMain.getParameter("pluginFolder")
 	// + "import/SotonImportPlugins.jar!/resources/MARC21slim2MODS3.xsl";
-	private static final String XSLT_PATH = ConfigMain.getParameter("xsltFolder") + "MARC21slim2MODS3.xsl";
-	private static final String MODS_MAPPING_FILE = ConfigMain.getParameter("xsltFolder") + "mods_map.xml";
+	private static final String XSLT_PATH = ConfigurationHelper.getInstance().getXsltFolder() + "MARC21slim2MODS3.xsl";
+	private static final String MODS_MAPPING_FILE = ConfigurationHelper.getInstance().getXsltFolder() + "mods_map.xml";
 
 	private Prefs prefs;
 	private String data = "";
@@ -352,7 +353,7 @@ public class SotonMarcImport implements IImportPlugin, IPlugin {
 	@Override
 	public String getProcessTitle() {
 		if (StringUtils.isNotBlank(this.currentTitle)) {
-			return new ImportOpac().createAtstsl(this.currentTitle, this.currentAuthor).toLowerCase() + "_" + this.currentIdentifier + ".xml";
+			return createAtstsl(this.currentTitle, this.currentAuthor).toLowerCase() + "_" + this.currentIdentifier + ".xml";
 		}
 		return this.currentIdentifier + ".xml";
 	}
@@ -574,4 +575,33 @@ public class SotonMarcImport implements IImportPlugin, IPlugin {
 		// TODO Auto-generated method stub
 		
 	}
+	
+	 private String createAtstsl(String title, String author) {
+	        StringBuilder result = new StringBuilder(8);
+	        if (author != null && author.trim().length() > 0) {
+	            result.append(author.length() > 4 ? author.substring(0, 4) : author);
+	            result.append(title.length() > 4 ? title.substring(0, 4) : title);
+	        } else {
+	            StringTokenizer titleWords = new StringTokenizer(title);
+	            int wordNo = 1;
+	            while (titleWords.hasMoreTokens() && wordNo < 5) {
+	                String word = titleWords.nextToken();
+	                switch (wordNo) {
+	                    case 1:
+	                        result.append(word.length() > 4 ? word.substring(0, 4) : word);
+	                        break;
+	                    case 2:
+	                    case 3:
+	                        result.append(word.length() > 2 ? word.substring(0, 2) : word);
+	                        break;
+	                    case 4:
+	                        result.append(word.length() > 1 ? word.substring(0, 1) : word);
+	                        break;
+	                }
+	                wordNo++;
+	            }
+	        }
+	        String res = UghHelper.convertUmlaut(result.toString()).toLowerCase();
+	        return res.replaceAll("[\\W]", ""); // delete umlauts etc.
+	    }
 }

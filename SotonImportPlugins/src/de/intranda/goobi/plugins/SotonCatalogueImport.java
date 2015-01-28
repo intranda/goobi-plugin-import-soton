@@ -39,21 +39,21 @@ import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
-import org.goobi.production.Import.DocstructElement;
-import org.goobi.production.Import.ImportObject;
-import org.goobi.production.Import.Record;
+import org.goobi.production.importer.DocstructElement;
+import org.goobi.production.importer.ImportObject;
+import org.goobi.production.importer.Record;
 import org.goobi.production.enums.ImportReturnValue;
 import org.goobi.production.enums.ImportType;
 import org.goobi.production.enums.PluginType;
 import org.goobi.production.plugin.interfaces.IImportPlugin;
 import org.goobi.production.plugin.interfaces.IPlugin;
 import org.goobi.production.properties.ImportProperty;
-import org.jdom.Document;
-import org.jdom.Element;
-import org.jdom.JDOMException;
-import org.jdom.input.SAXBuilder;
-import org.jdom.output.XMLOutputter;
-import org.jdom.transform.XSLTransformer;
+import org.jdom2.Document;
+import org.jdom2.Element;
+import org.jdom2.JDOMException;
+import org.jdom2.input.SAXBuilder;
+import org.jdom2.output.XMLOutputter;
+import org.jdom2.transform.XSLTransformer;
 import org.marc4j.MarcException;
 import org.marc4j.MarcReader;
 import org.marc4j.MarcStreamReader;
@@ -74,7 +74,7 @@ import ugh.exceptions.TypeNotAllowedForParentException;
 import ugh.exceptions.WriteException;
 import ugh.fileformats.mets.MetsMods;
 import de.intranda.goobi.plugins.utils.ModsUtils;
-import de.sub.goobi.config.ConfigMain;
+import de.sub.goobi.config.ConfigurationHelper;
 
 @PluginImplementation
 public class SotonCatalogueImport implements IImportPlugin, IPlugin {
@@ -84,8 +84,8 @@ public class SotonCatalogueImport implements IImportPlugin, IPlugin {
 
 	private static final String NAME = "SOTON Catalogue Import";
 	private static final String VERSION = "1.0.20111216";
-	private static final String XSLT_PATH = ConfigMain.getParameter("xsltFolder") + "MARC21slim2MODS3.xsl";
-	private static final String MODS_MAPPING_FILE = ConfigMain.getParameter("xsltFolder") + "mods_map.xml";
+	private static final String XSLT_PATH = ConfigurationHelper.getInstance().getXsltFolder() + "MARC21slim2MODS3.xsl";
+	private static final String MODS_MAPPING_FILE = ConfigurationHelper.getInstance().getXsltFolder() + "mods_map.xml";
 
 	private Prefs prefs;
 	private String data = "";

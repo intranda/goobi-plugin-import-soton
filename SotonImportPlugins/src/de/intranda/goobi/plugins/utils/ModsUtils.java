@@ -30,13 +30,13 @@ import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
-import org.jdom.Document;
-import org.jdom.Element;
-import org.jdom.JDOMException;
-import org.jdom.Namespace;
-import org.jdom.input.SAXBuilder;
-import org.jdom.output.XMLOutputter;
-import org.jdom.xpath.XPath;
+import org.jdom2.Document;
+import org.jdom2.Element;
+import org.jdom2.JDOMException;
+import org.jdom2.Namespace;
+import org.jdom2.input.SAXBuilder;
+import org.jdom2.output.XMLOutputter;
+import org.jdom2.xpath.XPath;
 
 import ugh.dl.DocStruct;
 import ugh.dl.Metadata;
@@ -46,6 +46,7 @@ import ugh.dl.Prefs;
 import ugh.exceptions.DocStructHasNoTypeException;
 import ugh.exceptions.MetadataTypeNotAllowedException;
 
+@SuppressWarnings("deprecation")
 public class ModsUtils {
 
 	/** Logger for this class. */
@@ -89,7 +90,7 @@ public class ModsUtils {
 	 * @throws IOException
 	 * @throws JDOMException
 	 */
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings({ "deprecation" })
 	public static void parseModsSection(String mappingFileName, Prefs prefs, DocStruct dsLogical, DocStruct dsPhysical, Element eleMods)
 			throws JDOMException, IOException {
 		// logger.debug(new XMLOutputter().outputString(eleMods));
@@ -113,9 +114,11 @@ public class ModsUtils {
 							XPath xpath = XPath.newInstance(query);
 							xpath.addNamespace(NS_MODS);
 							// Element eleValue = (Element) xpath.selectSingleNode(doc);
-							List<Element> eleValueList = xpath.selectNodes(doc);
+							List<?> eleValueList = xpath.selectNodes(doc);
+							
 							if (eleValueList != null) {
-								for (Element eleValue : eleValueList) {
+							    for (Object o : eleValueList) {
+                                    Element eleValue = (Element) o;
 									String name = "";
 									String firstName = "";
 									String lastName = "";
@@ -163,9 +166,10 @@ public class ModsUtils {
 							xpath.addNamespace(NS_MODS);
 							if (eleXpath.getAttribute("type") != null && eleXpath.getAttributeValue("type") != null
 									&& eleXpath.getAttributeValue("type").equals("String")) {
-								List<String> values = xpath.selectNodes(doc);
+								List<?> values = xpath.selectNodes(doc);
 								String value = "";
-								for (String s : values) {
+								for (Object o : values) {
+								    String s = (String) o;
 									if (StringUtils.isNotEmpty(s)) {
 										value += " " + s;
 									}
@@ -187,9 +191,11 @@ public class ModsUtils {
 
 							} else {
 
-								List<Element> eleValueList = xpath.selectNodes(doc);
+								List<?> eleValueList = xpath.selectNodes(doc);
 								if (eleValueList != null) {
-									for (Element eleValue : eleValueList) {
+								    
+									for (Object o : eleValueList) {
+									    Element eleValue = (Element) o;
 										List<String> values = new ArrayList<String>();
 										// logger.debug("value: " + eleValue.getTextTrim());
 										values.add(eleValue.getTextTrim());
@@ -228,7 +234,8 @@ public class ModsUtils {
 		}
 	}
 
-	public static void parseModsSectionForMultivolumes(String mappingFileName, Prefs prefs, DocStruct rootElement, DocStruct firstChild,
+	@SuppressWarnings("deprecation")
+    public static void parseModsSectionForMultivolumes(String mappingFileName, Prefs prefs, DocStruct rootElement, DocStruct firstChild,
 			DocStruct dsPhysical, Element eleMods) throws JDOMException, IOException {
 		// logger.debug(new XMLOutputter().outputString(eleMods));
 		Document doc = new Document();
@@ -251,9 +258,10 @@ public class ModsUtils {
 							XPath xpath = XPath.newInstance(query);
 							xpath.addNamespace(NS_MODS);
 							// Element eleValue = (Element) xpath.selectSingleNode(doc);
-							List<Element> eleValueList = xpath.selectNodes(doc);
+							List<?> eleValueList = xpath.selectNodes(doc);
 							if (eleValueList != null) {
-								for (Element eleValue : eleValueList) {
+							    for (Object o : eleValueList) {
+                                    Element eleValue = (Element) o;
 									String name = "";
 									String firstName = "";
 									String lastName = "";
@@ -305,9 +313,12 @@ public class ModsUtils {
 							xpath.addNamespace(NS_MODS);
 							if (eleXpath.getAttribute("type") != null && eleXpath.getAttributeValue("type") != null
 									&& eleXpath.getAttributeValue("type").equals("String")) {
-								List<String> values = xpath.selectNodes(doc);
+								List<?> values = xpath.selectNodes(doc);
 								String value = "";
-								for (String s : values) {
+								
+								
+								for (Object o : values) {
+								    String s = (String) o;
 									if (StringUtils.isNotEmpty(s)) {
 										value += " " + s;
 									}
@@ -331,9 +342,10 @@ public class ModsUtils {
 									}
 								}
 							} else {
-								List<Element> eleValueList = xpath.selectNodes(doc);
+								List<?> eleValueList = xpath.selectNodes(doc);
 								if (eleValueList != null) {
-									for (Element eleValue : eleValueList) {
+								    for (Object o : eleValueList) {
+                                        Element eleValue = (Element) o;
 										List<String> values = new ArrayList<String>();
 										// logger.debug("value: " + eleValue.getTextTrim());
 										// System.out.println("value: " + eleValue.getTextTrim());

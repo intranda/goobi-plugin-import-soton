@@ -27,9 +27,9 @@ import net.xeoh.plugins.base.annotations.PluginImplementation;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
-import org.goobi.production.Import.DocstructElement;
-import org.goobi.production.Import.ImportObject;
-import org.goobi.production.Import.Record;
+import org.goobi.production.importer.DocstructElement;
+import org.goobi.production.importer.ImportObject;
+import org.goobi.production.importer.Record;
 import org.goobi.production.enums.ImportReturnValue;
 import org.goobi.production.enums.ImportType;
 import org.goobi.production.enums.PluginType;

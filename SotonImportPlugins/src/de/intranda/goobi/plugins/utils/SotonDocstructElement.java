@@ -21,7 +21,7 @@
 
 package de.intranda.goobi.plugins.utils;
 
-import org.goobi.production.Import.DocstructElement;
+import org.goobi.production.importer.DocstructElement;
 import org.goobi.production.properties.ImportProperty;
 import org.goobi.production.properties.Type;
 
