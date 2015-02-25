@@ -35,9 +35,10 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.commons.httpclient.HttpClient;
-import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.lang.StringUtils;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.log4j.Logger;
 import org.goobi.production.importer.DocstructElement;
 import org.goobi.production.importer.ImportObject;
@@ -77,6 +78,7 @@ import ugh.fileformats.mets.MetsMods;
 import de.intranda.goobi.plugins.utils.ModsUtils;
 import de.intranda.goobi.plugins.utils.SotonDocstructElement;
 import de.sub.goobi.config.ConfigurationHelper;
+import de.sub.goobi.helper.HttpClientHelper;
 import net.xeoh.plugins.base.annotations.PluginImplementation;
 
 @PluginImplementation
@@ -667,19 +669,26 @@ public class SotonMarcMultiVolumeImport implements IImportPlugin, IPlugin {
 		String ret = "";
 
 		if (StringUtils.isNotEmpty(url)) {
-			HttpClient client = new HttpClient();
-			GetMethod method = null;
-			try {
-				method = new GetMethod(url);
-				client.executeMethod(method);
-				ret = method.getResponseBodyAsString();
-			} catch (Exception e) {
-				logger.error(e.getMessage(), e);
-			} finally {
-				if (method != null) {
-					method.releaseConnection();
-				}
-			}
+		    
+		    CloseableHttpClient client = HttpClientBuilder.create().build();
+	        HttpGet method = new HttpGet(url);
+	        try {
+	            ret = client.execute(method, HttpClientHelper.stringResponseHandler);
+	        } catch (IOException e) {
+	            logger.error(e);
+	        } finally {
+	            method.releaseConnection();
+
+	            if (client != null) {
+	                try {
+	                    client.close();
+	                } catch (IOException e) {
+	                    logger.error(e);
+	                }
+	            }
+	        }
+		    
+		
 		}
 
 		return ret;
