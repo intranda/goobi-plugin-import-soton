@@ -76,6 +76,7 @@ import ugh.exceptions.WriteException;
 import ugh.fileformats.mets.MetsMods;
 import de.intranda.goobi.plugins.utils.ModsUtils;
 import de.sub.goobi.config.ConfigurationHelper;
+import de.sub.goobi.forms.MassImportForm;
 import de.sub.goobi.helper.UghHelper;
 
 @PluginImplementation
@@ -100,6 +101,7 @@ public class SotonMarcImport implements IImportPlugin, IPlugin {
 	private String currentTitle;
 	private String currentAuthor;
 	private List<String> currentCollectionList;
+    private MassImportForm form;
 
 	public SotonMarcImport() {
 		this.map.put("?monographic", "Monograph");
@@ -224,6 +226,9 @@ public class SotonMarcImport implements IImportPlugin, IPlugin {
 		List<ImportObject> answer = new ArrayList<ImportObject>();
 
 		for (Record r : records) {
+		    if (form != null) {
+                form.addProcessToProgressBar();
+            }
 			this.data = r.getData();
 			this.currentCollectionList = r.getCollections();
 			Fileformat ff = convertData();
@@ -604,4 +609,10 @@ public class SotonMarcImport implements IImportPlugin, IPlugin {
 	        String res = UghHelper.convertUmlaut(result.toString()).toLowerCase();
 	        return res.replaceAll("[\\W]", ""); // delete umlauts etc.
 	    }
+
+    @Override
+    public void setForm(MassImportForm form) {
+        this.form = form;
+        
+    }
 }

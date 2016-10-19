@@ -37,6 +37,7 @@ import org.goobi.production.plugin.interfaces.IImportPlugin;
 import org.goobi.production.plugin.interfaces.IPlugin;
 import org.goobi.production.properties.ImportProperty;
 
+import de.sub.goobi.forms.MassImportForm;
 import ugh.dl.DigitalDocument;
 import ugh.dl.DocStruct;
 import ugh.dl.Fileformat;
@@ -65,7 +66,8 @@ public class SotonPlaceholderImport implements IImportPlugin, IPlugin {
 	private String importFolder = "C:/Goobi/";
 	private String currentIdentifier;
 	private List<String> currentCollectionList;
-
+	private MassImportForm form;
+	
 	public SotonPlaceholderImport() {
 	}
 
@@ -135,6 +137,9 @@ public class SotonPlaceholderImport implements IImportPlugin, IPlugin {
 		List<ImportObject> answer = new ArrayList<ImportObject>();
 
 		for (Record r : records) {
+		    if (form != null) {
+                form.addProcessToProgressBar();
+            }
 			this.data = r.getData();
 			this.currentCollectionList = r.getCollections();
 			Fileformat ff = convertData();
@@ -336,4 +341,10 @@ public class SotonPlaceholderImport implements IImportPlugin, IPlugin {
 		// TODO Auto-generated method stub
 		
 	}
+	
+
+    @Override
+    public void setForm(MassImportForm form) {
+        this.form = form;
+    }
 }

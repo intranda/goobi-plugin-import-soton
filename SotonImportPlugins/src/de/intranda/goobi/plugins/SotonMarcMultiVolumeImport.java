@@ -78,6 +78,7 @@ import ugh.fileformats.mets.MetsMods;
 import de.intranda.goobi.plugins.utils.ModsUtils;
 import de.intranda.goobi.plugins.utils.SotonDocstructElement;
 import de.sub.goobi.config.ConfigurationHelper;
+import de.sub.goobi.forms.MassImportForm;
 import de.sub.goobi.helper.HttpClientHelper;
 import net.xeoh.plugins.base.annotations.PluginImplementation;
 
@@ -111,7 +112,8 @@ public class SotonMarcMultiVolumeImport implements IImportPlugin, IPlugin {
 	// private File importFile = null;
 	private String importFolder = "C:/Goobi/";
 	private String currentIdentifier;
-
+	private MassImportForm form;
+	
 	public SotonMarcMultiVolumeImport() {
 
 		{
@@ -154,6 +156,9 @@ public class SotonMarcMultiVolumeImport implements IImportPlugin, IPlugin {
 		List<ImportObject> answer = new ArrayList<ImportObject>();
 
 		if (records.size() > 0) {
+		    if (form != null) {
+                form.addProcessToProgressBar();
+            }
 			Record r = records.get(0);
 			this.data = r.getData();
 			this.currentCollectionList = r.getCollections();
@@ -709,15 +714,20 @@ public class SotonMarcMultiVolumeImport implements IImportPlugin, IPlugin {
 		return this.currentIdentifier + "_" + strId;
 	}
 
-	@Override
-	public DocstructElement getDocstruct() {
-		return docstruct;
-	}
+    @Override
+    public void setForm(MassImportForm form) {
+        this.form = form;
+    }
 
-	@Override
-	public void setDocstruct(DocstructElement dse) {
-		docstruct = (SotonDocstructElement) dse;
+    @Override
+    public DocstructElement getDocstruct() {
+        // TODO Auto-generated method stub
+        return null;
+    }
 
-	}
-
+    @Override
+    public void setDocstruct(DocstructElement dse) {
+        // TODO Auto-generated method stub
+        
+    }
 }

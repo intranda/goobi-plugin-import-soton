@@ -76,6 +76,7 @@ import ugh.exceptions.WriteException;
 import ugh.fileformats.mets.MetsMods;
 import de.intranda.goobi.plugins.utils.ModsUtils;
 import de.sub.goobi.config.ConfigurationHelper;
+import de.sub.goobi.forms.MassImportForm;
 import de.sub.goobi.helper.HttpClientHelper;
 
 @PluginImplementation
@@ -96,7 +97,9 @@ public class SotonCatalogueImport implements IImportPlugin, IPlugin {
 	private Map<String, String> map = new HashMap<String, String>();
 	private String currentIdentifier;
 	private List<String> currentCollectionList;
-
+	private MassImportForm form;
+	
+	
 	public SotonCatalogueImport() {
 		this.map.put("?monographic", "Monograph");
 		this.map.put("?continuing", "Periodical");
@@ -225,6 +228,9 @@ public class SotonCatalogueImport implements IImportPlugin, IPlugin {
 		List<ImportObject> answer = new ArrayList<ImportObject>();
 
 		for (Record r : records) {
+		    if (form != null) {
+		        form.addProcessToProgressBar();
+		    }
 			this.data = r.getData();
 			this.currentCollectionList = r.getCollections();
 			Fileformat ff = convertData();
@@ -337,7 +343,7 @@ public class SotonCatalogueImport implements IImportPlugin, IPlugin {
 		return getDescription();
 	}
 
-	@Override
+	
 	public String getDescription() {
 		return NAME + " v" + VERSION;
 	}
@@ -538,4 +544,9 @@ public class SotonCatalogueImport implements IImportPlugin, IPlugin {
 		// TODO Auto-generated method stub
 		
 	}
+
+    @Override
+    public void setForm(MassImportForm form) {
+        this.form = form;
+    }
 }
