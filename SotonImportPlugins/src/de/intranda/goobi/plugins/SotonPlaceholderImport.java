@@ -248,7 +248,7 @@ public class SotonPlaceholderImport implements IImportPlugin, IPlugin {
 		return getDescription();
 	}
 	
-	@Override
+	
 	public String getDescription() {
 		return NAME + " v" + VERSION;
 	}
