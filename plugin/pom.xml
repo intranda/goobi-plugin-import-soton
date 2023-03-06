@@ -5,7 +5,7 @@
   <version>1.0.0</version>
   <properties>
     <jar.name>plugin_intranda_import_soton</jar.name>
-    <goobi.version>23.03.1</goobi.version>
+    <goobi.version>23.03.2</goobi.version>
   </properties>
   <repositories>
     <repository>
