@@ -82,6 +82,8 @@ import ugh.exceptions.TypeNotAllowedForParentException;
 import ugh.exceptions.WriteException;
 import ugh.fileformats.mets.MetsMods;
 
+import javax.faces.model.SelectItem;
+
 @PluginImplementation
 public class SotonMarcMultiVolumeImport implements IImportPlugin, IPlugin {
 
@@ -124,7 +126,9 @@ public class SotonMarcMultiVolumeImport implements IImportPlugin, IPlugin {
             values.add(DOCSTRUCT_TYPE_SERIAL);
             values.add(DOCSTRUCT_TYPE_PERIODICAL);
             values.add(DOCSTRUCT_TYPE_MULTIVOLUME);
-            ip.setPossibleValues(values);
+            ip.setPossibleValues(values.stream()
+                    .map(v -> new SelectItem(v, v))
+                    .toList());
             ip.setRequired(true);
             this.properties.add(ip);
         }
