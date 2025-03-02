@@ -82,7 +82,7 @@ import ugh.exceptions.TypeNotAllowedForParentException;
 import ugh.exceptions.WriteException;
 import ugh.fileformats.mets.MetsMods;
 
-import javax.faces.model.SelectItem;
+import jakarta.faces.model.SelectItem;
 
 @PluginImplementation
 public class SotonMarcMultiVolumeImport implements IImportPlugin, IPlugin {
